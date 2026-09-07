@@ -1,7 +1,7 @@
 # shared_core
 
 Petit Works apps 共通の Flutter ウィジェット/モデル集です。
-[kokugo-kore](https://github.com/org-zka32101/kokugo-kore)、`social_quiz_app`、
+[kokugo-kore](https://github.com/zka32101/kokugo-kore)、`social_quiz_app`、
 および今後増える他アプリから、各アプリの `pubspec.yaml` に git dependency として
 参照されることを想定しています。
 
@@ -24,7 +24,7 @@ Petit Works apps 共通の Flutter ウィジェット/モデル集です。
 dependencies:
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main
 ```
 
@@ -34,10 +34,8 @@ import 'package:shared_core/shared_core.dart';
 
 ## 注意事項
 
-- 元の `kokugo-kore` モノレポ内では `shared_core` が姉妹パッケージ
-  `cross_promo_kit`（クロスプロモーション機能）を relative path 依存で
-  再エクスポートしていましたが、`cross_promo_kit` はまだ独立した git
-  リポジトリとして切り出されていないため、このリポジトリでは当該の
-  依存・再エクスポートを一旦コメントアウトしています
-  （`lib/shared_core.dart` 参照）。`cross_promo_kit` が独立リポジトリ化
-  され次第、git dependency として追加し復活させてください。
+- `shared_core` は姉妹パッケージ `cross_promo_kit`（クロスプロモーション
+  機能）を git dependency として参照し、`lib/shared_core.dart` から
+  re-export しています。`cross_promo_kit` は独立リポジトリ
+  ([zka32101/cross_promo_kit](https://github.com/zka32101/cross_promo_kit))
+  として切り出し済みです。
