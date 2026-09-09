@@ -66,8 +66,17 @@ export 'services/weekly_report_notification_scheduler.dart'; // WeeklyReportNoti
 export 'utils/rating_calculator.dart'; // RatingCalculator（Elo類似のレーティング計算）
 export 'utils/parental_gate_helper.dart'; // requireParentalGate（保護者ゲート呼び出しヘルパー）
 
-// Theme
+// Theme & Config
 export 'theme/app_theme_base.dart';
+export 'config/app_colors.dart';        // AppColors, SubjectColors, LightColors, DarkColors（v3.0.0 新規）
+export 'config/app_typography.dart';   // AppTypography（v3.0.0 新規）
+
+// UI Components (v3.0.0 新規)
+export 'widgets/components/app_button.dart';     // AppButton, AppButtonStyle, AppButtonSize
+export 'widgets/components/app_card.dart';       // AppCard, AppCardStyle, AppImageCard, AppHorizontalCard
+export 'widgets/components/app_dialog.dart';     // AppDialog, AppDialogAction, AppDialogStyle, 便利関数群
+export 'widgets/components/app_app_bar.dart';    // AppAppBar, GradientAppBar, SearchAppBar, SimpleAppBar
+export 'widgets/components/app_snackbar.dart';   // AppSnackBar, AppToast, ToastType
 
 // クロスプロモーション（他アプリ紹介）— 実装は cross_promo_kit（ポートフォリオ全体の共通パッケージ）に一本化。
 export 'package:cross_promo_kit/cross_promo_kit.dart';
