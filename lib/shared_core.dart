@@ -11,6 +11,7 @@ export 'models/feedback_model.dart'; // FeedbackType, FeedbackReport（バグ報
 export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilter（ランキング）
 export 'models/friend_model.dart'; // Friend（友達機能の共通基盤）
 export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, PlayerRating（マルチプレイ対戦の共通基盤）
+export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
 
 // Data
 export 'data/common_shop_items.dart'; // kCommonShopItems（背景テーマ・フレームの共通カタログ）
@@ -33,6 +34,7 @@ export 'providers/ranking_provider.dart';          // RankingNotifier, rankingPr
 export 'providers/friend_provider.dart';           // FriendNotifier, friendProvider（友達機能の共通基盤）
 export 'providers/matchmaking_provider.dart';      // BaseMatchmakingNotifier, matchmakingProvider, MatchmakingHandlers（マッチメイキング）
 export 'providers/match_provider.dart';            // BaseMatchNotifier, currentMatchProvider, MatchHandlers（対戦中マッチ状態）
+export 'providers/screen_time_provider.dart';      // BaseScreenTimeNotifier, screenTimeProvider（利用時間制限）
 
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
@@ -47,6 +49,7 @@ export 'widgets/furigana_text.dart';               // FuriganaText（{漢字|か
 export 'widgets/lesson_menu_page.dart';            // LessonMenuPage, LessonDetailPage（解説メニュー）
 export 'widgets/feedback_form_page.dart';          // FeedbackFormPage（バグ報告・改善要望）
 export 'widgets/parental_gate.dart';               // ParentalGateDialog（保護者ゲート）
+export 'widgets/screen_time_limit_screen.dart';    // ScreenTimeLimitReachedWidget, ScreenTimeSettingsWidget（利用時間制限）
 export 'widgets/reports/weekly_bar_chart.dart';    // WeeklyBarChartWidget（週次棒グラフ）
 export 'widgets/reports/score_radar_chart.dart';   // ScoreRadarChartWidget（スコア別レーダーチャート）
 export 'widgets/multiplayer/matchmaking_search_widget.dart'; // MatchmakingSearchWidget（マッチング待機アニメーション）
