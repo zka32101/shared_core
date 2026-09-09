@@ -17,6 +17,7 @@ dependencies:
   uuid: ^4.0.0
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.10+1
+  fl_chart: ">=0.67.0 <0.71.0"
   cross_promo_kit:
     git:
       url: https://github.com/zka32101/cross_promo_kit.git

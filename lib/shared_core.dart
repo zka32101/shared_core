@@ -47,6 +47,8 @@ export 'widgets/furigana_text.dart';               // FuriganaText（{漢字|か
 export 'widgets/lesson_menu_page.dart';            // LessonMenuPage, LessonDetailPage（解説メニュー）
 export 'widgets/feedback_form_page.dart';          // FeedbackFormPage（バグ報告・改善要望）
 export 'widgets/parental_gate.dart';               // ParentalGateDialog（保護者ゲート）
+export 'widgets/reports/weekly_bar_chart.dart';    // WeeklyBarChartWidget（週次棒グラフ）
+export 'widgets/reports/score_radar_chart.dart';   // ScoreRadarChartWidget（スコア別レーダーチャート）
 export 'widgets/multiplayer/matchmaking_search_widget.dart'; // MatchmakingSearchWidget（マッチング待機アニメーション）
 export 'widgets/multiplayer/player_rating_card.dart';        // PlayerRatingCard（自分のレーティングカード）
 export 'widgets/multiplayer/leaderboard_view.dart';          // LeaderboardView（ランキング表示）
