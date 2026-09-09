@@ -3,9 +3,9 @@ library shared_core;
 // Models
 export 'models/user_profile.dart';
 export 'models/quest_model.dart';
-export 'models/badge_model.dart';
+export 'models/badge_model.dart'; // BadgeModel, BadgeRarity, BadgeLibrary, BadgeCategory, EarnedBadge
 export 'models/avatar_model.dart';
-export 'models/character_data.dart'; // BaseCharacter, CharacterState, AppShopItem, ShopItemKind, kLevelUpCost
+export 'models/character_data.dart'; // Subject, BaseCharacter, CharacterProfile, CharacterStats, CharacterState, AppShopItem, ShopItemKind, kLevelUpCost (Phase 4.1 拡張)
 export 'models/lesson_content_model.dart'; // LessonContent, LessonSection（解説メニュー）
 export 'models/feedback_model.dart'; // FeedbackType, FeedbackReport（バグ報告・改善要望）
 export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilter（ランキング）

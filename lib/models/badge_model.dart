@@ -1,6 +1,47 @@
 // 小学コレシリーズ共通バッジシステム
 // 全教科で共有可能な統一バッジモデル
 
+// ─── Phase 4.1: BadgeRarity Enum ─────────────────────────────────────────
+enum BadgeRarity {
+  common,      // 一般的（すぐに獲得できる）
+  uncommon,    // やや稀（少し頑張る必要あり）
+  rare,        // 稀（かなり頑張る必要あり）
+  legendary,   // 伝説級（相当な努力が必要）
+  mythic,      // 神話級（非常に難しい）
+}
+
+extension BadgeRarityExt on BadgeRarity {
+  String get label {
+    return switch (this) {
+      BadgeRarity.common => 'コモン',
+      BadgeRarity.uncommon => 'アンコモン',
+      BadgeRarity.rare => 'レア',
+      BadgeRarity.legendary => 'レジェンダリー',
+      BadgeRarity.mythic => 'ミシック',
+    };
+  }
+
+  String get emoji {
+    return switch (this) {
+      BadgeRarity.common => '⚪',
+      BadgeRarity.uncommon => '🔵',
+      BadgeRarity.rare => '💜',
+      BadgeRarity.legendary => '🌟',
+      BadgeRarity.mythic => '👑',
+    };
+  }
+
+  int get colorValue {
+    return switch (this) {
+      BadgeRarity.common => 0xFF999999,
+      BadgeRarity.uncommon => 0xFF00AA00,
+      BadgeRarity.rare => 0xFF0066FF,
+      BadgeRarity.legendary => 0xFFFFAA00,
+      BadgeRarity.mythic => 0xFFFF00FF,
+    };
+  }
+}
+
 enum BadgeCategory { streak, score, content1, content2, special, kanji, reading, writing, grammar, vocab, character, prediction, troubleshoot }
 
 class BadgeModel {
@@ -10,6 +51,8 @@ class BadgeModel {
   final String emoji;
   final BadgeCategory category;
   final int requiredCount;
+  final BadgeRarity rarity;    // Phase 4.1: レアリティ
+  final List<String>? subjects; // Phase 4.1: 対象教科（nullなら全教科対応）
 
   const BadgeModel({
     required this.id,
@@ -18,6 +61,8 @@ class BadgeModel {
     required this.emoji,
     required this.category,
     required this.requiredCount,
+    this.rarity = BadgeRarity.common,
+    this.subjects,
   });
 }
 
@@ -25,6 +70,25 @@ class EarnedBadge {
   final BadgeModel badge;
   final DateTime earnedAt;
   const EarnedBadge({required this.badge, required this.earnedAt});
+
+  Map<String, dynamic> toJson() => {
+        'badge': {
+          'id': badge.id,
+          'title': badge.title,
+          'rarity': badge.rarity.name,
+        },
+        'earnedAt': earnedAt.toIso8601String(),
+      };
+
+  factory EarnedBadge.fromJson(Map<String, dynamic> j) {
+    final badgeId = j['badge']['id'] as String;
+    final badge = allBadges.firstWhere((b) => b.id == badgeId,
+        orElse: () => allBadges.first); // fallback to first
+    return EarnedBadge(
+      badge: badge,
+      earnedAt: DateTime.parse(j['earnedAt'] as String),
+    );
+  }
 }
 
 // 全バッジ定義（各教科共通）
@@ -37,6 +101,7 @@ const allBadges = [
     emoji: '🔥',
     category: BadgeCategory.streak,
     requiredCount: 3,
+    rarity: BadgeRarity.common,
   ),
   BadgeModel(
     id: 'streak_7',
@@ -45,6 +110,7 @@ const allBadges = [
     emoji: '⚡',
     category: BadgeCategory.streak,
     requiredCount: 7,
+    rarity: BadgeRarity.uncommon,
   ),
   BadgeModel(
     id: 'streak_14',
@@ -53,6 +119,7 @@ const allBadges = [
     emoji: '🌟',
     category: BadgeCategory.streak,
     requiredCount: 14,
+    rarity: BadgeRarity.rare,
   ),
   BadgeModel(
     id: 'streak_30',
@@ -61,6 +128,7 @@ const allBadges = [
     emoji: '🏆',
     category: BadgeCategory.streak,
     requiredCount: 30,
+    rarity: BadgeRarity.legendary,
   ),
   BadgeModel(
     id: 'streak_60',
@@ -69,6 +137,7 @@ const allBadges = [
     emoji: '💎',
     category: BadgeCategory.streak,
     requiredCount: 60,
+    rarity: BadgeRarity.legendary,
   ),
   BadgeModel(
     id: 'streak_100',
@@ -77,6 +146,7 @@ const allBadges = [
     emoji: '👑',
     category: BadgeCategory.streak,
     requiredCount: 100,
+    rarity: BadgeRarity.mythic,
   ),
 
   // ─── Score Category ───
@@ -281,3 +351,65 @@ const allBadges = [
     requiredCount: 30,
   ),
 ];
+
+// ─── Phase 4.1: BadgeLibrary ──────────────────────────────────────────────
+// バッジ定義を一元管理し、取得条件の自動判定ロジックを提供
+
+class BadgeLibrary {
+  static const List<BadgeModel> allBadges = allBadges;
+
+  /// バッジIDからバッジモデルを取得
+  static BadgeModel? getBadgeById(String badgeId) {
+    try {
+      return allBadges.firstWhere((b) => b.id == badgeId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// カテゴリ別にバッジをフィルタリング
+  static List<BadgeModel> getBadgesByCategory(BadgeCategory category) {
+    return allBadges.where((b) => b.category == category).toList();
+  }
+
+  /// レアリティ別にバッジをフィルタリング
+  static List<BadgeModel> getBadgesByRarity(BadgeRarity rarity) {
+    return allBadges.where((b) => b.rarity == rarity).toList();
+  }
+
+  /// 教科別にバッジをフィルタリング
+  static List<BadgeModel> getBadgesBySubject(String subject) {
+    return allBadges.where((b) {
+      if (b.subjects == null) return true; // null = 全教科対応
+      return b.subjects!.contains(subject);
+    }).toList();
+  }
+
+  /// レアリティ以上のバッジをフィルタリング
+  static List<BadgeModel> getBadgesByRarityOrHigher(BadgeRarity rarity) {
+    final rarityIndex = BadgeRarity.values.indexOf(rarity);
+    return allBadges.where((b) {
+      final bRarityIndex = BadgeRarity.values.indexOf(b.rarity);
+      return bRarityIndex >= rarityIndex;
+    }).toList();
+  }
+
+  /// すべてのレアユニークバッジを取得
+  static List<BadgeModel> getLegendaryAndMythicBadges() {
+    return allBadges
+        .where((b) => b.rarity == BadgeRarity.legendary || b.rarity == BadgeRarity.mythic)
+        .toList();
+  }
+
+  /// バッジ統計情報
+  static Map<String, int> getBadgeStatistics() {
+    return {
+      'total': allBadges.length,
+      'common': allBadges.where((b) => b.rarity == BadgeRarity.common).length,
+      'uncommon': allBadges.where((b) => b.rarity == BadgeRarity.uncommon).length,
+      'rare': allBadges.where((b) => b.rarity == BadgeRarity.rare).length,
+      'legendary': allBadges.where((b) => b.rarity == BadgeRarity.legendary).length,
+      'mythic': allBadges.where((b) => b.rarity == BadgeRarity.mythic).length,
+    };
+  }
+}
