@@ -111,6 +111,20 @@ class ProfileNotifier extends Notifier<ProfileState> {
     await prefs.setString(_currentProfileKey, profileId);
     state = ProfileState(profiles: state.profiles, currentProfileId: profileId);
   }
+
+  /// ランキング等での実名公開設定を切り替える。
+  /// デフォルトは匿名表示（false）で、ユーザーが設定画面でオンにした場合のみ実名表示する。
+  Future<void> setNamePublic(String profileId, bool isNamePublic) async {
+    final prefs = await SharedPreferences.getInstance();
+    final updated = state.profiles.map((p) {
+      if (p.id == profileId) return p.copyWith(isNamePublic: isNamePublic);
+      return p;
+    }).toList();
+
+    await prefs.setString(
+        _profilesKey, jsonEncode(updated.map((p) => p.toJson()).toList()));
+    state = state.copyWith(profiles: updated);
+  }
 }
 
 final profileProvider =

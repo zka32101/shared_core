@@ -8,6 +8,8 @@ export 'models/avatar_model.dart';
 export 'models/character_data.dart'; // BaseCharacter, CharacterState, AppShopItem, kLevelUpCost
 export 'models/lesson_content_model.dart'; // LessonContent, LessonSection（解説メニュー）
 export 'models/feedback_model.dart'; // FeedbackType, FeedbackReport（バグ報告・改善要望）
+export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilter（ランキング）
+export 'models/friend_model.dart'; // Friend（友達機能の共通基盤）
 
 // Providers
 export 'providers/progress_provider.dart';
@@ -22,6 +24,8 @@ export 'providers/character_state_provider.dart'; // BaseCharacterNotifier, char
 export 'providers/inventory_provider.dart';        // InventoryNotifier, inventoryProvider
 export 'providers/lesson_provider.dart';           // LessonNotifier, lessonProvider（解説メニュー）
 export 'providers/feedback_provider.dart';         // FeedbackNotifier, feedbackProvider（バグ報告・改善要望）
+export 'providers/ranking_provider.dart';          // RankingNotifier, rankingProvider（ランキング）
+export 'providers/friend_provider.dart';           // FriendNotifier, friendProvider（友達機能の共通基盤）
 
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
