@@ -15,6 +15,7 @@ dependencies:
   firebase_auth: ^5.5.4
   uuid: ^4.0.0
   google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
   cross_promo_kit:
     git:
       url: https://github.com/zka32101/cross_promo_kit.git
@@ -30,3 +31,4 @@ flutter:
     - lib/assets/badge_icons/
     - lib/assets/avatars/
     - lib/assets/ui_elements/
+    - lib/assets/shop/
