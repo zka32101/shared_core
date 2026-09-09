@@ -57,6 +57,7 @@ export 'widgets/multiplayer/match_history_tile.dart';        // MatchHistoryTile
 // Services
 export 'services/firebase_service.dart';
 export 'services/firestore_matchmaking_service.dart'; // FirestoreMatchmakingService（マルチプレイのFirestoreデフォルト実装）
+export 'services/weekly_report_notification_scheduler.dart'; // WeeklyReportNotificationScheduler（保護者向け週次サマリー通知）
 
 // Utils
 export 'utils/rating_calculator.dart'; // RatingCalculator（Elo類似のレーティング計算）
