@@ -10,6 +10,7 @@ export 'models/lesson_content_model.dart'; // LessonContent, LessonSection（解
 export 'models/feedback_model.dart'; // FeedbackType, FeedbackReport（バグ報告・改善要望）
 export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilter（ランキング）
 export 'models/friend_model.dart'; // Friend（友達機能の共通基盤）
+export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, PlayerRating（マルチプレイ対戦の共通基盤）
 
 // Data
 export 'data/common_shop_items.dart'; // kCommonShopItems（背景テーマ・フレームの共通カタログ）
@@ -30,6 +31,8 @@ export 'providers/lesson_provider.dart';           // LessonNotifier, lessonProv
 export 'providers/feedback_provider.dart';         // FeedbackNotifier, feedbackProvider（バグ報告・改善要望）
 export 'providers/ranking_provider.dart';          // RankingNotifier, rankingProvider（ランキング）
 export 'providers/friend_provider.dart';           // FriendNotifier, friendProvider（友達機能の共通基盤）
+export 'providers/matchmaking_provider.dart';      // BaseMatchmakingNotifier, matchmakingProvider, MatchmakingHandlers（マッチメイキング）
+export 'providers/match_provider.dart';            // BaseMatchNotifier, currentMatchProvider, MatchHandlers（対戦中マッチ状態）
 
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
@@ -43,9 +46,17 @@ export 'widgets/coin_shop_page.dart';              // CoinShopPage, ShopItemTile
 export 'widgets/furigana_text.dart';               // FuriganaText（{漢字|かんじ}形式のルビ表示、全アプリ共通化）
 export 'widgets/lesson_menu_page.dart';            // LessonMenuPage, LessonDetailPage（解説メニュー）
 export 'widgets/feedback_form_page.dart';          // FeedbackFormPage（バグ報告・改善要望）
+export 'widgets/multiplayer/matchmaking_search_widget.dart'; // MatchmakingSearchWidget（マッチング待機アニメーション）
+export 'widgets/multiplayer/player_rating_card.dart';        // PlayerRatingCard（自分のレーティングカード）
+export 'widgets/multiplayer/leaderboard_view.dart';          // LeaderboardView（ランキング表示）
+export 'widgets/multiplayer/match_history_tile.dart';        // MatchHistoryTile（対戦履歴1件表示）
 
 // Services
 export 'services/firebase_service.dart';
+export 'services/firestore_matchmaking_service.dart'; // FirestoreMatchmakingService（マルチプレイのFirestoreデフォルト実装）
+
+// Utils
+export 'utils/rating_calculator.dart'; // RatingCalculator（Elo類似のレーティング計算）
 
 // Theme
 export 'theme/app_theme_base.dart';
