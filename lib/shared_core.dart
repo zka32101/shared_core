@@ -16,6 +16,7 @@ export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRanking
 export 'models/mission_model.dart'; // Mission, MissionReward, UserMissionProgress, MissionListItem（Phase 4.5）
 
 // Data
+export 'data/badge_data.dart'; // unifiedBadges, getBadgesForSubject（Phase 4.1：60個の統一バッジデータ）
 export 'data/common_shop_items.dart'; // kCommonShopItems（背景テーマ・フレームの共通カタログ）
 
 // Providers
