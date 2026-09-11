@@ -90,3 +90,8 @@ export 'widgets/components/app_snackbar.dart';   // AppSnackBar, AppToast, Toast
 
 // クロスプロモーション（他アプリ紹介）— 実装は cross_promo_kit（ポートフォリオ全体の共通パッケージ）に一本化。
 export 'package:cross_promo_kit/cross_promo_kit.dart';
+
+// Premium Subscription (Phase 4.7)
+export 'models/premium_model.dart';
+export 'providers/premium_provider.dart';
+export 'widgets/premium_gate_widget.dart';
