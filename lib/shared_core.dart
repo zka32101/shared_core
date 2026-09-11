@@ -62,6 +62,10 @@ export 'widgets/multiplayer/matchmaking_search_widget.dart'; // MatchmakingSearc
 export 'widgets/multiplayer/player_rating_card.dart';        // PlayerRatingCard（自分のレーティングカード）
 export 'widgets/multiplayer/leaderboard_view.dart';          // LeaderboardView（ランキング表示）
 export 'widgets/multiplayer/match_history_tile.dart';        // MatchHistoryTile（対戦履歴1件表示）
+export 'widgets/friend_search_page.dart';                     // FriendSearchPage（フレンド検索・申請 Phase 4.4）
+export 'widgets/friend_requests_page.dart';                   // FriendRequestsPage（フレンドリクエスト管理 Phase 4.4）
+export 'widgets/friends_list_page.dart';                      // FriendsListPage（フレンド一覧・管理 Phase 4.4）
+export 'widgets/daily_mission_page.dart';                      // DailyMissionPage（デイリーミッション統一 Phase 4.5）
 
 // Services
 export 'services/firebase_service.dart';
