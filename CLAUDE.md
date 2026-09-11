@@ -498,7 +498,168 @@ The lower bound of "shared_core" (git 3fa23b from git) must be <= the lower boun
 
 ---
 
-## 実装状況（2026-09-09）
+## Phase 4.15: A/B テストフレームワーク統一化 ✅ (2026-09-11 実装完了)
+
+### 目的
+RemoteConfig を使った Paywall・Dynamic Pricing の A/B テスト・ユーザーセグメント統計・パフォーマンス追跡を shared_core に統一実装
+
+### 実装内容
+
+#### モデル定義（`lib/models/ab_test_model.dart`）
+- **ABTestConfig**: テスト設定（テストID、バリアント配置、トラフィック割り当て）
+- **ABTestAssignment**: ユーザー割り当て（Sticky: 一度割り当てたら固定）
+- **ABTestEvent**: イベント記録（表示・クリック・変換・売上）
+- **ABTestResult**: 集計結果（CVR、AOV、売上）
+- **PopulationStats**: 母集団統計（アクティブユーザー、チャーン率、セグメント分布）
+- **TestVariant**: control, variant_b, variant_c
+- **TestMetric**: impression, click, conversion, revenue, churnRate
+
+#### プロバイダー実装（`lib/providers/ab_test_providers.dart`）
+- **abTestConfigProvider**: RemoteConfig から A/B テスト設定を読み込み
+- **userABTestAssignmentsProvider**: ユーザーの割り当てを管理（初回ランダム、その後Sticky）
+- **abTestResultsProvider**: リアルタイムで集計結果を監視
+- **populationStatsProvider**: 母集団統計をリアルタイム監視
+- **userTestVariantProvider**: 特定テストのユーザー割り当てを取得
+
+#### StateNotifier 実装（`lib/providers/ab_test_notifier.dart`）
+- **ABTestNotifier**: イベント記録・結果集計・母集団統計更新
+  - `recordTestEvent()`: テストイベントを記録
+  - `updatePopulationStats()`: 母集団統計を更新（毎日自動実行）
+  - Firestore Transaction で原子的に更新
+
+#### UI コンポーネント（`lib/widgets/ab_test_dashboard.dart`）
+- **ABTestDashboard**: 分析ダッシュボード（テスト結果・母集団統計表示）
+- **_PopulationStatsCard**: 母集団統計カード（総ユーザー・アクティブ・チャーン率）
+- **_TestResultCard**: テスト結果カード（CVR、AOV、売上表示）
+- **ABTestEventRecorder**: イベント記録ヘルパー
+
+### 使用例（各アプリ）
+
+```dart
+import 'package:shared_core/models/ab_test_model.dart';
+import 'package:shared_core/providers/ab_test_providers.dart';
+import 'package:shared_core/widgets/ab_test_dashboard.dart';
+
+// ① ユーザーの割り当てを確認
+final variant = ref.watch(userTestVariantProvider('paywall_variant_test'));
+
+// ② Paywall を表示（バリアント別に異なるデザイン）
+if (variant == TestVariant.control) {
+  // PaywallSimpleWidget
+} else if (variant == TestVariant.variant_b) {
+  // PaywallFeaturedWidget
+} else {
+  // PaywallLocalOfferWidget
+}
+
+// ③ 表示イベント記録
+ABTestEventRecorder.recordImpressionEvent(ref, 
+  testId: 'paywall_variant_test',
+  variant: variant!,
+);
+
+// ④ 購買成功時に変換イベント記録
+ABTestEventRecorder.recordConversionEvent(ref,
+  testId: 'paywall_variant_test',
+  variant: variant!,
+  revenue: 120, // ¥120の売上
+);
+
+// ⑤ 分析ダッシュボード表示
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (_) => ABTestDashboard()),
+);
+```
+
+### Firebase RemoteConfig 設定例
+
+```json
+{
+  "ab_tests_config": {
+    "paywall_variant_test": {
+      "testId": "paywall_variant_test",
+      "testName": "Paywall バリアント A/B テスト",
+      "description": "3つの Paywall デザインをテスト",
+      "variants": ["control", "variant_b", "variant_c"],
+      "startDate": "2026-09-15T00:00:00Z",
+      "endDate": "2026-10-15T23:59:59Z",
+      "isActive": true,
+      "trafficAllocation": {
+        "control": 0.5,
+        "variant_b": 0.3,
+        "variant_c": 0.2
+      },
+      "config": {
+        "paywallVariant": "auto"
+      }
+    },
+    "pricing_segment_test": {
+      "testId": "pricing_segment_test",
+      "testName": "セグメント別価格テスト",
+      "variants": ["control", "variant_b"],
+      "startDate": "2026-09-15T00:00:00Z",
+      "endDate": "2026-10-15T23:59:59Z",
+      "isActive": true,
+      "trafficAllocation": {
+        "control": 0.5,
+        "variant_b": 0.5
+      },
+      "config": {
+        "newUserPrice": {
+          "control": 50,
+          "variant_b": 39
+        }
+      }
+    }
+  }
+}
+```
+
+### Firestore スキーマ
+
+**collections/analytics/ab_tests/events/**
+```json
+{
+  userId: string,
+  testId: string,
+  variant: string,
+  metric: string,
+  value: int,
+  eventTime: Timestamp,
+  customData: map,
+}
+```
+
+**collections/analytics/ab_tests/results/**
+```json
+{
+  testId: string,
+  variant: string,
+  impressions: int,
+  conversions: int,
+  conversionRate: double,
+  totalRevenue: int,
+  averageOrderValue: double,
+  updatedAt: Timestamp,
+}
+```
+
+**collections/analytics/population/**
+```json
+{
+  totalUsers: int,
+  activeUsers: int,
+  churned: int,
+  churnRate: double,
+  segmentDistribution: map,
+  sampledAt: Timestamp,
+}
+```
+
+---
+
+## 実装状況（2026-09-11）
 
 | フェーズ | 機能 | 状態 |
 |---|---|---|
@@ -507,12 +668,14 @@ The lower bound of "shared_core" (git 3fa23b from git) must be <= the lower boun
 | **UI** | CharacterCollectionPage, CoinShopPage, 共有ウィジェット | ✅ 完成 |
 | **Theme** | Material Design 3 テーマ | ✅ 完成 |
 | **Gamification** | デイリーボーナス, LessonProvider, スクリーンタイム | ✅ 完成 |
-| **Phase 4** | マルチアプリ統一, ランキング拡張, サブスク統一 | ⏳ 10月以降 |
+| **Paywall & Pricing** | Paywall A/B テスト, Dynamic Pricing | ✅ 完成 |
+| **Phase 4.15** | A/B テストフレームワーク統一 | ✅ 実装完了 |
 
 ---
 
 ## 最新更新ログ
 
+- **2026-09-11**: A/B テストフレームワーク実装完了（ab_test_model.dart, ab_test_providers.dart, ab_test_notifier.dart, ab_test_dashboard.dart）
 - **2026-09-09**: screen_time_model.dart 追加, screen_time_limit_screen.dart 実装
 - **2026-09-09**: ScreenTimeNotifier, DailyBonusNotifier 機能強化
 - **2026-09-07**: cross_promo_kit git dependency 追加
@@ -521,6 +684,6 @@ The lower bound of "shared_core" (git 3fa23b from git) must be <= the lower boun
 
 ---
 
-**最終更新**: 2026-09-09  
-**状態**: ✅ 本番運用中（v0.1.0）  
-**次フェーズ**: Phase 4 ゲーミフィケーション統一（10月-12月予定）
+**最終更新**: 2026-09-11  
+**状態**: ✅ Phase 4.15 実装完了  
+**次フェーズ**: Phase 4.16 ユーザーセグメント最適化（計画中）
