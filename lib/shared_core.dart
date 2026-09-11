@@ -133,3 +133,9 @@ export 'models/ab_test_model.dart';                         // ABTestConfig, ABT
 export 'providers/ab_test_providers.dart';                  // abTestConfigProvider, userABTestAssignmentsProvider, abTestResultsProvider, populationStatsProvider, userTestVariantProvider
 export 'providers/ab_test_notifier.dart';                   // ABTestNotifier, abTestNotifierProvider
 export 'widgets/ab_test_dashboard.dart';                    // ABTestDashboard, ABTestEventRecorder（A/B テスト分析ダッシュボード Phase 4.15）
+
+// Analytics & Reporting (Phase 4.16)
+export 'models/analytics_model.dart';                       // LearningMetric, UserSegmentAnalytics, WeeklyReport, MonthlyReport, LearningGoal, AnalyticsConfig, BehaviorAnalytics, PopulationStats, CohortAnalytics, ABTestMetrics（Phase 4.16）
+export 'providers/analytics_provider.dart';                 // analyticsConfigProvider, userSegmentAnalyticsProvider, weeklyReportProvider, monthlyReportProvider, userLearningGoalsProvider, recentLearningMetricsProvider, behaviorAnalyticsProvider, populationStatsProvider, cohortAnalyticsProvider, abTestMetricsProvider（Phase 4.16）
+export 'providers/analytics_notifier.dart';                 // AnalyticsNotifier, analyticsNotifierProvider（Phase 4.16）
+export 'widgets/analytics_dashboard.dart';                  // AnalyticsDashboard（分析ダッシュボード Phase 4.16）

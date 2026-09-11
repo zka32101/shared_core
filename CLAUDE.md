@@ -659,6 +659,260 @@ Navigator.push(
 
 ---
 
+## Phase 4.16: Analytics・レポート強化統一化 ✅ (2026-09-11 実装完了)
+
+### 目的
+RemoteConfig・Firestore を使ったユーザーセグメント分析・学習メトリクス集計・レポート生成・ダッシュボード表示を shared_core に統一実装
+
+### 実装内容
+
+#### モデル定義（`lib/models/analytics_model.dart`）✅
+- **LearningMetric**: 学習メトリクス（クイズ完了数、正解数、学習時間など）
+- **UserSegmentAnalytics**: ユーザーセグメント分析（エンゲージメント、リテンション、チャーン予測）
+- **WeeklyReport**: 週次レポート（学習時間、正答率、目標達成度）
+- **MonthlyReport**: 月次レポート（成長トレンド、改善率、成績分析）
+- **LearningGoal**: 学習ゴール・チャレンジ管理（進捗追跡、報酬管理）
+- **BehaviorAnalytics**: ユーザーの行動パターン分析（セッション時間、活動時間、学習パターン）
+- **PopulationStats**: グローバル人口統計（総ユーザー、アクティブ、チャーン率）
+- **CohortAnalytics**: コホート分析（同期登録ユーザーグループの継続率・エンゲージメント）
+- **ABTestMetrics**: A/B テスト結果集計（コンバージョンレート、平均注文額、信頼度）
+- **AnalyticsConfig**: RemoteConfig から読み込む分析設定
+
+#### プロバイダー実装（`lib/providers/analytics_provider.dart`）✅
+- **analyticsConfigProvider**: RemoteConfig から分析設定を取得
+- **userSegmentAnalyticsProvider**: ユーザーセグメント分析を取得
+- **weeklyReportProvider**: 週次レポートを取得
+- **monthlyReportProvider**: 月次レポートを取得
+- **userLearningGoalsProvider**: ユーザーの学習ゴール一覧を取得
+- **activeGoalsProvider**: アクティブなゴールのみを取得
+- **recentLearningMetricsProvider**: 過去7日間のメトリクスを取得
+- **behaviorAnalyticsProvider**: ユーザーの行動パターン分析を取得
+- **populationStatsProvider**: グローバル人口統計を取得
+- **cohortAnalyticsProvider**: コホート分析データを取得
+- **abTestMetricsProvider**: A/B テスト結果を取得
+
+#### StateNotifier 実装（`lib/providers/analytics_notifier.dart`）✅
+- **AnalyticsNotifier**: メトリクス記録・セグメント分析更新・レポート生成・ゴール管理
+  - `recordMetric()`: 学習メトリクスを記録
+  - `updateUserSegmentAnalytics()`: セグメント分析を更新
+  - `generateWeeklyReport()`: 週次レポートを生成
+  - `generateMonthlyReport()`: 月次レポートを生成
+  - `createLearningGoal()`: 学習ゴールを作成
+  - `updateGoalProgress()`: ゴールの進捗を更新
+  - `markGoal()`: ゴールを完了・失敗としてマーク
+  - `updateBehaviorAnalytics()`: 行動パターン分析を更新
+  - `updatePopulationStats()`: グローバル統計を更新
+  - `_updateAggregates()`: メトリクス集計を非同期で更新
+
+#### UI コンポーネント（`lib/widgets/analytics_dashboard.dart`）✅
+- **AnalyticsDashboard**: 統合分析ダッシュボード（セグメント分析・レポート・ゴール表示）
+- **_SegmentAnalyticsCard**: セグメント分析カード（エンゲージメント・リテンション・チャーン予測）
+- **_SegmentScore**: セグメントスコアプログレスバー（0-100 スケール）
+- **_WeeklyReportCard**: 週次レポートカード
+- **_MonthlyReportCard**: 月次レポートカード（成長トレンド、改善率表示）
+- **_BehaviorAnalyticsCard**: 行動パターン分析カード
+- **_LearningGoalsCard**: 学習ゴール表示（進行中・完了別表示）
+- **_GoalItem**: 個別ゴール進捗表示
+
+### 使用例（各アプリ）
+
+```dart
+import 'package:shared_core/models/analytics_model.dart';
+import 'package:shared_core/providers/analytics_provider.dart';
+import 'package:shared_core/providers/analytics_notifier.dart';
+import 'package:shared_core/widgets/analytics_dashboard.dart';
+
+// ① セグメント分析を監視
+final segmentAnalytics = ref.watch(userSegmentAnalyticsProvider(userId));
+
+// ② メトリクスを記録
+await ref.read(analyticsNotifierProvider.notifier).recordMetric(
+  userId: userId,
+  type: LearningMetricType.quizCompleted,
+  value: 5,
+  appId: 'sansu', // アプリID
+);
+
+// ③ 週次レポートを生成
+await ref.read(analyticsNotifierProvider.notifier).generateWeeklyReport(
+  userId: userId,
+  totalMinutes: 180,
+  totalQuizzesCompleted: 42,
+  averageAccuracy: 87.5,
+  topicsFocused: ['計算', '図形'],
+  newBadgesEarned: 2,
+  coinsEarned: 250,
+);
+
+// ④ 学習ゴールを作成
+final goalId = await ref.read(analyticsNotifierProvider.notifier).createLearningGoal(
+  userId: userId,
+  goalType: 'daily_time',
+  targetValue: 30, // 30分
+  deadline: DateTime.now().add(Duration(days: 7)),
+);
+
+// ⑤ ゴール進捗を更新
+await ref.read(analyticsNotifierProvider.notifier).updateGoalProgress(
+  userId: userId,
+  goalId: goalId,
+  currentProgress: 15, // 15分達成
+);
+
+// ⑥ 分析ダッシュボード表示
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => AnalyticsDashboard(userId: userId),
+  ),
+);
+```
+
+### Firebase RemoteConfig 設定例
+
+```json
+{
+  "analytics_config": {
+    "enableMetricsTracking": true,
+    "enableReportGeneration": true,
+    "enabledMetrics": [
+      "quizCompleted",
+      "correctAnswers",
+      "timeSpent",
+      "streakDays",
+      "badgesEarned"
+    ],
+    "reportGenerationIntervalDays": 7,
+    "goalsConfig": {
+      "daily_time": 30,
+      "quizzes": 5,
+      "accuracy": 80,
+      "streak": 7
+    },
+    "enableSegmentation": true,
+    "enableAIPredictions": true,
+    "segmentThresholds": {
+      "churnRiskThreshold": 0.7,
+      "activeThreshold": 0.5,
+      "vipThreshold": 0.9
+    }
+  }
+}
+```
+
+### Firestore スキーマ
+
+**collections/analytics/users/{userId}/metrics/**
+```json
+{
+  userId: string,
+  type: string,           // 'quizCompleted', 'correctAnswers', 'timeSpent'...
+  value: int,
+  recordedAt: Timestamp,
+  appId: string,          // 'kokugo', 'sansu', など
+  customData: map,        // カスタムデータ
+}
+```
+
+**collections/analytics/users/{userId}/segment_analytics/current**
+```json
+{
+  userId: string,
+  segmentId: string,      // 'newUser', 'active', 'vip', 'churnRisk'
+  engagementScore: int,   // 0-100
+  retentionScore: int,    // 0-100
+  lastActiveAt: Timestamp,
+  totalLearningMinutes: int,
+  consecutiveAbsenceDays: int,
+  subjectScores: { 'kokugo': 85, 'sansu': 72 },
+  churnRiskLevel: string, // 'low', 'medium', 'high'
+}
+```
+
+**collections/analytics/users/{userId}/reports/weekly_YYYY_M_D**
+```json
+{
+  userId: string,
+  weekStartDate: Timestamp,
+  totalMinutes: int,
+  totalQuizzesCompleted: int,
+  averageAccuracy: double,
+  topicsFocused: [string],
+  newBadgesEarned: int,
+  coinsEarned: int,
+  weeklyGoalStatus: string, // 'completed', 'partial', 'missed'
+  subjectBreakdown: { 'kokugo': 45, 'sansu': 60 }
+}
+```
+
+**collections/analytics/users/{userId}/reports/monthly_YYYY_M**
+```json
+{
+  userId: string,
+  month: int,
+  year: int,
+  totalMinutes: int,
+  totalQuizzesCompleted: int,
+  averageAccuracy: double,
+  badgesEarned: int,
+  coinsEarned: int,
+  friendsAdded: int,
+  growthTrend: string,    // 'improving', 'stable', 'declining'
+  subjectPerformance: { 'kokugo': { 'accuracy': 85, 'time': 120 } },
+  achievements: [string],
+  longestStreak: int,
+  improvementRate: double,
+}
+```
+
+**collections/analytics/users/{userId}/goals/**
+```json
+{
+  goalId: string,
+  userId: string,
+  goalType: string,       // 'daily_time', 'quizzes', 'accuracy', 'streak'
+  targetValue: int,
+  startDate: Timestamp,
+  deadline: Timestamp,
+  currentProgress: int,
+  isCompleted: bool,
+  completedAt: Timestamp,
+  status: string,         // 'active', 'completed', 'failed', 'abandoned'
+  difficulty: double,     // 1.0-3.0
+  rewards: int,
+}
+```
+
+**collections/analytics/users/{userId}/behavior/latest**
+```json
+{
+  userId: string,
+  analyzedDate: Timestamp,
+  sessionCounts: { 'morning': 5, 'afternoon': 3 },
+  preferredTopics: { 'topic1': 10, 'topic2': 8 },
+  averageSessionDurationMinutes: int,
+  weekdayVsWeekendRatio: double,
+  peakActivityHour: int,  // 0-23
+  learningPattern: string, // 'bursty', 'consistent', 'irregular'
+}
+```
+
+**collections/analytics/global/population_stats**
+```json
+{
+  totalUsers: int,
+  activeUsersLast7Days: int,
+  activeUsersLast30Days: int,
+  churnedUsersLast30Days: int,
+  churnRate: double,
+  sampledAt: Timestamp,
+  segmentDistribution: { 'newUser': 100, 'active': 500 },
+  retentionByDay: { '1': 0.95, '2': 0.87 },
+}
+```
+
+---
+
 ## 実装状況（2026-09-11）
 
 | フェーズ | 機能 | 状態 |
@@ -670,11 +924,13 @@ Navigator.push(
 | **Gamification** | デイリーボーナス, LessonProvider, スクリーンタイム | ✅ 完成 |
 | **Paywall & Pricing** | Paywall A/B テスト, Dynamic Pricing | ✅ 完成 |
 | **Phase 4.15** | A/B テストフレームワーク統一 | ✅ 実装完了 |
+| **Phase 4.16** | Analytics・レポート強化統一化 | ✅ 実装完了 |
 
 ---
 
 ## 最新更新ログ
 
+- **2026-09-11**: Analytics・レポート強化統一化実装完了（analytics_model.dart, analytics_provider.dart, analytics_notifier.dart, analytics_dashboard.dart）- Phase 4.16
 - **2026-09-11**: A/B テストフレームワーク実装完了（ab_test_model.dart, ab_test_providers.dart, ab_test_notifier.dart, ab_test_dashboard.dart）
 - **2026-09-09**: screen_time_model.dart 追加, screen_time_limit_screen.dart 実装
 - **2026-09-09**: ScreenTimeNotifier, DailyBonusNotifier 機能強化
@@ -685,5 +941,5 @@ Navigator.push(
 ---
 
 **最終更新**: 2026-09-11  
-**状態**: ✅ Phase 4.15 実装完了  
-**次フェーズ**: Phase 4.16 ユーザーセグメント最適化（計画中）
+**状態**: ✅ Phase 4.16 実装完了  
+**次フェーズ**: Phase 4.17 Cloud Functions・ユーザー分析AI（計画中）
