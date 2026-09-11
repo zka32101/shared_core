@@ -29,7 +29,7 @@ export 'providers/avatar_provider.dart';
 export 'providers/profile_provider.dart';
 export 'providers/profile_data_migration.dart'; // ProfileDataMigration（profile-scoped key 生成）
 export 'providers/learning_timer_provider.dart';
-export 'providers/character_state_provider.dart'; // BaseCharacterNotifier, characterStateProvider
+export 'providers/character_state_provider.dart'; // BaseCharacterNotifier, BaseCharacterProfileNotifier (Phase 4.1), CharacterStateMap, CharacterProfileMap, characterStateProvider
 export 'providers/inventory_provider.dart';        // InventoryNotifier, inventoryProvider
 export 'providers/equipped_items_provider.dart';   // BaseEquippedItemsNotifier, equippedItemsProvider（装着状態）
 export 'providers/lesson_provider.dart';           // LessonNotifier, lessonProvider（解説メニュー）
