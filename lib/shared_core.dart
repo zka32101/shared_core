@@ -158,3 +158,12 @@ export 'providers/notification_notifier.dart';              // NotificationNotif
 export 'providers/retention_provider.dart';                 // RetentionNotifier, retentionNotifierProvider（Phase 4.18）
 export 'services/push_notification_service.dart';           // PushNotificationService（FCM 実行ロジック Phase 4.18）
 export 'widgets/notification_settings_widget.dart';         // NotificationSettingsScreen, RetentionAnalyticsDashboard（通知・リテンション設定ダッシュボード Phase 4.18）
+
+// Push Notifications & Retention (Phase 4.22)
+export 'models/push_notification_model.dart';               // PushNotificationPayload, NotificationSchedule, NotificationLog, PushNotificationConfig, NotificationStats, FCMTokenInfo, NotificationType, NotificationScheduleType（Phase 4.22）
+export 'models/retention_model.dart';                       // ChurnPrediction, UserRetentionAnalytics, ReengagementCampaign, CohortAnalytics, PopulationStats, BehaviorAnalytics, RetentionConfig, ChurnRiskLevel, ActivityLevel（Phase 4.22）
+export 'providers/push_notification_provider.dart';         // PushNotificationNotifier, PushNotificationState, pushNotificationProvider, fcmTokenProvider, unreadNotificationCountProvider, notificationConfigProvider, scheduledNotificationsProvider（Phase 4.22）
+export 'providers/retention_provider.dart';                 // RetentionNotifier, RetentionState, retentionProvider, highRiskUsersProvider, userRetentionAnalyticsProvider, reengagementCampaignProvider, populationStatsProvider, retentionConfigProvider, dormantUsersProvider（Phase 4.22）
+export 'services/firebase_messaging_service.dart';          // FirebaseMessagingService（FCM 初期化・管理 Phase 4.22）
+export 'widgets/push_notification_settings_widget.dart';    // PushNotificationSettingsWidget, PushNotificationSettingsScreen（通知設定UI Phase 4.22）
+export 'widgets/retention_dashboard_widget.dart';           // RetentionDashboardWidget, RetentionDashboardScreen（リテンション分析ダッシュボード Phase 4.22）
