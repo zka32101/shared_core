@@ -14,6 +14,7 @@ export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, Pl
 export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
 export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRankingEntry, UserRankingStats（Phase 4.3）
 export 'models/mission_model.dart'; // Mission, MissionReward, UserMissionProgress, MissionListItem（Phase 4.5）
+export 'models/learning_metrics.dart'; // LearningMetrics, WeeklyMetrics, MonthlyMetrics（Phase 4.10）
 
 // Data
 export 'data/badge_data.dart'; // unifiedBadges, getBadgesForSubject（Phase 4.1：60個の統一バッジデータ）
@@ -41,6 +42,8 @@ export 'providers/match_provider.dart';            // BaseMatchNotifier, current
 export 'providers/screen_time_provider.dart';      // BaseScreenTimeNotifier, screenTimeProvider（利用時間制限）
 export 'providers/global_ranking_provider.dart';  // GlobalRankingNotifier, globalRankingProvider, subjectRankingStreamProvider（Phase 4.3）
 export 'providers/mission_provider.dart';         // MissionNotifier, missionProvider, missionProgressProvider（Phase 4.5）
+export 'providers/learning_metrics_provider.dart'; // todayMetricsProvider, weeklyMetricsProvider, monthlyMetricsProvider（Phase 4.10）
+export 'providers/metrics_notifier.dart';         // MetricsNotifier, metricsNotifierProvider（Phase 4.10）
 
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
@@ -66,6 +69,8 @@ export 'widgets/friend_search_page.dart';                     // FriendSearchPag
 export 'widgets/friend_requests_page.dart';                   // FriendRequestsPage（フレンドリクエスト管理 Phase 4.4）
 export 'widgets/friends_list_page.dart';                      // FriendsListPage（フレンド一覧・管理 Phase 4.4）
 export 'widgets/daily_mission_page.dart';                      // DailyMissionPage（デイリーミッション統一 Phase 4.5）
+export 'widgets/learning_dashboard_widget.dart';              // LearningDashboardWidget, CompactLearningDashboard（Phase 4.10）
+export 'widgets/analytics/weekly_metrics_widget.dart';        // WeeklyMetricsWidget（Phase 4.10）
 
 // Services
 export 'services/firebase_service.dart';
