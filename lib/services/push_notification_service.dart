@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:firebase_cloud_functions/firebase_cloud_functions.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../models/notification_model.dart';
