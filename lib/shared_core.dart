@@ -14,6 +14,7 @@ export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, Pl
 export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
 export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRankingEntry, UserRankingStats（Phase 4.3）
 export 'models/mission_model.dart'; // Mission, MissionReward, UserMissionProgress, MissionListItem（Phase 4.5）
+export 'models/daily_mission_model.dart'; // DailyMission, MissionReward, DailyMissionProgress, DailyMissionListItem（Phase 4.20）
 export 'models/retention_model.dart'; // DailyMission, StreakData, WeeklyBonus, RetentionConfig（Phase 4.13）
 export 'models/learning_metrics.dart'; // LearningMetrics, WeeklyMetrics, MonthlyMetrics（Phase 4.10）
 export 'models/adaptive_difficulty_model.dart'; // DifficultyLevel, AdaptiveMetrics, UserAdaptiveDifficulty, DifficultyAdjustmentHistory, AdaptiveDifficultyConfig, DifficultyRecommendation, DifficultyPerformanceStats, UserLearningPattern（Phase 4.19）
@@ -44,6 +45,7 @@ export 'providers/match_provider.dart';            // BaseMatchNotifier, current
 export 'providers/screen_time_provider.dart';      // BaseScreenTimeNotifier, screenTimeProvider（利用時間制限）
 export 'providers/global_ranking_provider.dart';  // GlobalRankingNotifier, globalRankingProvider, subjectRankingStreamProvider（Phase 4.3）
 export 'providers/mission_provider.dart';         // MissionNotifier, missionProvider, missionProgressProvider（Phase 4.5）
+export 'providers/daily_mission_provider.dart';   // DailyMissionNotifier, dailyMissionProvider, activeDailyMissionsProvider, dailyMissionCoinsProvider（Phase 4.20）
 export 'providers/retention_providers.dart';      // retentionConfigProvider, todayMissionsProvider, streakDataProvider, weeklyBonusProgressProvider（Phase 4.13）
 export 'providers/retention_notifier.dart';       // RetentionNotifier, retentionNotifierProvider（Phase 4.13）
 export 'providers/learning_metrics_provider.dart'; // todayMetricsProvider, weeklyMetricsProvider, monthlyMetricsProvider（Phase 4.10）
