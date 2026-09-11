@@ -925,11 +925,180 @@ Navigator.push(
 | **Paywall & Pricing** | Paywall A/B テスト, Dynamic Pricing | ✅ 完成 |
 | **Phase 4.15** | A/B テストフレームワーク統一 | ✅ 実装完了 |
 | **Phase 4.16** | Analytics・レポート強化統一化 | ✅ 実装完了 |
+| **Phase 4.17** | Cloud Functions・ユーザー分析自動実行 | ✅ 実装完了 |
+
+---
+
+## Phase 4.17: Cloud Functions・ユーザー分析自動実行 ✅ (2026-09-11 実装完了)
+
+### 目的
+Firebase Cloud Functions を使った自動レポート生成・セグメント分析・コホート分析・リアルタイム通知を shared_core に統一実装（**AI相談機能は除外**）
+
+### 実装内容
+
+#### モデル定義（`lib/models/cloud_functions_model.dart`）✅
+- **CloudFunctionConfig**: Cloud Functions 設定（自動実行間隔、通知設定）
+- **SegmentationResult**: ユーザーセグメンテーション結果（セグメント変更、スコア）
+- **CohortAnalysisResult**: コホート分析結果（継続率、エンゲージメント）
+- **NotificationPayload**: リアルタイム通知ペイロード（スケジュール、カスタムデータ）
+- **FunctionExecutionLog**: 関数実行ログ（実行状態、処理ユーザー数、実行時間）
+- **ChurnPrediction**: チャーン予測結果（リスクスコア、推奨アクション）
+- **FunctionType**: 実行可能な関数種別（週次・月次レポート、セグメンテーション、コホート分析など）
+
+#### プロバイダー実装（`lib/providers/cloud_functions_provider.dart`）✅
+- **cloudFunctionsConfigProvider**: RemoteConfig から Cloud Functions 設定を取得
+- **latestSegmentationResultsProvider**: 最新のセグメンテーション結果を監視（過去1日分）
+- **cohortAnalysisProvider**: コホート分析結果を取得（コホートIDベース）
+- **churnPredictionsProvider**: チャーン予測ユーザーを取得（高リスクのみ）
+- **functionExecutionLogsProvider**: 関数実行ログを取得（過去7日分、最新50件）
+
+#### StateNotifier 実装（`lib/providers/cloud_functions_notifier.dart`）✅
+- **CloudFunctionsNotifier**: Cloud Functions 実行ロジック
+  - `executeWeeklyReportGeneration()`: 週次レポート生成
+  - `executeMonthlyReportGeneration()`: 月次レポート生成
+  - `executeUserSegmentation()`: ユーザーセグメンテーション更新
+  - `executeCohortAnalysis()`: コホート分析実行
+  - `executeChurnPrediction()`: チャーン予測実行
+  - `updateSegmentationForUser()`: 特定ユーザーのセグメンテーション更新
+  - `predictChurnRiskForUser()`: 特定ユーザーのチャーン予測
+  - `sendNotification()`: リアルタイム通知送信
+  - `updatePopulationStatistics()`: 人口統計更新
+
+#### サービス実装（`lib/services/cloud_functions_service.dart`）✅
+- **CloudFunctionsService**: Cloud Functions 実行サービス
+  - Firebase Cloud Functions への HTTP リクエスト
+  - タイムアウト設定（各関数に適切な実行時間を設定）
+  - エラーハンドリング・ログ出力
+
+#### UI コンポーネント（`lib/widgets/cloud_functions_dashboard.dart`）✅
+- **CloudFunctionsDashboard**: 統合 Cloud Functions 管理ダッシュボード
+- **_FunctionExecutionButtons**: 手動実行ボタン群（全5関数 + 詳細実行3関数）
+- **_SegmentationResultsCard**: セグメンテーション結果表示
+- **_ChurnPredictionsCard**: チャーン予測リスト表示
+- **_FunctionExecutionLogsCard**: 実行ログ表示（ステータス・処理数・実行時間）
+
+### 使用例（各アプリ）
+
+```dart
+import 'package:shared_core/models/cloud_functions_model.dart';
+import 'package:shared_core/providers/cloud_functions_provider.dart';
+import 'package:shared_core/providers/cloud_functions_notifier.dart';
+import 'package:shared_core/widgets/cloud_functions_dashboard.dart';
+
+// ① セグメンテーション結果を監視
+final segmentationResults = ref.watch(latestSegmentationResultsProvider);
+
+// ② チャーン予測を監視
+final churnPredictions = ref.watch(churnPredictionsProvider);
+
+// ③ 週次レポート生成を実行
+await ref.read(cloudFunctionsNotifier.notifier).executeWeeklyReportGeneration();
+
+// ④ ユーザーセグメンテーション更新を実行
+await ref.read(cloudFunctionsNotifier.notifier).executeUserSegmentation();
+
+// ⑤ チャーン予測を実行
+await ref.read(cloudFunctionsNotifier.notifier).executeChurnPrediction();
+
+// ⑥ リアルタイム通知を送信
+await ref.read(cloudFunctionsNotifier.notifier).sendNotification(
+  userId: userId,
+  title: 'セグメント変更のお知らせ',
+  body: 'あなたは VIP ユーザーに昇格しました！',
+  data: {'segmentId': 'vip', 'timestamp': DateTime.now().toIso8601String()},
+);
+
+// ⑦ Cloud Functions ダッシュボード表示
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (_) => CloudFunctionsDashboard()),
+);
+```
+
+### Firebase RemoteConfig 設定例
+
+```json
+{
+  "cloud_functions_config": {
+    "enableAutoReportGeneration": true,
+    "enableSegmentationUpdates": true,
+    "enableCohortAnalysis": true,
+    "enableNotifications": true,
+    "reportGenerationIntervalDays": 7,
+    "segmentationUpdateIntervalHours": 24,
+    "cohortAnalysisIntervalDays": 7,
+    "notificationConfig": {
+      "enableSegmentChangeNotification": true,
+      "enableGoalAchievedNotification": true,
+      "enableStreakReminder": true
+    },
+    "enableChurnPrediction": true
+  }
+}
+```
+
+### Firestore スキーマ
+
+**collections/analytics/segmentation/results/**
+```json
+{
+  userId: string,
+  previousSegment: string,
+  newSegment: string,
+  engagementScore: int,
+  retentionScore: int,
+  churnRiskScore: double,
+  analyzedAt: Timestamp,
+}
+```
+
+**collections/analytics/cohorts/{cohortId}**
+```json
+{
+  cohortId: string,
+  cohortStartDate: Timestamp,
+  totalUsersInCohort: int,
+  retentionByDaysSinceSignup: { "0": 100, "7": 87, "14": 72 },
+  engagementByWeek: { "1": 0.95, "2": 0.85, "4": 0.72 },
+  avgSessionDurationMinutes: double,
+  totalQuizzesCompleted: int,
+  avgAccuracy: double,
+  analyzedAt: Timestamp,
+}
+```
+
+**collections/analytics/churn_predictions/**
+```json
+{
+  userId: string,
+  churnRiskScore: double,
+  riskLevel: string,           // 'low', 'medium', 'high', 'critical'
+  riskIndicators: [string],    // ['no_activity_7days', 'declining_accuracy']
+  predictedChurnDate: Timestamp,
+  recommendedActions: [string], // ['send_reminder', 'offer_discount']
+  analyzedAt: Timestamp,
+}
+```
+
+**collections/analytics/function_logs/**
+```json
+{
+  functionId: string,
+  functionType: string,        // 'generateWeeklyReport', 'updateUserSegmentation'...
+  executedAt: Timestamp,
+  status: string,              // 'success', 'failed', 'partial'
+  processedUsers: int,
+  failedUsers: int,
+  durationSeconds: int,
+  errorMessage: string,        // エラー時のみ
+}
+```
 
 ---
 
 ## 最新更新ログ
 
+- **2026-09-11**: Cloud Functions・ユーザー分析自動実行実装完了（cloud_functions_model.dart, cloud_functions_provider.dart, cloud_functions_service.dart, cloud_functions_notifier.dart, cloud_functions_dashboard.dart）- Phase 4.17
 - **2026-09-11**: Analytics・レポート強化統一化実装完了（analytics_model.dart, analytics_provider.dart, analytics_notifier.dart, analytics_dashboard.dart）- Phase 4.16
 - **2026-09-11**: A/B テストフレームワーク実装完了（ab_test_model.dart, ab_test_providers.dart, ab_test_notifier.dart, ab_test_dashboard.dart）
 - **2026-09-09**: screen_time_model.dart 追加, screen_time_limit_screen.dart 実装
@@ -941,5 +1110,5 @@ Navigator.push(
 ---
 
 **最終更新**: 2026-09-11  
-**状態**: ✅ Phase 4.16 実装完了  
-**次フェーズ**: Phase 4.17 Cloud Functions・ユーザー分析AI（計画中）
+**状態**: ✅ Phase 4.17 実装完了  
+**次フェーズ**: Phase 4.18 プッシュ通知・ユーザーリテンション（計画中）
