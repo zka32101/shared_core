@@ -12,6 +12,8 @@ export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilt
 export 'models/friend_model.dart'; // Friend（友達機能の共通基盤）
 export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, PlayerRating（マルチプレイ対戦の共通基盤）
 export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
+export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRankingEntry, UserRankingStats（Phase 4.3）
+export 'models/mission_model.dart'; // Mission, MissionReward, UserMissionProgress, MissionListItem（Phase 4.5）
 
 // Data
 export 'data/common_shop_items.dart'; // kCommonShopItems（背景テーマ・フレームの共通カタログ）
@@ -35,6 +37,8 @@ export 'providers/friend_provider.dart';           // FriendNotifier, friendProv
 export 'providers/matchmaking_provider.dart';      // BaseMatchmakingNotifier, matchmakingProvider, MatchmakingHandlers（マッチメイキング）
 export 'providers/match_provider.dart';            // BaseMatchNotifier, currentMatchProvider, MatchHandlers（対戦中マッチ状態）
 export 'providers/screen_time_provider.dart';      // BaseScreenTimeNotifier, screenTimeProvider（利用時間制限）
+export 'providers/global_ranking_provider.dart';  // GlobalRankingNotifier, globalRankingProvider, subjectRankingStreamProvider（Phase 4.3）
+export 'providers/mission_provider.dart';         // MissionNotifier, missionProvider, missionProgressProvider（Phase 4.5）
 
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
