@@ -16,6 +16,7 @@ export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRanking
 export 'models/mission_model.dart'; // Mission, MissionReward, UserMissionProgress, MissionListItem（Phase 4.5）
 export 'models/retention_model.dart'; // DailyMission, StreakData, WeeklyBonus, RetentionConfig（Phase 4.13）
 export 'models/learning_metrics.dart'; // LearningMetrics, WeeklyMetrics, MonthlyMetrics（Phase 4.10）
+export 'models/adaptive_difficulty_model.dart'; // DifficultyLevel, AdaptiveMetrics, UserAdaptiveDifficulty, DifficultyAdjustmentHistory, AdaptiveDifficultyConfig, DifficultyRecommendation, DifficultyPerformanceStats, UserLearningPattern（Phase 4.19）
 
 // Data
 export 'data/badge_data.dart'; // unifiedBadges, getBadgesForSubject（Phase 4.1：60個の統一バッジデータ）
@@ -47,6 +48,7 @@ export 'providers/retention_providers.dart';      // retentionConfigProvider, to
 export 'providers/retention_notifier.dart';       // RetentionNotifier, retentionNotifierProvider（Phase 4.13）
 export 'providers/learning_metrics_provider.dart'; // todayMetricsProvider, weeklyMetricsProvider, monthlyMetricsProvider（Phase 4.10）
 export 'providers/metrics_notifier.dart';         // MetricsNotifier, metricsNotifierProvider（Phase 4.10）
+export 'providers/adaptive_difficulty_provider.dart'; // AdaptiveDifficultyNotifier, adaptiveDifficultyNotifierProvider, adaptiveDifficultyConfigProvider（Phase 4.19）
 
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
