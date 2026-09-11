@@ -100,3 +100,17 @@ export 'package:cross_promo_kit/cross_promo_kit.dart';
 export 'models/premium_model.dart';
 export 'providers/premium_provider.dart';
 export 'widgets/premium_gate_widget.dart';
+
+// Paywall & Monetization (Phase 4.11)
+export 'models/paywall_config.dart';                        // PaywallVariant, PaywallABConfig, PaywallEvent, PaywallAnalyticsSummary
+export 'providers/paywall_provider.dart';                   // paywallConfigProvider, userPaywallVariantProvider, paywallEventsProvider, paywallAnalyticsProvider
+export 'widgets/paywall_simple_widget.dart';                // PaywallSimpleWidget (Variant A)
+export 'widgets/paywall_featured_widget.dart';              // PaywallFeaturedWidget (Variant B)
+export 'widgets/paywall_local_offer_widget.dart';           // PaywallLocalOfferWidget (Variant C)
+export 'widgets/adaptive_paywall_screen.dart';              // AdaptivePaywallScreen（統合Paywall画面）
+
+// Dynamic Pricing (Phase 4.12)
+export 'models/pricing_strategy.dart';                      // UserSegment, PricingTier, DynamicPrice, SeasonalOffer, PricingConfig, PricingAnalyticsEvent
+export 'providers/user_segment_provider.dart';              // userSegmentProvider, pricingConfigProvider, dynamicPriceProvider
+export 'providers/dynamic_pricing_notifier.dart';           // DynamicPricingNotifier, dynamicPricingNotifierProvider, pricingConversionRateProvider, averageDiscountBySegmentProvider
+export 'widgets/dynamic_paywall_widget.dart';               // DynamicPaywallWidget（ユーザーセグメント別動的価格表示）
