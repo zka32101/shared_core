@@ -1,228 +1,317 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:riverpod/riverpod.dart';
-import '../models/notification_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RetentionNotifier extends StateNotifier<RetentionMetrics?> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+import '../models/retention_model.dart';
 
-  RetentionNotifier() : super(null);
+/// チャーン予測取得ハンドラー
+typedef FetchChurnPredictionsHandler = Future<List<ChurnPrediction>> Function({
+  required int limit,
+});
 
-  /// ユーザーのリテンション分析を更新
-  Future<void> updateRetentionMetrics({
-    required String userId,
-    required int daysActive,
-    required int consecutiveActiveStreak,
-    required int daysSinceLastActive,
-    required int notificationClickRate,
-    required int totalNotificationsSent,
-  }) async {
-    try {
-      final churnRiskScore = _calculateChurnRiskScore(
-        daysActive,
-        consecutiveActiveStreak,
-        daysSinceLastActive,
-        notificationClickRate,
-        totalNotificationsSent,
+/// ユーザーリテンション分析取得ハンドラー
+typedef FetchUserRetentionHandler = Future<UserRetentionAnalytics?> Function({
+  required String userId,
+});
+
+/// リエンゲージメント施策保存ハンドラー
+typedef SaveReengagementCampaignHandler = Future<void> Function({
+  required ReengagementCampaign campaign,
+});
+
+/// コホート分析取得ハンドラー
+typedef FetchCohortAnalysisHandler = Future<CohortAnalytics?> Function({
+  required String cohortId,
+});
+
+/// 人口統計取得ハンドラー
+typedef FetchPopulationStatsHandler = Future<PopulationStats?> Function();
+
+/// リテンション設定取得ハンドラー
+typedef FetchRetentionConfigHandler = Future<RetentionConfig?> Function();
+
+/// リテンション管理状態
+class RetentionState {
+  final List<ChurnPrediction> churnPredictions;
+  final Map<String, UserRetentionAnalytics> userRetentionAnalytics; // userId -> analytics
+  final Map<String, ReengagementCampaign> activeReengagementCampaigns; // userId -> campaign
+  final Map<String, CohortAnalytics> cohortAnalytics; // cohortId -> analytics
+  final PopulationStats? populationStats;
+  final RetentionConfig? retentionConfig;
+  final bool isLoading;
+  final String? error;
+
+  const RetentionState({
+    required this.churnPredictions,
+    required this.userRetentionAnalytics,
+    required this.activeReengagementCampaigns,
+    required this.cohortAnalytics,
+    this.populationStats,
+    this.retentionConfig,
+    this.isLoading = false,
+    this.error,
+  });
+
+  static const empty = RetentionState(
+    churnPredictions: [],
+    userRetentionAnalytics: {},
+    activeReengagementCampaigns: {},
+    cohortAnalytics: {},
+  );
+
+  RetentionState copyWith({
+    List<ChurnPrediction>? churnPredictions,
+    Map<String, UserRetentionAnalytics>? userRetentionAnalytics,
+    Map<String, ReengagementCampaign>? activeReengagementCampaigns,
+    Map<String, CohortAnalytics>? cohortAnalytics,
+    PopulationStats? populationStats,
+    RetentionConfig? retentionConfig,
+    bool? isLoading,
+    String? error,
+    bool clearError = false,
+  }) =>
+      RetentionState(
+        churnPredictions: churnPredictions ?? this.churnPredictions,
+        userRetentionAnalytics: userRetentionAnalytics ?? this.userRetentionAnalytics,
+        activeReengagementCampaigns: activeReengagementCampaigns ?? this.activeReengagementCampaigns,
+        cohortAnalytics: cohortAnalytics ?? this.cohortAnalytics,
+        populationStats: populationStats ?? this.populationStats,
+        retentionConfig: retentionConfig ?? this.retentionConfig,
+        isLoading: isLoading ?? this.isLoading,
+        error: clearError ? null : (error ?? this.error),
       );
+}
 
-      final riskLevel = _determineRiskLevel(churnRiskScore);
-      final recommendedActions =
-          _generateRetentionActions(churnRiskScore, daysActive);
+/// リテンション管理 Notifier
+class RetentionNotifier extends Notifier<RetentionState> {
+  FetchChurnPredictionsHandler? _churnHandler;
+  FetchUserRetentionHandler? _userRetentionHandler;
+  SaveReengagementCampaignHandler? _campaignHandler;
+  FetchCohortAnalysisHandler? _cohortHandler;
+  FetchPopulationStatsHandler? _statsHandler;
+  FetchRetentionConfigHandler? _configHandler;
 
-      final metrics = RetentionMetrics(
-        userId: userId,
-        daysActive: daysActive,
-        consecutiveActiveStreak: consecutiveActiveStreak,
-        lastActiveDate: DateTime.now().subtract(Duration(days: daysSinceLastActive)),
-        daysSinceLastActive: daysSinceLastActive,
-        churnRiskScore: churnRiskScore,
-        riskLevel: riskLevel,
-        recommendedRetentionActions: recommendedActions,
-        notificationClickRate: notificationClickRate,
-        totalNotificationsSent: totalNotificationsSent,
-        analyzedAt: DateTime.now(),
-      );
-
-      await _firestore
-          .collection('analytics/retention/user_metrics')
-          .doc(userId)
-          .set(metrics.toJson(), SetOptions(merge: true));
-
-      state = metrics;
-    } catch (e) {
-      throw Exception('Failed to update retention metrics: $e');
-    }
+  @override
+  RetentionState build() {
+    return const RetentionState(
+      churnPredictions: [],
+      userRetentionAnalytics: {},
+      activeReengagementCampaigns: {},
+      cohortAnalytics: {},
+    );
   }
 
-  /// チャーン予防アクションをスケジュール
-  Future<void> scheduleRetentionAction({
-    required String userId,
-    required String actionType,
-    required String actionValue,
-    required DateTime scheduledAt,
-  }) async {
-    try {
-      final actionId = _firestore.collection('dummy').doc().id;
-      final action = RetentionAction(
-        actionId: actionId,
-        userId: userId,
-        actionType: actionType,
-        actionValue: actionValue,
-        scheduledAt: scheduledAt,
-        wasExecuted: false,
-        executedAt: null,
-        result: null,
-      );
-
-      await _firestore
-          .collection('analytics/retention/user_actions')
-          .doc(userId)
-          .collection('actions')
-          .doc(actionId)
-          .set(action.toJson());
-    } catch (e) {
-      throw Exception('Failed to schedule retention action: $e');
-    }
+  void setHandlers({
+    required FetchChurnPredictionsHandler churnHandler,
+    required FetchUserRetentionHandler userRetentionHandler,
+    required SaveReengagementCampaignHandler campaignHandler,
+    required FetchCohortAnalysisHandler cohortHandler,
+    required FetchPopulationStatsHandler statsHandler,
+    required FetchRetentionConfigHandler configHandler,
+  }) {
+    _churnHandler = churnHandler;
+    _userRetentionHandler = userRetentionHandler;
+    _campaignHandler = campaignHandler;
+    _cohortHandler = cohortHandler;
+    _statsHandler = statsHandler;
+    _configHandler = configHandler;
   }
 
-  /// ユーザーにリターゲティング通知を送信
-  Future<void> sendReEngagementNotification({
-    required String userId,
-    required String title,
-    required String body,
-  }) async {
+  /// チャーン予測を取得
+  Future<void> fetchChurnPredictions({int limit = 100}) async {
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
-      await _firestore
-          .collection('analytics/notifications/re_engagement_queue')
-          .doc(userId)
-          .set({
-        'userId': userId,
-        'title': title,
-        'body': body,
-        'type': 're_engagement',
-        'createdAt': DateTime.now(),
-        'wasProcessed': false,
-      }, SetOptions(merge: true));
-    } catch (e) {
-      throw Exception('Failed to send re-engagement notification: $e');
-    }
-  }
-
-  /// グローバルリテンション統計を更新
-  Future<void> updateGlobalRetentionStats() async {
-    try {
-      final snapshot = await _firestore
-          .collection('analytics/retention/user_metrics')
-          .get();
-
-      int activeUsers = 0;
-      int riskUsers = 0;
-      int churnedUsers = 0;
-      double totalRetentionRate = 0.0;
-      double totalChurnRiskScore = 0.0;
-
-      for (final doc in snapshot.docs) {
-        final metrics = RetentionMetrics.fromJson(doc.data());
-        if (metrics.daysSinceLastActive <= 1) {
-          activeUsers++;
-        }
-        if (metrics.churnRiskScore >= 0.7) {
-          riskUsers++;
-        }
-        if (metrics.daysSinceLastActive > 30) {
-          churnedUsers++;
-        }
-        totalRetentionRate += (1.0 - metrics.churnRiskScore);
-        totalChurnRiskScore += metrics.churnRiskScore;
+      final handler = _churnHandler;
+      if (handler == null) {
+        throw Exception('FetchChurnPredictionsHandler not set');
       }
 
-      final stats = {
-        'totalUsers': snapshot.docs.length,
-        'activeUsers': activeUsers,
-        'riskUsers': riskUsers,
-        'churnedUsers': churnedUsers,
-        'avgRetentionRate': snapshot.docs.isEmpty
-            ? 0.0
-            : totalRetentionRate / snapshot.docs.length,
-        'avgChurnRiskScore': snapshot.docs.isEmpty
-            ? 0.0
-            : totalChurnRiskScore / snapshot.docs.length,
-        'sampledAt': DateTime.now(),
+      final predictions = await handler(limit: limit);
+      state = state.copyWith(
+        churnPredictions: predictions,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        error: e.toString(),
+        isLoading: false,
+      );
+    }
+  }
+
+  /// ユーザーリテンション分析を取得
+  Future<void> fetchUserRetentionAnalytics(String userId) async {
+    try {
+      final handler = _userRetentionHandler;
+      if (handler == null) {
+        throw Exception('FetchUserRetentionHandler not set');
+      }
+
+      final analytics = await handler(userId: userId);
+      if (analytics != null) {
+        state = state.copyWith(
+          userRetentionAnalytics: {
+            ...state.userRetentionAnalytics,
+            userId: analytics,
+          },
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  /// リエンゲージメント施策を保存
+  Future<void> saveReengagementCampaign(ReengagementCampaign campaign) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final handler = _campaignHandler;
+      if (handler == null) {
+        throw Exception('SaveReengagementCampaignHandler not set');
+      }
+
+      await handler(campaign: campaign);
+
+      final updatedCampaigns = {
+        ...state.activeReengagementCampaigns,
+        campaign.userId: campaign,
       };
 
-      await _firestore
-          .collection('analytics/retention/global_stats')
-          .doc('latest')
-          .set(stats, SetOptions(merge: true));
+      state = state.copyWith(
+        activeReengagementCampaigns: updatedCampaigns,
+        isLoading: false,
+      );
     } catch (e) {
-      throw Exception('Failed to update global retention stats: $e');
+      state = state.copyWith(
+        error: e.toString(),
+        isLoading: false,
+      );
     }
   }
 
-  // チャーンリスクスコア計算（0.0-1.0）
-  double _calculateChurnRiskScore(
-    int daysActive,
-    int consecutiveStreak,
-    int daysSinceLastActive,
-    int clickRate,
-    int totalSent,
-  ) {
-    double score = 0.0;
+  /// コホート分析を取得
+  Future<void> fetchCohortAnalytics(String cohortId) async {
+    try {
+      final handler = _cohortHandler;
+      if (handler == null) {
+        throw Exception('FetchCohortAnalysisHandler not set');
+      }
 
-    // 非アクティブ期間の影響（0.4まで）
-    if (daysSinceLastActive > 30) score += 0.4;
-    else if (daysSinceLastActive > 14) score += 0.25;
-    else if (daysSinceLastActive > 7) score += 0.1;
-
-    // 連続ストリークの低下（0.3まで）
-    if (consecutiveStreak == 0) score += 0.3;
-    else if (consecutiveStreak < 3) score += 0.15;
-
-    // 通知クリック率の低下（0.3まで）
-    if (totalSent > 0) {
-      final clickThrough = clickRate / totalSent;
-      if (clickThrough < 0.1) score += 0.3;
-      else if (clickThrough < 0.2) score += 0.15;
-    } else if (totalSent > 0) {
-      score += 0.2;
+      final analytics = await handler(cohortId: cohortId);
+      if (analytics != null) {
+        state = state.copyWith(
+          cohortAnalytics: {
+            ...state.cohortAnalytics,
+            cohortId: analytics,
+          },
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
     }
-
-    return score.clamp(0.0, 1.0);
   }
 
-  // リスクレベルを判定
-  String _determineRiskLevel(double score) {
-    if (score >= 0.8) return 'critical';
-    if (score >= 0.6) return 'high';
-    if (score >= 0.4) return 'medium';
-    return 'low';
+  /// 人口統計を取得
+  Future<void> fetchPopulationStats() async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final handler = _statsHandler;
+      if (handler == null) {
+        throw Exception('FetchPopulationStatsHandler not set');
+      }
+
+      final stats = await handler();
+      state = state.copyWith(
+        populationStats: stats,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        error: e.toString(),
+        isLoading: false,
+      );
+    }
   }
 
-  // リテンション施策を生成
-  List<String> _generateRetentionActions(double churnRiskScore, int daysActive) {
-    final actions = <String>[];
+  /// リテンション設定を取得
+  Future<void> fetchRetentionConfig() async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final handler = _configHandler;
+      if (handler == null) {
+        throw Exception('FetchRetentionConfigHandler not set');
+      }
 
-    if (churnRiskScore >= 0.8) {
-      actions.add('send_exclusive_offer');
-      actions.add('schedule_motivational_message');
-      actions.add('offer_special_reward');
-    } else if (churnRiskScore >= 0.6) {
-      actions.add('send_streak_reminder');
-      actions.add('highlight_achievements');
-    } else if (churnRiskScore >= 0.4) {
-      actions.add('send_daily_reminder');
+      final config = await handler();
+      state = state.copyWith(
+        retentionConfig: config,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        error: e.toString(),
+        isLoading: false,
+      );
     }
+  }
 
-    if (daysActive > 30) {
-      actions.add('unlock_premium_trial');
-    }
+  /// 高リスクユーザーを取得
+  List<ChurnPrediction> getHighRiskUsers() {
+    return state.churnPredictions
+        .where((p) => p.riskLevel == ChurnRiskLevel.high || p.riskLevel == ChurnRiskLevel.critical)
+        .toList();
+  }
 
-    return actions;
+  /// 休止状態ユーザーを取得
+  List<String> getDormantUsers() {
+    return state.userRetentionAnalytics.entries
+        .where((e) => e.value.activityLevel == ActivityLevel.dormant)
+        .map((e) => e.key)
+        .toList();
   }
 }
 
-// リテンション管理プロバイダー
-final retentionNotifierProvider =
-    StateNotifierProvider<RetentionNotifier, RetentionMetrics?>((ref) {
-  return RetentionNotifier();
+/// リテンション管理プロバイダー
+final retentionProvider = NotifierProvider<RetentionNotifier, RetentionState>(
+  () => RetentionNotifier(),
+);
+
+/// チャーン予測（高リスク）プロバイダー
+final highRiskUsersProvider = Provider.autoDispose<List<ChurnPrediction>>((ref) {
+  final state = ref.watch(retentionProvider);
+  return state.churnPredictions
+      .where((p) => p.riskLevel == ChurnRiskLevel.high || p.riskLevel == ChurnRiskLevel.critical)
+      .toList();
+});
+
+/// ユーザーリテンション分析プロバイダー（特定ユーザー）
+final userRetentionAnalyticsProvider =
+    Provider.autoDispose.family<UserRetentionAnalytics?, String>((ref, userId) {
+  final state = ref.watch(retentionProvider);
+  return state.userRetentionAnalytics[userId];
+});
+
+/// リエンゲージメント施策プロバイダー
+final reengagementCampaignProvider = Provider.autoDispose<List<ReengagementCampaign>>((ref) {
+  final state = ref.watch(retentionProvider);
+  return state.activeReengagementCampaigns.values.toList();
+});
+
+/// 人口統計プロバイダー
+final populationStatsProvider = Provider.autoDispose<PopulationStats?>((ref) {
+  final state = ref.watch(retentionProvider);
+  return state.populationStats;
+});
+
+/// リテンション設定プロバイダー
+final retentionConfigProvider = Provider.autoDispose<RetentionConfig?>((ref) {
+  final state = ref.watch(retentionProvider);
+  return state.retentionConfig;
+});
+
+/// 休止状態ユーザープロバイダー
+final dormantUsersProvider = Provider.autoDispose<List<String>>((ref) {
+  final state = ref.watch(retentionProvider);
+  return state.userRetentionAnalytics.entries
+      .where((e) => e.value.activityLevel == ActivityLevel.dormant)
+      .map((e) => e.key)
+      .toList();
 });
