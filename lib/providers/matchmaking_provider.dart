@@ -281,3 +281,44 @@ final playerRatingProvider =
   final handlers = ref.watch(matchmakingHandlersProvider);
   return handlers.getOrCreatePlayerRating(userId: args.userId, displayName: args.displayName);
 });
+
+// ============================================================================
+// Phase 4.14 拡張: 詳細なレーティング・レアンキング機能
+// ============================================================================
+
+/// レーティング更新用のハンドラ束（各アプリで注入）。
+typedef UpdatePlayerRatingHandler = Future<UserRating> Function({
+  required String userId,
+  required String opponentId,
+  required double opponentRating,
+  required bool playerWon,
+});
+
+typedef GetUserRatingHandler = Future<UserRating> Function(String userId);
+typedef CreateOrGetUserRatingHandler = Future<UserRating> Function(String userId);
+
+/// 拡張マッチメイキングハンドラ（レーティング計算対応）。
+class AdvancedMatchmakingHandlers extends MatchmakingHandlers {
+  final UpdatePlayerRatingHandler updatePlayerRating;
+  final GetUserRatingHandler getUserRating;
+  final CreateOrGetUserRatingHandler createOrGetUserRating;
+
+  AdvancedMatchmakingHandlers({
+    required super.joinQueue,
+    required super.leaveQueue,
+    required super.findOpponent,
+    required super.confirmMatch,
+    required super.watchQueueEntry,
+    required super.getOrCreatePlayerRating,
+    required this.updatePlayerRating,
+    required this.getUserRating,
+    required this.createOrGetUserRating,
+  });
+}
+
+/// 詳細なマッチメイキングハンドラを注入する provider。
+final advancedMatchmakingHandlersProvider = Provider<AdvancedMatchmakingHandlers>((ref) {
+  throw UnimplementedError(
+    'advancedMatchmakingHandlersProvider must be overridden in each app\'s ProviderScope',
+  );
+});

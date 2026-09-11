@@ -51,16 +51,20 @@ class BadgeState {
 class BadgeNotifier extends Notifier<BadgeState> {
   // 各アプリが定義したバッジ一覧をセット
   List<BadgeModel> _appBadges = [];
+  // Phase 4.1: Subject タグ（null = 全教科対応）
+  String? _subject;
 
-  void setBadgeDefinitions(List<BadgeModel> badges) {
+  void setBadgeDefinitions(List<BadgeModel> badges, {String? subject}) {
     _appBadges = badges;
+    _subject = subject;
   }
 
   @override
   BadgeState build() => BadgeState.empty;
 
-  Future<void> load(List<BadgeModel> badges) async {
-    _appBadges = badges;
+  Future<void> load(List<BadgeModel> badges, {String? subject}) async {
+    _appBadges = _filterBySubject(badges, subject);
+    _subject = subject;
     final prefs = await SharedPreferences.getInstance();
     final earned = <EarnedBadge>[];
     for (final badge in _appBadges) {
@@ -123,6 +127,18 @@ class BadgeNotifier extends Notifier<BadgeState> {
 
   void clearNewlyEarned() {
     state = state.copyWith(newlyEarned: []);
+  }
+
+  /// Phase 4.1: Filter badges by subject tag
+  /// - If badge.subjects is null: include (cross-app badge)
+  /// - If badge.subjects contains subject: include
+  /// - Otherwise: exclude
+  List<BadgeModel> _filterBySubject(List<BadgeModel> badges, String? subject) {
+    if (subject == null) return badges;
+    return badges.where((b) {
+      if (b.subjects == null) return true; // Cross-app badges
+      return b.subjects!.contains(subject);
+    }).toList();
   }
 }
 
