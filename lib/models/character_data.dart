@@ -1,3 +1,42 @@
+// ─── Subject Enum (Phase 4.1) ─────────────────────────────────────────────
+// 7つの小学コレシリーズ教科
+
+enum Subject {
+  kokugo,        // 国語コレ
+  sansu,         // 算数コレ
+  rika,          // 理科コレ
+  eigo,          // 英語コレ
+  shakai,        // 社会クイズ
+  programming,   // プログラミング
+  doutoku,       // 道徳
+}
+
+extension SubjectExt on Subject {
+  String get label {
+    return switch (this) {
+      Subject.kokugo => '国語',
+      Subject.sansu => '算数',
+      Subject.rika => '理科',
+      Subject.eigo => '英語',
+      Subject.shakai => '社会',
+      Subject.programming => 'プログラミング',
+      Subject.doutoku => '道徳',
+    };
+  }
+
+  String get emoji {
+    return switch (this) {
+      Subject.kokugo => '📖',
+      Subject.sansu => '🔢',
+      Subject.rika => '🔬',
+      Subject.eigo => '🌍',
+      Subject.shakai => '🗺️',
+      Subject.programming => '💻',
+      Subject.doutoku => '❤️',
+    };
+  }
+}
+
 // ─── Level-up constants ────────────────────────────────────────────────────
 
 // Lv.2:50 / Lv.3:100 / Lv.4:200 / Lv.5:500 コイン
@@ -13,6 +52,59 @@ const Map<int, String> kLevelUpFeatureDesc = {
 // ─── BaseCharacter ─────────────────────────────────────────────────────────
 // Each subject app defines a List<BaseCharacter> with its own data.
 
+// ─── CharacterStats (Phase 4.1) ────────────────────────────────────────
+// キャラクターの統計情報
+
+class CharacterStats {
+  final int usageCount;      // このキャラを装備した回数
+  final int victoryCount;    // このキャラでクイズに勝利した回数
+  final int questsClearedCount; // クエスト/ステージクリア数
+  final int totalCoinEarned; // このキャラで稼いだコイン
+  final double avgAccuracy;  // 平均正答率
+
+  const CharacterStats({
+    this.usageCount = 0,
+    this.victoryCount = 0,
+    this.questsClearedCount = 0,
+    this.totalCoinEarned = 0,
+    this.avgAccuracy = 0.0,
+  });
+
+  CharacterStats copyWith({
+    int? usageCount,
+    int? victoryCount,
+    int? questsClearedCount,
+    int? totalCoinEarned,
+    double? avgAccuracy,
+  }) =>
+      CharacterStats(
+        usageCount: usageCount ?? this.usageCount,
+        victoryCount: victoryCount ?? this.victoryCount,
+        questsClearedCount: questsClearedCount ?? this.questsClearedCount,
+        totalCoinEarned: totalCoinEarned ?? this.totalCoinEarned,
+        avgAccuracy: avgAccuracy ?? this.avgAccuracy,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'usageCount': usageCount,
+        'victoryCount': victoryCount,
+        'questsClearedCount': questsClearedCount,
+        'totalCoinEarned': totalCoinEarned,
+        'avgAccuracy': avgAccuracy,
+      };
+
+  factory CharacterStats.fromJson(Map<String, dynamic> j) => CharacterStats(
+        usageCount: j['usageCount'] as int? ?? 0,
+        victoryCount: j['victoryCount'] as int? ?? 0,
+        questsClearedCount: j['questsClearedCount'] as int? ?? 0,
+        totalCoinEarned: j['totalCoinEarned'] as int? ?? 0,
+        avgAccuracy: j['avgAccuracy'] as double? ?? 0.0,
+      );
+}
+
+// ─── BaseCharacter ────────────────────────────────────────────────────────
+// Each subject app defines a List<BaseCharacter> with its own data.
+
 class BaseCharacter {
   final String id;
   final String name;
@@ -20,6 +112,7 @@ class BaseCharacter {
   final int tier; // 1-4
   final int unlockAt; // clearedStageIds.length threshold
   final String subject; // e.g. '漢字', '計算'
+  final Subject appSubject; // Phase 4.1: 教科タグ（Subject enum）
   final String backstory; // revealed at Lv.4
   final List<String> stampPhrases; // 8 phrases for LINE stamp
   final String? imageAsset; // optional character illustration (Lv.1 default)
@@ -32,6 +125,7 @@ class BaseCharacter {
     required this.tier,
     required this.unlockAt,
     required this.subject,
+    required this.appSubject,
     required this.backstory,
     required this.stampPhrases,
     this.imageAsset,
@@ -50,6 +144,93 @@ class BaseCharacter {
     }
     return imageAsset;
   }
+}
+
+// ─── CharacterProfile (Phase 4.1) ─────────────────────────────────────────
+// キャラクター情報を統一管理するプロフィール
+
+class CharacterProfile {
+  final String id;              // キャラクターID
+  final String name;            // キャラクター名
+  final String emoji;           // 絵文字
+  final Subject appSubject;     // 教科タグ
+  final int tier;               // ティア (1-4)
+  final int level;              // 現在のレベル (1-5)
+  final int experience;         // 現在の経験値
+  final CharacterStats stats;   // キャラクター統計情報
+  final DateTime unlockedAt;    // 解放日時
+  final bool isEquipped;        // 現在装備中かどうか
+
+  const CharacterProfile({
+    required this.id,
+    required this.name,
+    required this.emoji,
+    required this.appSubject,
+    required this.tier,
+    this.level = 1,
+    this.experience = 0,
+    this.stats = const CharacterStats(),
+    required this.unlockedAt,
+    this.isEquipped = false,
+  });
+
+  bool get isMaxLevel => level >= 5;
+
+  CharacterProfile copyWith({
+    String? id,
+    String? name,
+    String? emoji,
+    Subject? appSubject,
+    int? tier,
+    int? level,
+    int? experience,
+    CharacterStats? stats,
+    DateTime? unlockedAt,
+    bool? isEquipped,
+  }) =>
+      CharacterProfile(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        emoji: emoji ?? this.emoji,
+        appSubject: appSubject ?? this.appSubject,
+        tier: tier ?? this.tier,
+        level: level ?? this.level,
+        experience: experience ?? this.experience,
+        stats: stats ?? this.stats,
+        unlockedAt: unlockedAt ?? this.unlockedAt,
+        isEquipped: isEquipped ?? this.isEquipped,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'emoji': emoji,
+        'appSubject': appSubject.name,
+        'tier': tier,
+        'level': level,
+        'experience': experience,
+        'stats': stats.toJson(),
+        'unlockedAt': unlockedAt.toIso8601String(),
+        'isEquipped': isEquipped,
+      };
+
+  factory CharacterProfile.fromJson(Map<String, dynamic> j) =>
+      CharacterProfile(
+        id: j['id'] as String,
+        name: j['name'] as String,
+        emoji: j['emoji'] as String,
+        appSubject: Subject.values.firstWhere(
+          (s) => s.name == (j['appSubject'] as String),
+        ),
+        tier: j['tier'] as int,
+        level: j['level'] as int? ?? 1,
+        experience: j['experience'] as int? ?? 0,
+        stats: CharacterStats.fromJson(
+          (j['stats'] as Map?)?.cast<String, dynamic>() ?? {},
+        ),
+        unlockedAt: DateTime.parse(j['unlockedAt'] as String),
+        isEquipped: j['isEquipped'] as bool? ?? false,
+      );
 }
 
 // ─── CharacterState ────────────────────────────────────────────────────────

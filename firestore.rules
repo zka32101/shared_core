@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // =====================
+    // Phase 4.3: ランキング
+    // =====================
+
+    // グローバルランキング（公開読取、管理者のみ書込）
+    match /global_rankings/{userId} {
+      allow read: if true;
+      allow write: if request.auth.uid == resource.data.userId || isAdmin();
+    }
+
+    // 教科別ランキング（公開読取、管理者のみ書込）
+    match /subject_rankings/{subject}/users/{userId} {
+      allow read: if true;
+      allow write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // ユーザーランキング統計（本人と管理者のみ）
+    match /user_ranking_stats/{userId} {
+      allow read: if request.auth.uid == userId || isAdmin();
+      allow write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // =====================
+    // Phase 4.5: ミッション
+    // =====================
+
+    // ユーザーミッション進捗（本人のみ）
+    match /user_mission_progress/{docId} {
+      allow read: if request.auth.uid == resource.data.userId || isAdmin();
+      allow write: if request.auth.uid == resource.data.userId || isAdmin();
+    }
+
+    // ミッションマスター（公開読取、管理者のみ書込）
+    match /mission_master/{missionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // =====================
+    // Phase 4.6: スクリーンタイム
+    // =====================
+
+    // 利用時間ログ（本人と親のみ）
+    match /screen_time_logs/{userId}/daily/{date} {
+      allow read: if request.auth.uid == userId || isParentOf(userId) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // 親の設定（親本人のみ）
+    match /parent_settings/{userId} {
+      allow read: if request.auth.uid == userId || isAdmin();
+      allow write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // =====================
+    // Phase 4.4: フレンド機能
+    // =====================
+
+    // フレンド申請（本人のみ）
+    match /friend_requests/{fromUserId}/pending/{toUserId} {
+      allow read: if request.auth.uid == fromUserId || request.auth.uid == toUserId || isAdmin();
+      allow write: if request.auth.uid == fromUserId || isAdmin();
+      allow delete: if request.auth.uid == fromUserId || request.auth.uid == toUserId || isAdmin();
+    }
+
+    // フレンド関係（本人のみ）
+    match /friends/{userId}/connections/{friendId} {
+      allow read: if request.auth.uid == userId || isAdmin();
+      allow write: if request.auth.uid == userId || isAdmin();
+    }
+
+    // =====================
+    // ユーティリティ関数
+    // =====================
+
+    // 管理者判定
+    function isAdmin() {
+      return request.auth != null &&
+             get(/databases/$(database)/documents/admin_users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // 親-子関係判定
+    function isParentOf(childUserId) {
+      return request.auth != null &&
+             get(/databases/$(database)/documents/parent_relationships/$(request.auth.uid)/children/$(childUserId)).data.exists();
+    }
+
+    // デフォルト：すべてを拒否
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
