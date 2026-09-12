@@ -73,3 +73,20 @@ class DailyMissionListItem with _$DailyMissionListItem {
   factory DailyMissionListItem.fromJson(Map<String, dynamic> json) =>
       _$DailyMissionListItemFromJson(json);
 }
+
+/// Weekly bonus tracking for consecutive daily completions
+@freezed
+class WeeklyBonus with _$WeeklyBonus {
+  const factory WeeklyBonus({
+    required String userId,
+    required int consecutiveDays, // 0-7
+    required DateTime lastCompletionDate,
+    required DateTime resetDate, // Reset every Sunday
+    required List<int> completionDaysOfWeek, // [0=Mon, 1=Tue, ... 6=Sun]
+    @Default(false) bool bonusClaimedThisWeek, // Whether 7-day bonus already claimed
+    @Default(0) int totalWeeklyBonus, // Total bonus coins/rewards this week
+  }) = _WeeklyBonus;
+
+  factory WeeklyBonus.fromJson(Map<String, dynamic> json) =>
+      _$WeeklyBonusFromJson(json);
+}

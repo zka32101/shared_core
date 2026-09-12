@@ -204,6 +204,56 @@ abstract class BaseScreenTimeNotifier extends Notifier<ScreenTimeState>
     final remaining = limit - state.usage.usedMinutes;
     return remaining > 0 ? remaining : 0;
   }
+
+  /// Phase 4.21: 時間帯制限を追加する。
+  ///
+  /// 平日朝は30分、休日午後は60分というように、曜日や時間帯ごとに
+  /// 異なる上限を設定できる。
+  Future<void> addTimeSlot(TimeSlot slot) async {
+    if (!_loaded) await _load();
+    final newSlots = [...state.settings.timeSlots, slot];
+    final settings = state.settings.copyWith(timeSlots: newSlots);
+    state = state.copyWith(settings: settings);
+    await _persistSettings(settings);
+  }
+
+  /// Phase 4.21: 時間帯制限を削除する。
+  Future<void> removeTimeSlot(TimeSlot slot) async {
+    if (!_loaded) await _load();
+    final newSlots = state.settings.timeSlots
+        .where((ts) =>
+            !(ts.dayType == slot.dayType &&
+                ts.startTime == slot.startTime &&
+                ts.endTime == slot.endTime))
+        .toList();
+    final settings = state.settings.copyWith(timeSlots: newSlots);
+    state = state.copyWith(settings: settings);
+    await _persistSettings(settings);
+  }
+
+  /// Phase 4.21: 時間帯制限を更新する。
+  Future<void> updateTimeSlot(TimeSlot oldSlot, TimeSlot newSlot) async {
+    if (!_loaded) await _load();
+    final newSlots = state.settings.timeSlots.map((ts) {
+      if (ts.dayType == oldSlot.dayType &&
+          ts.startTime == oldSlot.startTime &&
+          ts.endTime == oldSlot.endTime) {
+        return newSlot;
+      }
+      return ts;
+    }).toList();
+    final settings = state.settings.copyWith(timeSlots: newSlots);
+    state = state.copyWith(settings: settings);
+    await _persistSettings(settings);
+  }
+
+  /// Phase 4.21: 保護者向けの監視・通知設定を更新する。
+  Future<void> setMonitoringConfig(MonitoringConfig config) async {
+    if (!_loaded) await _load();
+    final settings = state.settings.copyWith(monitoringConfig: config);
+    state = state.copyWith(settings: settings);
+    await _persistSettings(settings);
+  }
 }
 
 /// 共通のプレースホルダー Provider — 各アプリの `ProviderScope` で
