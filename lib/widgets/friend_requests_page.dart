@@ -1,147 +1,154 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_core/models/friend_model.dart';
-import 'package:shared_core/providers/friend_provider.dart';
 
-/// フレンドリクエスト管理画面
-class FriendRequestsPage extends ConsumerWidget {
+import '../models/friend_model.dart';
+import '../providers/friend_provider.dart';
+
+/// Phase 4.4: フレンド申請管理画面
+/// 受け取ったフレンド申請を確認し、受諾・拒否できる画面
+class FriendRequestsPage extends ConsumerStatefulWidget {
   const FriendRequestsPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // フレンドリクエスト表示（実装例では全フレンド表示、実運用では別 provider を作成推奨）
-    final friendsAsync = ref.watch(friendProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('フレンドリクエスト')),
-      body: friendsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, st) => Center(
-          child: Text('エラーが発生しました: $err'),
-        ),
-        data: (friends) {
-          if (friends.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.person_add_disabled,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'フレンドリクエストはありません',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: friends.length,
-            itemBuilder: (context, index) {
-              final friend = friends[index];
-              return _FriendRequestCard(friend: friend);
-            },
-          );
-        },
-      ),
-    );
-  }
+  ConsumerState<FriendRequestsPage> createState() => _FriendRequestsPageState();
 }
 
-class _FriendRequestCard extends ConsumerStatefulWidget {
-  final Friend friend;
-
-  const _FriendRequestCard({required this.friend});
-
+class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
   @override
-  ConsumerState<_FriendRequestCard> createState() => _FriendRequestCardState();
-}
+  void initState() {
+    super.initState();
+    // 初期化時にペンディングリクエストをロード
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(friendProvider.notifier).loadFriends();
+    });
+  }
 
-class _FriendRequestCardState extends ConsumerState<_FriendRequestCard> {
-  bool _isLoading = false;
-
-  Future<void> _acceptRequest() async {
-    // リクエスト受け入れ処理（実装例）
-    // 通常は RemoveFriend ではなく AcceptRequest メソッドが必要
-    setState(() => _isLoading = true);
+  Future<void> _acceptRequest(Friend friend) async {
     try {
-      // このアクションは UI のみで、実運用では friend_provider に
-      // acceptFriendRequest メソッドを追加して実装
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${widget.friend.displayName} さんをフレンド申請受け入れました！')),
-      );
+      await ref.read(friendProvider.notifier).addFriend(friend.friendUserId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${friend.friendName}をフレンドに追加しました')),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('エラー: $e')),
-      );
-    } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('エラー: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
-  Future<void> _rejectRequest() async {
-    setState(() => _isLoading = true);
-    try {
-      await ref.read(friendProvider.notifier).removeFriend(widget.friend.friendUserId);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${widget.friend.displayName} さんのリクエストを拒否しました')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('エラー: $e')),
-      );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+  Future<void> _declineRequest(String friendUserId) async {
+    // リクエスト拒否は親側で実装（このページでは表示のみ）
+    // 実装は各アプリ側の FirestoreFriendService.declineRequest() を使用
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue[100],
-          child: Text(
-            widget.friend.displayName.isNotEmpty
-                ? widget.friend.displayName[0].toUpperCase()
-                : '?',
-          ),
-        ),
-        title: Text(widget.friend.displayName),
-        subtitle: widget.friend.grade != null
-            ? Text('${widget.friend.grade}年生')
-            : null,
-        trailing: SizedBox(
-          width: 180,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _acceptRequest,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
+    final friendState = ref.watch(friendProvider);
+    final pendingRequests = friendState.pendingRequests;
+    final isLoading = friendState.isLoading;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('フレンド申請 (${pendingRequests.length})'),
+        centerTitle: true,
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : pendingRequests.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
+                      const SizedBox(height: 16),
+                      Text(
+                        'フレンド申請はありません',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Colors.grey,
+                            ),
+                      ),
+                    ],
                   ),
-                  child: const Text('受け入れ', style: TextStyle(fontSize: 12)),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  itemCount: pendingRequests.length,
+                  itemBuilder: (context, index) {
+                    final friend = pendingRequests[index];
+                    return _RequestTile(
+                      friend: friend,
+                      onAccept: () => _acceptRequest(friend),
+                      onDecline: () => _declineRequest(friend.friendUserId),
+                    );
+                  },
                 ),
+    );
+  }
+}
+
+class _RequestTile extends StatelessWidget {
+  final Friend friend;
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  const _RequestTile({
+    required this.friend,
+    required this.onAccept,
+    required this.onDecline,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.green.shade300,
+              child: Text(
+                (friend.friendName.isNotEmpty ? friend.friendName[0] : '?').toUpperCase(),
+                style: const TextStyle(color: Colors.white),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _isLoading ? null : _rejectRequest,
-                  child: const Text('拒否', style: TextStyle(fontSize: 12)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    friend.friendName,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    'ID: ${friend.friendUserId}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: onDecline,
+                  child: const Text('断る'),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: onAccept,
+                  child: const Text('承認'),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
