@@ -60,6 +60,11 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
   late String _userId;
   late String _appId;
 
+  // Phase 4.5: Handler injection for Firestore operations
+  DailyMissionFetchHandler? _fetchHandler;
+  DailyMissionProgressHandler? _progressHandler;
+  DailyMissionCompleteHandler? _completeHandler;
+
   DailyMissionNotifier()
       : super(DailyMissionState(lastResetDate: DateTime.now()));
 
@@ -95,6 +100,21 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
         error: 'Failed to initialize daily missions: $e',
       );
     }
+  }
+
+  /// Phase 4.5: Set fetch handler for app-specific mission loading
+  void setFetchHandler(DailyMissionFetchHandler handler) {
+    _fetchHandler = handler;
+  }
+
+  /// Phase 4.5: Set progress handler for updating mission progress
+  void setProgressHandler(DailyMissionProgressHandler handler) {
+    _progressHandler = handler;
+  }
+
+  /// Phase 4.5: Set complete handler for handling mission completion and rewards
+  void setCompleteHandler(DailyMissionCompleteHandler handler) {
+    _completeHandler = handler;
   }
 
   /// Update progress for a specific daily mission
@@ -143,10 +163,19 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
         totalCoinsToday: totalCoins,
       );
 
-      // Save to Firestore
-      await _saveProgressToFirestore(updatedProgress);
-      // Save to local cache
+      // Save to local cache first (source of truth)
       await _saveProgressToCache(updatedProgress);
+
+      // Phase 4.5: Call injected handler for Firestore persistence
+      final handler = _progressHandler;
+      if (handler != null) {
+        try {
+          await handler(_userId, missionId, newValue);
+        } catch (e) {
+          debugPrint('Error calling progressHandler: $e');
+          // Cache is already updated, so continue gracefully
+        }
+      }
     } catch (e) {
       state = state.copyWith(
         error: 'Failed to update mission progress: $e',
@@ -155,6 +184,7 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
   }
 
   /// Complete a daily mission and grant rewards
+  /// Phase 4.5: Uses injected handler for reward distribution
   Future<void> completeDailyMission(String missionId) async {
     try {
       final progress = state.userProgress[missionId];
@@ -169,6 +199,17 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
 
       // Mark as completed
       await updateDailyProgress(missionId, mission.targetValue);
+
+      // Phase 4.5: Call injected handler for reward distribution
+      final handler = _completeHandler;
+      if (handler != null) {
+        try {
+          await handler(_userId, missionId, mission.reward);
+        } catch (e) {
+          debugPrint('Error calling completeHandler: $e');
+          // Mission is already marked completed, reward processing continues
+        }
+      }
     } catch (e) {
       state = state.copyWith(
         error: 'Failed to complete mission: $e',
@@ -204,28 +245,26 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
   // ===== Private methods =====
 
   /// Load missions from Firestore RemoteConfig or database
+  /// Phase 4.5: Uses injected handler if available, falls back to default missions
   Future<void> _loadMissionsFromFirestore(String appId) async {
     try {
-      final snapshot = await _firestore
-          .collection('analytics')
-          .doc('daily_missions')
-          .collection('config')
-          .doc('active')
-          .get();
-
-      if (snapshot.exists) {
-        final data = snapshot.data() as Map<String, dynamic>;
-        final missionsList = (data['missions'] as List<dynamic>?)
-                ?.map((m) => DailyMission.fromJson(m as Map<String, dynamic>))
-                .where((mission) =>
-                    mission.appIds.isEmpty || mission.appIds.contains(appId))
-                .toList() ??
-            [];
-
-        state = state.copyWith(missions: missionsList);
+      final handler = _fetchHandler;
+      if (handler != null) {
+        // Use injected handler for custom Firestore implementation
+        try {
+          final missions = await handler(appId);
+          state = state.copyWith(missions: missions);
+          return;
+        } catch (e) {
+          debugPrint('Error calling fetchHandler: $e');
+          // Fall through to default missions
+        }
       }
+
+      // Fallback: Load from default missions
+      state = state.copyWith(missions: _getDefaultMissions(appId));
     } catch (e) {
-      // Gracefully handle Firestore errors
+      // Gracefully handle errors
       state = state.copyWith(missions: _getDefaultMissions(appId));
     }
   }
