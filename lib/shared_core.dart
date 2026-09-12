@@ -86,6 +86,7 @@ export 'services/firebase_service.dart';
 export 'services/firestore_matchmaking_service.dart'; // FirestoreMatchmakingService（マルチプレイのFirestoreデフォルト実装）
 export 'services/weekly_report_notification_scheduler.dart'; // WeeklyReportNotificationScheduler（保護者向け週次サマリー通知）
 export 'services/rating_calculator.dart'; // RatingCalculator（Elo & Glicko-2 レーティング計算 - Phase 4.14）
+export 'services/revenue_cat_service.dart'; // RevenueCatService（統一サブスク管理 - Phase 4.7）
 
 // Providers (Phase 4.14)
 export 'providers/battle_session_provider.dart'; // BattleSessionHandlers, activeBattleSessionProvider, userRatingProvider, leaderboard providers
@@ -102,6 +103,7 @@ export 'utils/parental_gate_helper.dart'; // requireParentalGate（保護者ゲ�
 export 'theme/app_theme_base.dart';
 export 'config/app_colors.dart';        // AppColors, SubjectColors, LightColors, DarkColors（v3.0.0 新規）
 export 'config/app_typography.dart';   // AppTypography（v3.0.0 新規）
+export 'config/subscription_config.dart'; // SubscriptionConfig for unified RevenueCat configuration (Phase 4.7)
 
 // UI Components (v3.0.0 新規)
 export 'widgets/components/app_button.dart';     // AppButton, AppButtonStyle, AppButtonSize

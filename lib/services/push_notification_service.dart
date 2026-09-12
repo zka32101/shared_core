@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../models/notification_model.dart';
+import 'package:shared_core/models/push_notification_model.dart';
 
 class PushNotificationService {
   static final PushNotificationService _instance =
@@ -14,187 +13,142 @@ class PushNotificationService {
 
   PushNotificationService._internal();
 
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications =
-      FlutterLocalNotificationsPlugin();
-  final FirebaseFunctions _functions = FirebaseFunctions.instance;
+  late FirebaseMessaging _firebaseMessaging;
+  late FlutterLocalNotificationsPlugin _localNotifications;
 
-  /// サービスを初期化
-  Future<void> initialize({
-    required Future<void> Function(RemoteMessage) onMessageHandler,
-  }) async {
-    // FCM 初期化
-    await _messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+  bool _isInitialized = false;
+  final _notificationStream = StreamController<NotificationPayload>.broadcast();
 
-    // ローカル通知初期化
-    const AndroidInitializationSettings androidInitSettings =
+  Stream<NotificationPayload> get notificationStream =>
+      _notificationStream.stream;
+
+  /// Firebase Cloud Messaging & Local Notifications を初期化
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+
+    try {
+      // Firebase Cloud Messaging 初期化
+      _firebaseMessaging = FirebaseMessaging.instance;
+
+      // FCM 権限をリクエスト
+      final settings = await _firebaseMessaging.requestPermission(
+        alert: true,
+        announcement: true,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      // ローカル通知初期化
+      await _initializeLocalNotifications();
+
+      // FCM メッセージハンドラーを登録
+      _setupMessageHandlers();
+
+      _isInitialized = true;
+
+      print('[PushNotification] Service initialized successfully');
+    } catch (e) {
+      print('[PushNotification] Initialization error: $e');
+      rethrow;
+    }
+  }
+
+  /// ローカル通知を初期化
+  Future<void> _initializeLocalNotifications() async {
+    _localNotifications = FlutterLocalNotificationsPlugin();
+
+    const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosInitSettings =
+
+    const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
 
-    const InitializationSettings initSettings = InitializationSettings(
-      android: androidInitSettings,
-      iOS: iosInitSettings,
+    final InitializationSettings initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
     );
 
-    await _localNotifications.initialize(initSettings);
+    await _localNotifications.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: _handleNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: _handleBackgroundResponse,
+    );
+  }
 
-    // メッセージハンドラー登録
-    FirebaseMessaging.onMessage.listen(onMessageHandler);
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleNotificationTap(message);
+  /// メッセージハンドラーを設定
+  void _setupMessageHandlers() {
+    // フォアグラウンドメッセージ
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('[FCM] Foreground message: ${message.notification?.title}');
+      _handleForegroundMessage(message);
     });
+
+    // バックグラウンドメッセージ（ユーザーが通知をタップ）
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('[FCM] Message opened: ${message.notification?.title}');
+      _handleMessageOpenedApp(message);
+    });
+
+    // バックグラウンドメッセージハンドラー（静的）
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  /// FCM トークンを取得
-  Future<String?> getFCMToken() async {
-    try {
-      return await _messaging.getToken();
-    } catch (e) {
-      return null;
+  /// フォアグラウンドメッセージ処理
+  Future<void> _handleForegroundMessage(RemoteMessage message) async {
+    final notification = message.notification;
+    final data = message.data;
+
+    if (notification != null) {
+      // ローカル通知を表示
+      await _showLocalNotification(
+        title: notification.title ?? 'Notification',
+        body: notification.body ?? '',
+        notificationId: message.messageId ?? 'default',
+        customData: data,
+      );
+
+      // StreamController に通知を流す
+      _notificationStream.add(NotificationPayload(
+        notificationId: message.messageId ?? 'default',
+        userId: data['userId'] ?? '',
+        title: notification.title ?? '',
+        body: notification.body ?? '',
+        type: data['type'] ?? 'event',
+        customData: data,
+        createdAt: DateTime.now(),
+      ));
     }
   }
 
-  /// デイリーリマインダー通知をスケジュール
-  Future<void> scheduleDailyReminder({
-    required String userId,
-    required String title,
-    required String body,
-    required TimeOfDay time,
-  }) async {
-    try {
-      await _functions.httpsCallable('scheduleDailyReminder').call({
-        'userId': userId,
-        'title': title,
-        'body': body,
-        'hour': time.hour,
-        'minute': time.minute,
-      });
-    } catch (e) {
-      throw Exception('Failed to schedule daily reminder: $e');
-    }
-  }
-
-  /// ストリークリマインダーをスケジュール
-  Future<void> scheduleStreakReminder({
-    required String userId,
-    required int streakDays,
-  }) async {
-    try {
-      await _functions.httpsCallable('scheduleStreakReminder').call({
-        'userId': userId,
-        'streakDays': streakDays,
-      });
-    } catch (e) {
-      throw Exception('Failed to schedule streak reminder: $e');
-    }
-  }
-
-  /// ゴール達成通知を送信
-  Future<void> sendGoalAchievedNotification({
-    required String userId,
-    required String goalType,
-    required String goalName,
-  }) async {
-    try {
-      await _functions.httpsCallable('sendGoalNotification').call({
-        'userId': userId,
-        'type': 'goal_achieved',
-        'goalType': goalType,
-        'goalName': goalName,
-      });
-    } catch (e) {
-      throw Exception('Failed to send goal notification: $e');
-    }
-  }
-
-  /// チャーン予防キャンペーンを実行
-  Future<void> executeChurnPreventionCampaign({
-    required String userId,
-    required String campaignId,
-    required String title,
-    required String body,
-  }) async {
-    try {
-      await _functions.httpsCallable('executeChurnPrevention').call({
-        'userId': userId,
-        'campaignId': campaignId,
-        'title': title,
-        'body': body,
-      });
-    } catch (e) {
-      throw Exception('Failed to execute churn prevention campaign: $e');
-    }
-  }
-
-  /// 季節イベント通知を送信
-  Future<void> sendSeasonalEventNotification({
-    required String userId,
-    required String eventType,
-    required String eventTitle,
-    required String eventDescription,
-  }) async {
-    try {
-      await _functions.httpsCallable('sendSeasonalEvent').call({
-        'userId': userId,
-        'eventType': eventType,
-        'eventTitle': eventTitle,
-        'eventDescription': eventDescription,
-      });
-    } catch (e) {
-      throw Exception('Failed to send seasonal event notification: $e');
-    }
-  }
-
-  /// A/B テストキャンペーンを実行
-  Future<void> executeABTestCampaign({
-    required String userId,
-    required String campaignId,
-    required String variant,
-    required String title,
-    required String body,
-  }) async {
-    try {
-      await _functions.httpsCallable('executeABTestCampaign').call({
-        'userId': userId,
-        'campaignId': campaignId,
-        'variant': variant,
-        'title': title,
-        'body': body,
-      });
-    } catch (e) {
-      throw Exception('Failed to execute A/B test campaign: $e');
-    }
+  /// メッセージタップ時の処理
+  Future<void> _handleMessageOpenedApp(RemoteMessage message) async {
+    print('[FCM] User tapped notification');
+    // アプリ内ナビゲーションなどを実装
   }
 
   /// ローカル通知を表示
-  Future<void> showLocalNotification({
+  Future<void> _showLocalNotification({
     required String title,
     required String body,
-    required String payload,
-    required bool enableSound,
-    required bool enableVibration,
+    required String notificationId,
+    Map<String, dynamic>? customData,
   }) async {
     try {
       const AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
-        'shogaku_kore_channel',
-        'Learning Notifications',
-        channelDescription: 'Notifications for learning reminders and achievements',
+        'shared_core_channel',
+        'Shared Core Notifications',
+        channelDescription: 'Notifications from Shared Core',
         importance: Importance.max,
         priority: Priority.high,
+        showWhen: true,
       );
 
       const DarwinNotificationDetails iosDetails =
@@ -204,73 +158,137 @@ class PushNotificationService {
         presentSound: true,
       );
 
-      const NotificationDetails details = NotificationDetails(
+      final NotificationDetails notificationDetails = NotificationDetails(
         android: androidDetails,
         iOS: iosDetails,
       );
 
       await _localNotifications.show(
-        payload.hashCode,
+        notificationId.hashCode,
         title,
         body,
-        details,
-        payload: payload,
+        notificationDetails,
+        payload: customData != null ? customData.toString() : null,
       );
     } catch (e) {
-      print('Failed to show local notification: $e');
+      print('[PushNotification] Error showing local notification: $e');
     }
   }
 
-  /// リエンゲージメント通知をバッチ送信
-  Future<void> sendBatchReEngagementNotifications({
-    required List<String> userIds,
+  /// ローカル通知レスポンスハンドラー
+  void _handleNotificationResponse(NotificationResponse response) {
+    print('[LocalNotification] User tapped notification: ${response.payload}');
+  }
+
+  /// バックグラウンド通知レスポンスハンドラー
+  static void _handleBackgroundResponse(NotificationResponse response) {
+    print('[LocalNotification] Background notification response');
+  }
+
+  /// FCM トークンを取得
+  Future<String?> getFCMToken() async {
+    try {
+      return await _firebaseMessaging.getToken();
+    } catch (e) {
+      print('[PushNotification] Error getting FCM token: $e');
+      return null;
+    }
+  }
+
+  /// 購読トピックを設定
+  Future<void> subscribeToTopic(String topic) async {
+    try {
+      await _firebaseMessaging.subscribeToTopic(topic);
+      print('[FCM] Subscribed to topic: $topic');
+    } catch (e) {
+      print('[PushNotification] Error subscribing to topic: $e');
+    }
+  }
+
+  /// トピック購読を解除
+  Future<void> unsubscribeFromTopic(String topic) async {
+    try {
+      await _firebaseMessaging.unsubscribeFromTopic(topic);
+      print('[FCM] Unsubscribed from topic: $topic');
+    } catch (e) {
+      print('[PushNotification] Error unsubscribing from topic: $e');
+    }
+  }
+
+  /// スケジュール済み通知を送信
+  Future<void> scheduleNotification({
     required String title,
     required String body,
-    required String campaignId,
+    required DateTime scheduledTime,
+    Map<String, dynamic>? customData,
   }) async {
     try {
-      await _functions.httpsCallable('sendBatchNotifications').call({
-        'userIds': userIds,
-        'title': title,
-        'body': body,
-        'campaignId': campaignId,
-        'type': 're_engagement',
-      });
+      final duration = scheduledTime.difference(DateTime.now());
+
+      if (duration.isNegative) {
+        print('[PushNotification] Scheduled time is in the past');
+        return;
+      }
+
+      // Android では AlarmManager を使用（FlutterLocalNotifications で対応）
+      // iOS では UNCalendarNotificationTrigger を使用
+      final AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+        'scheduled_notifications',
+        'Scheduled Notifications',
+        channelDescription: 'Scheduled notifications from Shared Core',
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: true,
+      );
+
+      const DarwinNotificationDetails iosDetails =
+          DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+
+      final NotificationDetails notificationDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+
+      await _localNotifications.zonedSchedule(
+        title.hashCode,
+        title,
+        body,
+        scheduledTime,
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.exactAndAllowWhileIdle,
+        payload: customData != null ? customData.toString() : null,
+      );
+
+      print('[PushNotification] Scheduled notification for: $scheduledTime');
     } catch (e) {
-      throw Exception('Failed to send batch notifications: $e');
+      print('[PushNotification] Error scheduling notification: $e');
     }
   }
 
-  /// トピックへのサブスクリプション
-  Future<void> subscribeToTopic({
-    required String topic,
-  }) async {
+  /// すべての通知をクリア
+  Future<void> clearAllNotifications() async {
     try {
-      await _messaging.subscribeToTopic(topic);
+      await _localNotifications.cancelAll();
+      print('[PushNotification] All notifications cleared');
     } catch (e) {
-      throw Exception('Failed to subscribe to topic: $e');
+      print('[PushNotification] Error clearing notifications: $e');
     }
   }
 
-  /// トピックからのアンサブスクリプション
-  Future<void> unsubscribeFromTopic({
-    required String topic,
-  }) async {
-    try {
-      await _messaging.unsubscribeFromTopic(topic);
-    } catch (e) {
-      throw Exception('Failed to unsubscribe from topic: $e');
-    }
+  /// リソースをクリーンアップ
+  void dispose() {
+    _notificationStream.close();
   }
+}
 
-  /// 通知タップ時の処理
-  void _handleNotificationTap(RemoteMessage message) {
-    // アプリが起動する処理を実装
-    // 通常はディープリンクをハンドルする
-    final data = message.data;
-    if (data.containsKey('target')) {
-      final target = data['target'];
-      // ナビゲーション処理など
-    }
-  }
+/// Firebase Cloud Messaging バックグラウンドハンドラー（トップレベル関数）
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('[FCM] Background message: ${message.notification?.title}');
+  // バックグラウンドで受信したメッセージの処理
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_core/providers/friend_provider.dart';
 
-/// フレンド検索画面 - ユーザーID 検索とフレンドリクエスト送信
+import '../models/friend_model.dart';
+import '../providers/friend_provider.dart';
+
+/// Phase 4.4: フレンド検索・申請機能
+/// ユーザー名またはユーザーID でフレンドを検索し、申請できる画面
 class FriendSearchPage extends ConsumerStatefulWidget {
   const FriendSearchPage({Key? key}) : super(key: key);
 
@@ -11,10 +14,14 @@ class FriendSearchPage extends ConsumerStatefulWidget {
 }
 
 class _FriendSearchPageState extends ConsumerState<FriendSearchPage> {
-  final _searchController = TextEditingController();
-  bool _isLoading = false;
-  String? _errorMessage;
-  String? _successMessage;
+  late TextEditingController _searchController;
+  bool _hasSearched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -22,117 +29,185 @@ class _FriendSearchPageState extends ConsumerState<FriendSearchPage> {
     super.dispose();
   }
 
-  Future<void> _addFriend() async {
-    final userId = _searchController.text.trim();
-    if (userId.isEmpty) {
-      setState(() => _errorMessage = 'ユーザーID を入力してください');
+  void _performSearch() {
+    final query = _searchController.text.trim();
+    if (query.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('検索キーワードを入力してください')),
+      );
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-      _successMessage = null;
-    });
+    setState(() => _hasSearched = true);
+    ref.read(friendProvider.notifier).searchFriends(query);
+  }
 
+  Future<void> _sendFriendRequest(String targetUserId) async {
     try {
-      await ref.read(friendProvider.notifier).addFriend(userId);
-      setState(() {
-        _successMessage = '$userId さんをフレンド申請しました！';
-        _searchController.clear();
-      });
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) Navigator.pop(context);
-      });
+      await ref.read(friendProvider.notifier).sendFriendRequest(targetUserId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('フレンド申請を送信しました')),
+        );
+      }
     } catch (e) {
-      setState(() => _errorMessage = 'エラー: ${e.toString()}');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('エラー: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final friendState = ref.watch(friendProvider);
+    final currentFriends = friendState.friends;
+    final searchResults = friendState.searchResults;
+    final isLoading = friendState.isLoading;
+    final error = friendState.error;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('フレンドを追加')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'フレンドのユーザーID を入力',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'ユーザーID を入力 (例: user_12345)',
-                prefixIcon: const Icon(Icons.person_add),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+      appBar: AppBar(
+        title: const Text('フレンドを探す'),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          // 検索バー
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'ユーザー名またはID',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _hasSearched = false);
+                              },
+                            )
+                          : null,
+                    ),
+                    onChanged: (_) => setState(() {}),
+                    onSubmitted: (_) => _performSearch(),
+                  ),
                 ),
-                errorText: _errorMessage,
-              ),
-              onSubmitted: (_) => _addFriend(),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _performSearch,
+                  child: const Icon(Icons.search),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            if (_successMessage != null) ...[
-              Container(
+          ),
+          // エラーメッセージ
+          if (error != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
+                  color: Colors.red.shade100,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.green),
                 ),
                 child: Text(
-                  _successMessage!,
-                  style: TextStyle(color: Colors.green.shade700),
+                  error,
+                  style: TextStyle(color: Colors.red.shade900),
                 ),
               ),
-              const SizedBox(height: 16),
-            ],
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _isLoading ? null : _addFriend,
-                icon: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.send),
-                label: Text(_isLoading ? '送信中...' : 'フレンド申請を送信'),
-              ),
             ),
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '💡 フレンド機能について',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '• フレンドを追加すると、ランキングでスコアを比較できます\n'
-                    '• 相手がリクエストを受け入れるとフレンドになります\n'
-                    '• フレンド限定のイベントや機能が利用できます',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ],
+          // 検索結果
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _hasSearched
+                    ? searchResults.isEmpty
+                        ? Center(
+                            child: Text(
+                              '検索結果が見つかりません',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: searchResults.length,
+                            itemBuilder: (context, index) {
+                              final friend = searchResults[index];
+                              final alreadyFriend =
+                                  currentFriends.any((f) => f.friendUserId == friend.friendUserId);
+
+                              return _SearchResultTile(
+                                friend: friend,
+                                alreadyFriend: alreadyFriend,
+                                onSendRequest: () => _sendFriendRequest(friend.friendUserId),
+                              );
+                            },
+                          )
+                    : Center(
+                        child: Text(
+                          'ユーザーを検索してください',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Colors.grey,
+                              ),
+                        ),
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchResultTile extends StatelessWidget {
+  final Friend friend;
+  final bool alreadyFriend;
+  final VoidCallback onSendRequest;
+
+  const _SearchResultTile({
+    required this.friend,
+    required this.alreadyFriend,
+    required this.onSendRequest,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.blue.shade300,
+          child: Text(
+            (friend.friendName.isNotEmpty ? friend.friendName[0] : '?').toUpperCase(),
+            style: const TextStyle(color: Colors.white),
+          ),
         ),
+        title: Text(friend.friendName),
+        subtitle: Text('ID: ${friend.friendUserId}'),
+        trailing: alreadyFriend
+            ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'フレンド中',
+                  style: TextStyle(fontSize: 12),
+                ),
+              )
+            : ElevatedButton(
+                onPressed: onSendRequest,
+                child: const Text('申請'),
+              ),
       ),
     );
   }
