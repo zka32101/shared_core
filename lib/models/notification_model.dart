@@ -1,87 +1,66 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'notification_model.freezed.dart';
-part 'notification_model.g.dart';
-
-/// 通知タイプの列挙型
-enum NotificationType {
-  learningReminder, // 学習リマインダー
-  missionAchieved, // ミッション達成
-  friendInvite, // フレンド招待
-  streakMilestone, // ストリーク達成
-  badgeEarned, // バッジ獲得
-  weeklyReport, // 週次レポート
-  dailyBonus, // デイリーボーナス
-  levelUp, // レベルアップ
-  newContent, // 新規コンテンツ
-  appUpdate, // アプリ更新
-  specialEvent, // 特別イベント
-}
-
-/// 通知スケジュールタイプ
-enum NotificationScheduleType {
-  immediate, // 即座に配信
-  scheduled, // 指定時刻に配信
-  daily, // 毎日配信
-  weekly, // 毎週配信
-  adaptive, // 適応的（ユーザーの活動パターンに基づく）
-}
 
 @freezed
-class PushNotification with _$PushNotification {
-  const factory PushNotification({
+class AppNotification with _$AppNotification {
+  const factory AppNotification({
     required String id,
-    required String userId,
-    required NotificationType type,
     required String title,
     required String body,
-    required NotificationScheduleType scheduleType,
+    required String type, // 'daily_reminder', 'achievement', 'friend_request', 'weekly_summary', 'engagement'
     required DateTime createdAt,
-    DateTime? scheduledFor,
     required bool isRead,
-    DateTime? readAt,
-    required Map<String, dynamic> metadata,
     String? actionUrl,
-    String? imageUrl,
-    required bool isActive,
-  }) = _PushNotification;
+    Map<String, dynamic>? data,
+  }) = _AppNotification;
 
-  factory PushNotification.fromJson(Map<String, dynamic> json) =>
-      _$PushNotificationFromJson(json);
+  const AppNotification._();
+
+  bool get isPending => DateTime.now().isBefore(createdAt);
 }
 
 @freezed
-class NotificationPreferences with _$NotificationPreferences {
-  const factory NotificationPreferences({
-    required String userId,
-    required bool enableAllNotifications,
-    required Map<String, bool> typePreferences,
-    required String? preferredNotificationTime,
-    required bool enableQuietHours,
-    String? quietHoursStart,
-    String? quietHoursEnd,
-    required bool enableAppNotifications,
-    required bool enableEmailDigest,
-    required String emailDigestFrequency,
-    required DateTime updatedAt,
-  }) = _NotificationPreferences;
+class ReminderConfig with _$ReminderConfig {
+  const factory ReminderConfig({
+    required bool enableDailyReminder,
+    required bool enableAchievementNotification,
+    required bool enableFriendNotification,
+    required bool enableWeeklyReport,
+    required bool enableEngagementReminder,
+    required TimeOfDay dailyReminderTime,
+    required int weeklyReportDayOfWeek, // 0 = Sunday, 6 = Saturday
+  }) = _ReminderConfig;
 
-  factory NotificationPreferences.fromJson(Map<String, dynamic> json) =>
-      _$NotificationPreferencesFromJson(json);
+  const ReminderConfig._();
 }
 
 @freezed
-class DeviceToken with _$DeviceToken {
-  const factory DeviceToken({
-    required String userId,
-    required String token,
-    required String platform,
-    required String appVersion,
-    required DateTime registeredAt,
-    DateTime? lastUsedAt,
-    required bool isActive,
-  }) = _DeviceToken;
+class TimeOfDay with _$TimeOfDay {
+  const factory TimeOfDay({
+    required int hour,
+    required int minute,
+  }) = _TimeOfDay;
 
-  factory DeviceToken.fromJson(Map<String, dynamic> json) =>
-      _$DeviceTokenFromJson(json);
+  const TimeOfDay._();
+
+  String toIso8601String() => '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
+  factory TimeOfDay.fromIso8601String(String str) {
+    final parts = str.split(':');
+    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+}
+
+@freezed
+class NotificationStats with _$NotificationStats {
+  const factory NotificationStats({
+    required int totalNotifications,
+    required int unreadCount,
+    required int achievementCount,
+    required int friendRequestCount,
+    required DateTime lastCheckAt,
+  }) = _NotificationStats;
+
+  const NotificationStats._();
 }

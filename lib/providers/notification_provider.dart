@@ -1,103 +1,139 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import '../models/notification_model.dart';
-import '../services/notification_service.dart';
 
-final notificationServiceProvider = Provider((ref) {
-  return NotificationService();
-});
+/// 通知状態管理（StateNotifier）
+class NotificationNotifier extends StateNotifier<List<AppNotification>> {
+  NotificationNotifier() : super([]);
 
-final notificationPreferencesProvider = FutureProvider.autoDispose
-    .family<NotificationPreferences?, String>((ref, userId) async {
-  final service = ref.watch(notificationServiceProvider);
-  return service.getNotificationPreferences(userId);
-});
-
-final userNotificationsProvider = StreamProvider.autoDispose
-    .family<List<PushNotification>, String>((ref, userId) {
-  final service = ref.watch(notificationServiceProvider);
-  return service.getUserNotifications(userId);
-});
-
-class NotificationNotifier extends StateNotifier<Map<String, dynamic>> {
-  final NotificationService _service;
-
-  NotificationNotifier(this._service) : super({});
-
-  /// デバイストークン登録
-  Future<void> registerDeviceToken(String userId, String appVersion) async {
-    try {
-      final token = await _service.registerDeviceToken(userId, appVersion);
-      state = {...state, 'deviceToken': token};
-    } catch (e) {
-      state = {...state, 'error': e.toString()};
-      rethrow;
-    }
+  /// 通知を追加
+  void addNotification(AppNotification notification) {
+    state = [notification, ...state];
   }
 
-  /// 通知ハンドラー設定
-  void setupNotificationHandlers(
-    Function(RemoteMessage) onMessageCallback,
-    Function(RemoteMessage) onMessageOpenedCallback,
-  ) {
-    _service.setupNotificationHandlers(onMessageCallback, onMessageOpenedCallback);
+  /// 通知を既読にする
+  void markAsRead(String notificationId) {
+    state = [
+      for (final n in state)
+        if (n.id == notificationId)
+          n.copyWith(isRead: true)
+        else
+          n,
+    ];
   }
 
-  /// 通知を既読にマーク
-  Future<void> markNotificationAsRead(
-    String userId,
-    String notificationId,
-  ) async {
-    try {
-      await _service.markNotificationAsRead(userId, notificationId);
-      state = {...state, 'lastReadNotification': notificationId};
-    } catch (e) {
-      rethrow;
-    }
+  /// すべてを既読にする
+  void markAllAsRead() {
+    state = [
+      for (final n in state)
+        n.copyWith(isRead: true),
+    ];
   }
 
-  /// 学習リマインダーをスケジュール
-  Future<void> scheduleStudyReminder({
-    required String userId,
-    required String time,
-  }) async {
-    try {
-      await _service.scheduleStudyReminder(userId: userId, time: time);
-      state = {
-        ...state,
-        'lastScheduledReminder': {'userId': userId, 'time': time}
-      };
-    } catch (e) {
-      rethrow;
-    }
+  /// 通知を削除
+  void removeNotification(String notificationId) {
+    state = state.where((n) => n.id != notificationId).toList();
   }
 
-  /// 通知設定を更新
-  Future<void> updatePreferences(
-    String userId,
-    NotificationPreferences preferences,
-  ) async {
-    try {
-      await _service.updateNotificationPreferences(userId, preferences);
-      state = {...state, 'preferencesUpdated': DateTime.now()};
-    } catch (e) {
-      rethrow;
-    }
+  /// 特定タイプの通知をすべて削除
+  void removeNotificationsOfType(String type) {
+    state = state.where((n) => n.type != type).toList();
   }
 
-  /// ログアウト時にトークンを無効化
-  Future<void> deactivateDeviceToken(String userId, String token) async {
-    try {
-      await _service.deactivateDeviceToken(userId, token);
-      state = {...state, 'deviceToken': null};
-    } catch (e) {
-      rethrow;
-    }
+  /// 未読通知数を取得
+  int getUnreadCount() => state.where((n) => !n.isRead).length;
+
+  /// 特定タイプの未読通知数
+  int getUnreadCountByType(String type) =>
+      state.where((n) => !n.isRead && n.type == type).length;
+}
+
+/// リマインダー設定状態管理
+class ReminderConfigNotifier extends StateNotifier<ReminderConfig> {
+  ReminderConfigNotifier()
+      : super(
+          const ReminderConfig(
+            enableDailyReminder: true,
+            enableAchievementNotification: true,
+            enableFriendNotification: true,
+            enableWeeklyReport: true,
+            enableEngagementReminder: false,
+            dailyReminderTime: TimeOfDay(hour: 9, minute: 0),
+            weeklyReportDayOfWeek: 0, // Sunday
+          ),
+        );
+
+  /// リマインダー設定を更新
+  void updateConfig(ReminderConfig config) {
+    state = config;
+  }
+
+  /// 日次リマインダーを有効/無効
+  void setDailyReminderEnabled(bool enabled) {
+    state = state.copyWith(enableDailyReminder: enabled);
+  }
+
+  /// リマインダー時刻を変更
+  void setDailyReminderTime(TimeOfDay time) {
+    state = state.copyWith(dailyReminderTime: time);
+  }
+
+  /// 週次レポート曜日を変更
+  void setWeeklyReportDay(int dayOfWeek) {
+    state = state.copyWith(weeklyReportDayOfWeek: dayOfWeek);
+  }
+
+  /// アチーブメント通知設定
+  void setAchievementNotificationEnabled(bool enabled) {
+    state = state.copyWith(enableAchievementNotification: enabled);
+  }
+
+  /// フレンド通知設定
+  void setFriendNotificationEnabled(bool enabled) {
+    state = state.copyWith(enableFriendNotification: enabled);
   }
 }
 
-final notificationNotifierProvider =
-    StateNotifierProvider<NotificationNotifier, Map<String, dynamic>>((ref) {
-  final service = ref.watch(notificationServiceProvider);
-  return NotificationNotifier(service);
+// Riverpod Providers
+final notificationProvider =
+    StateNotifierProvider<NotificationNotifier, List<AppNotification>>((ref) {
+  return NotificationNotifier();
+});
+
+final reminderConfigProvider =
+    StateNotifierProvider<ReminderConfigNotifier, ReminderConfig>((ref) {
+  return ReminderConfigNotifier();
+});
+
+/// 未読通知数
+final unreadNotificationCountProvider = Provider<int>((ref) {
+  final notifications = ref.watch(notificationProvider);
+  return notifications.where((n) => !n.isRead).length;
+});
+
+/// 通知統計情報
+final notificationStatsProvider = Provider<NotificationStats>((ref) {
+  final notifications = ref.watch(notificationProvider);
+  return NotificationStats(
+    totalNotifications: notifications.length,
+    unreadCount: notifications.where((n) => !n.isRead).length,
+    achievementCount:
+        notifications.where((n) => n.type == 'achievement').length,
+    friendRequestCount:
+        notifications.where((n) => n.type == 'friend_request').length,
+    lastCheckAt: DateTime.now(),
+  );
+});
+
+/// 特定タイプの通知を取得
+final notificationsByTypeProvider =
+    Provider.family<List<AppNotification>, String>((ref, type) {
+  final notifications = ref.watch(notificationProvider);
+  return notifications.where((n) => n.type == type).toList();
+});
+
+/// 最新10件の通知
+final recentNotificationsProvider =
+    Provider<List<AppNotification>>((ref) {
+  final notifications = ref.watch(notificationProvider);
+  return notifications.take(10).toList();
 });

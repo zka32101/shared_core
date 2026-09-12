@@ -168,3 +168,9 @@ export 'services/push_notification_service.dart';           // PushNotificationS
 export 'widgets/notification_settings_page.dart';           // NotificationSettingsPage（通知設定ページ Phase 4.18）
 export 'widgets/retention_dashboard.dart';                  // RetentionDashboard（リテンションダッシュボード Phase 4.18）
 export 'widgets/notification_settings_widget.dart';         // NotificationSettingsScreen, RetentionAnalyticsDashboard（通知・リテンション設定ダッシュボード Phase 4.18）
+
+// Local Notifications & Reminders (Phase 4.23)
+export 'models/notification_model.dart';                    // AppNotification, ReminderConfig, TimeOfDay, NotificationStats（統一通知&リマインダーシステム Phase 4.23）
+export 'providers/notification_provider.dart';              // NotificationNotifier, ReminderConfigNotifier, notificationProvider, reminderConfigProvider, unreadNotificationCountProvider, notificationStatsProvider, notificationsByTypeProvider, recentNotificationsProvider（Phase 4.23）
+export 'services/reminder_service.dart';                    // ReminderService（スケジュール通知・リマインダー配信 Phase 4.23）
+export 'widgets/notification_widget.dart';                  // NotificationBadge, NotificationListPage, NotificationSettingsPage（通知管理UI Phase 4.23）
