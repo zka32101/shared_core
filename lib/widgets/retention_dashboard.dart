@@ -1,52 +1,193 @@
+// Retention Metrics Dashboard
+// Phase 4.18: Push Notification & User Retention Strategy
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/adaptive_difficulty_model.dart';
-import '../models/retention_model.dart';
-import '../providers/adaptive_difficulty_provider.dart';
-import '../providers/retention_providers.dart';
+import 'package:shared_core/models/push_notification_model.dart';
+import 'package:shared_core/providers/push_notification_provider.dart';
 
-/// 適応学習・リテンション統合ダッシュボード（Phase 4.19）
-class RetentionOptimizationDashboard extends ConsumerWidget {
+class RetentionDashboard extends ConsumerWidget {
   final String userId;
-  final String appId;
 
-  const RetentionOptimizationDashboard({
+  const RetentionDashboard({
     Key? key,
     required this.userId,
-    required this.appId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final adaptiveDifficulty = ref.watch(
-      adaptiveDifficultyNotifierProvider.select((n) => n),
-    );
+    final metrics = ref.watch(userRetentionMetricsProvider);
+    final userMetrics = metrics[userId];
 
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('学習最適化ダッシュボード'),
-          elevation: 0,
-          bottom: const TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.trending_up), text: '難易度'),
-              Tab(icon: Icon(Icons.calendar_today), text: 'デイリー'),
-              Tab(icon: Icon(Icons.analytics), text: '分析'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            // タブ1: 適応難易度
-            _AdaptiveDifficultyTab(
-              userId: userId,
-              appId: appId,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('ユーザーリテンション分析'),
+        elevation: 0,
+      ),
+      body: userMetrics == null
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                // リスクレベルインジケーター
+                _RiskLevelCard(metrics: userMetrics),
+
+                const SizedBox(height: 16),
+
+                // 進行状況メトリクス
+                _ProgressMetricsCard(metrics: userMetrics),
+
+                const SizedBox(height: 16),
+
+                // リテンション率
+                _RetentionRatesCard(metrics: userMetrics),
+
+                const SizedBox(height: 16),
+
+                // セッション統計
+                _SessionStatsCard(metrics: userMetrics),
+
+                const SizedBox(height: 16),
+
+                // チャーン予測指標
+                _ChurnIndicatorsCard(metrics: userMetrics),
+
+                const SizedBox(height: 16),
+
+                // 推奨アクション
+                _RecommendedActionsCard(metrics: userMetrics),
+
+                const SizedBox(height: 32),
+              ],
             ),
-            // タブ2: デイリーミッション・ストリーク
-            _DailyMissionTab(userId: userId),
-            // タブ3: 分析・メトリクス
-            _AnalyticsTab(userId: userId, appId: appId),
+    );
+  }
+}
+
+class _RiskLevelCard extends StatelessWidget {
+  final RetentionMetrics metrics;
+
+  const _RiskLevelCard({required this.metrics});
+
+  @override
+  Widget build(BuildContext context) {
+    final riskColor = _getRiskColor(metrics.riskLevel);
+    final riskLabel = _getRiskLabel(metrics.riskLevel);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'リスクレベル',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: riskColor.withOpacity(0.1),
+                border: Border.all(color: riskColor),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                riskLabel,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: riskColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'リスクスコア: ${(metrics.consecutiveActiveDays / 30 * 100).toStringAsFixed(1)}%',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getRiskColor(String riskLevel) {
+    switch (riskLevel) {
+      case 'low':
+        return Colors.green;
+      case 'medium':
+        return Colors.orange;
+      case 'high':
+        return Colors.red;
+      case 'critical':
+        return Colors.deepOrange;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _getRiskLabel(String riskLevel) {
+    switch (riskLevel) {
+      case 'low':
+        return '低リスク 👍';
+      case 'medium':
+        return '中リスク ⚠️';
+      case 'high':
+        return '高リスク ❌';
+      case 'critical':
+        return 'クリティカル 🚨';
+      default:
+        return '不明';
+    }
+  }
+}
+
+class _ProgressMetricsCard extends StatelessWidget {
+  final RetentionMetrics metrics;
+
+  const _ProgressMetricsCard({required this.metrics});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '進行状況メトリクス',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            _MetricRow(
+              label: '連続アクティブ日数',
+              value: '${metrics.consecutiveActiveDays} 日',
+            ),
+            const SizedBox(height: 8),
+            _MetricRow(
+              label: '累計アクティブ日数',
+              value: '${metrics.totalActiveDays} 日',
+            ),
+            const SizedBox(height: 8),
+            _MetricRow(
+              label: '休止日数',
+              value: '${metrics.daysWithoutActivity} 日',
+            ),
+            const SizedBox(height: 8),
+            _MetricRow(
+              label: '現在のレベル',
+              value: 'Lv. ${(metrics.sessionCount / 10).toStringAsFixed(0)}',
+            ),
           ],
         ),
       ),
@@ -54,309 +195,234 @@ class RetentionOptimizationDashboard extends ConsumerWidget {
   }
 }
 
-/// 適応難易度タブ
-class _AdaptiveDifficultyTab extends ConsumerWidget {
-  final String userId;
-  final String appId;
+class _RetentionRatesCard extends StatelessWidget {
+  final RetentionMetrics metrics;
 
-  const _AdaptiveDifficultyTab({
-    required this.userId,
-    required this.appId,
-  });
+  const _RetentionRatesCard({required this.metrics});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 難易度レベル表示
-          Card(
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '現在の難易度',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'リテンション率',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Text(
-                          '標準 (Normal)',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      const Text(
-                        '推奨: やや難しい (Hard)',
-                        style: TextStyle(color: Colors.orange),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          // 調整履歴
-          Card(
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '学習パフォーマンス',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _PerformanceMetricRow(
-                    label: '正答率',
-                    value: '87.5%',
-                    color: Colors.green,
-                  ),
-                  const SizedBox(height: 8),
-                  _PerformanceMetricRow(
-                    label: '問題完了数',
-                    value: '42問',
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(height: 8),
-                  _PerformanceMetricRow(
-                    label: '平均回答時間',
-                    value: '18秒/問',
-                    color: Colors.purple,
-                  ),
-                ],
-              ),
+            const SizedBox(height: 16),
+            _ProgressIndicatorMetric(
+              label: '日次リテンション率',
+              percentage: metrics.dailyActiveRate,
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            _ProgressIndicatorMetric(
+              label: '週次リテンション率',
+              percentage: metrics.weeklyRetentionRate,
+            ),
+            const SizedBox(height: 12),
+            _ProgressIndicatorMetric(
+              label: '月次リテンション率',
+              percentage: metrics.monthlyRetentionRate,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-/// デイリーミッション・ストリークタブ
-class _DailyMissionTab extends ConsumerWidget {
-  final String userId;
+class _SessionStatsCard extends StatelessWidget {
+  final RetentionMetrics metrics;
 
-  const _DailyMissionTab({required this.userId});
+  const _SessionStatsCard({required this.metrics});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final todayMissionsAsync = ref.watch(todayMissionsProvider(userId));
-    final streakDataAsync = ref.watch(streakDataProvider(userId));
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'セッション統計',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            _MetricRow(
+              label: 'セッション数',
+              value: '${metrics.sessionCount} 回',
+            ),
+            const SizedBox(height: 8),
+            _MetricRow(
+              label: '平均セッション時間',
+              value: '${metrics.averageSessionDurationMinutes.toStringAsFixed(1)} 分',
+            ),
+            const SizedBox(height: 8),
+            _MetricRow(
+              label: '最後のアクティブ',
+              value: _formatDateTime(metrics.lastActiveAt),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ストリーク表示
-          streakDataAsync.when(
-            data: (streak) => Card(
-              elevation: 2,
-              color: Colors.orange.shade50,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '学習ストリーク 🔥',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+  String _formatDateTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays == 0) {
+      return '本日';
+    } else if (difference.inDays == 1) {
+      return '昨日';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} 日前';
+    } else {
+      return '${(difference.inDays / 7).floor()} 週前';
+    }
+  }
+}
+
+class _ChurnIndicatorsCard extends StatelessWidget {
+  final RetentionMetrics metrics;
+
+  const _ChurnIndicatorsCard({required this.metrics});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'チャーン予測指標',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            if (metrics.churnIndicators.isEmpty)
+              Text(
+                'チャーンリスク指標なし ✅',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: metrics.churnIndicators
+                    .map(
+                      (indicator) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
                           children: [
-                            const Text('現在: ${7}日連続'),
-                            Text(
-                              '最長: ${30}日',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 12,
+                            const Text('⚠️ ', style: TextStyle(fontSize: 16)),
+                            Expanded(
+                              child: Text(
+                                indicator,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
                           ],
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            '+100 コイン/日',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    )
+                    .toList(),
               ),
-            ),
-            loading: () => const CircularProgressIndicator(),
-            error: (_, __) => const Text('ストリークデータ取得エラー'),
-          ),
-          const SizedBox(height: 16),
-          // デイリーミッション表示
-          const Text(
-            '今日のミッション',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          todayMissionsAsync.when(
-            data: (missions) => Column(
-              children: missions
-                  .map((mission) => _MissionCard(mission: mission))
-                  .toList(),
-            ),
-            loading: () => const CircularProgressIndicator(),
-            error: (_, __) => const Text('ミッション取得エラー'),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-/// 分析タブ
-class _AnalyticsTab extends ConsumerWidget {
-  final String userId;
-  final String appId;
+class _RecommendedActionsCard extends StatelessWidget {
+  final RetentionMetrics metrics;
 
-  const _AnalyticsTab({
-    required this.userId,
-    required this.appId,
-  });
+  const _RecommendedActionsCard({required this.metrics});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '学習分析',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '推奨アクション',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 16),
-                  _AnalyticsItemRow(
-                    icon: Icons.speed,
-                    label: '学習速度',
-                    value: '1.2x（標準比）',
-                  ),
-                  const SizedBox(height: 12),
-                  _AnalyticsItemRow(
-                    icon: Icons.trending_up,
-                    label: '成長率',
-                    value: '+5.3%/週',
-                  ),
-                  const SizedBox(height: 12),
-                  _AnalyticsItemRow(
-                    icon: Icons.star,
-                    label: 'セッション数',
-                    value: '24回/月',
-                  ),
-                ],
-              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          // 推奨事項
-          Card(
-            elevation: 2,
-            color: Colors.blue.shade50,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+            const SizedBox(height: 12),
+            if (metrics.recommendedActions.isEmpty)
+              Text(
+                'アクション不要',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.green,
+                    ),
+              )
+            else
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '💡 あなたへの推奨',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    '正答率が高いため、難易度を上げることをお勧めします。より挑戦的な問題に取り組むことで、スキル向上が期待できます。',
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.5,
-                    ),
-                  ),
-                ],
+                children: metrics.recommendedActions
+                    .map(
+                      (action) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Text('💡', style: TextStyle(fontSize: 14)),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  action,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-/// パフォーマンスメトリック行
-class _PerformanceMetricRow extends StatelessWidget {
+class _MetricRow extends StatelessWidget {
   final String label;
   final String value;
-  final Color color;
 
-  const _PerformanceMetricRow({
+  const _MetricRow({
     required this.label,
     required this.value,
-    required this.color,
   });
 
   @override
@@ -364,121 +430,65 @@ class _PerformanceMetricRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 4,
-          ),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            value,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
   }
 }
 
-/// ミッションカード
-class _MissionCard extends StatelessWidget {
-  final DailyMission mission;
-
-  const _MissionCard({required this.mission});
-
-  @override
-  Widget build(BuildContext context) {
-    final progress =
-        (mission.currentProgress / mission.targetValue * 100).toInt();
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  mission.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    '+${mission.rewardCoins}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: mission.currentProgress / mission.targetValue,
-              minHeight: 6,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${mission.currentProgress}/${mission.targetValue} ($progress%)',
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// 分析アイテム行
-class _AnalyticsItemRow extends StatelessWidget {
-  final IconData icon;
+class _ProgressIndicatorMetric extends StatelessWidget {
   final String label;
-  final String value;
+  final double percentage;
 
-  const _AnalyticsItemRow({
-    required this.icon,
+  const _ProgressIndicatorMetric({
     required this.label,
-    required this.value,
+    required this.percentage,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.blue),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label),
             Text(
-              value,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
+              label,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Text(
+              '${(percentage * 100).toStringAsFixed(1)}%',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: percentage,
+            minHeight: 8,
+            backgroundColor: Colors.grey[300],
+            valueColor: AlwaysStoppedAnimation<Color>(
+              percentage > 0.7
+                  ? Colors.green
+                  : percentage > 0.4
+                      ? Colors.orange
+                      : Colors.red,
+            ),
+          ),
         ),
       ],
     );
