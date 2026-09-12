@@ -1096,8 +1096,312 @@ Navigator.push(
 
 ---
 
+## Phase 4.20: デイリーミッション統一・週次ボーナスシステム ✅ (2026-09-12 実装完了)
+
+### 目的
+複数日の連続学習達成で500コインボーナスを獲得できる「週次ボーナスシステム」を shared_core に統一実装。Sunday ベースの週単位で自動リセット。
+
+### 実装内容
+
+#### モデル定義（`lib/models/daily_mission_model.dart`）✅
+- **WeeklyBonus**: 週次ボーナストラッキング（Freezed で自動生成）
+  - `userId`: ユーザーID
+  - `consecutiveDays`: 連続達成日数（0-7）
+  - `lastCompletionDate`: 最後の完了日
+  - `resetDate`: 週次リセット日（毎週Sunday 5:00 AM）
+  - `completionDaysOfWeek`: 曜日別完了状況（List<int> 0=Mon, 6=Sun）
+  - `bonusClaimedThisWeek`: 当週のボーナスクレーム済みフラグ
+  - `totalWeeklyBonus`: 当週の累計ボーナスコイン
+
+#### プロバイダー実装（`lib/providers/weekly_bonus_provider.dart`）✅
+- **WeeklyBonusState**: 状態管理（currentBonus, isLoading, error）
+- **WeeklyBonusNotifier**: StateNotifier<WeeklyBonusState>
+  - `initializeWeeklyBonus(userId)`: 初期化・キャッシュロード・週次リセット判定
+  - `recordDailyCompletion()`: デイリーミッション完了時の連続日数更新
+  - `claimWeeklyBonus()`: 7日達成時に500コイン付与
+  - `getDaysUntilBonus()`: 残り日数計算
+  - `getWeekCompletionEmojis()`: 曜日別の可視化（✅/⭕）
+  - `setPersistHandler()`: Firestore 永続化ハンドラ注入
+- **Riverpod Providers**:
+  - `weeklyBonusProvider`: StateNotifierProvider
+  - `consecutiveDaysProvider`: Provider<int>（UI監視用）
+  - `weekCompletionEmojisProvider`: Provider<List<String>>（曜日表示）
+  - `canClaimWeeklyBonusProvider`: Provider<bool>（クレーム可否判定）
+
+#### UI コンポーネント（`lib/widgets/weekly_bonus_widget.dart`）✅
+- **WeeklyBonusWidget**: フル表示版
+  - 🔥連続日数カウント（火マーク付き）
+  - 📅週間進捗グリッド（月火水木金土日、✅/⭕表示）
+  - 📊プログレスバー（0-100%）
+  - 💰ボーナス情報（7日達成で500コイン）
+  - 🎁クレームボタン（クレーム可時のみ表示）
+- **CompactWeeklyBonusWidget**: コンパクト版（スペース制約用）
+  - 火マークと連続数（×N形式）
+  - 最小限のクレームボタン
+
+### 各アプリへの統合手順
+
+#### Step 1: pubspec.yaml 確認
+```yaml
+dependencies:
+  shared_core:
+    git:
+      url: https://github.com/org-zka32101/shared_core.git
+      ref: main  # または指定ブランチ
+```
+
+#### Step 2: main.dart で週次ボーナス初期化
+```dart
+// Firebase 認証後、ユーザーID が確定したら実行
+await ref.read(weeklyBonusProvider.notifier).initializeWeeklyBonus(userId);
+
+// Firestore 永続化ハンドラを設定（オプション）
+ref.read(weeklyBonusProvider.notifier).setPersistHandler((userId, bonus) async {
+  await FirebaseFirestore.instance
+    .collection('users')
+    .doc(userId)
+    .collection('bonuses')
+    .doc('weekly')
+    .set(bonus.toJson());
+});
+```
+
+#### Step 3: デイリーミッション完了時に記録
+```dart
+// デイリーミッション完了後に呼び出し
+await ref.read(weeklyBonusProvider.notifier).recordDailyCompletion();
+```
+
+#### Step 4: ホーム画面に Widget を追加
+```dart
+import 'package:shared_core/widgets/weekly_bonus_widget.dart';
+
+// ホーム画面レイアウト内に追加
+WeeklyBonusWidget(
+  onBonusClaimed: (coins) {
+    // コイン加算処理
+    ref.read(coinProvider.notifier).addCoins(coins);
+    // 任意：アナリティクス送信
+  },
+)
+```
+
+#### Step 5: クレーム完了後のボーナス配分
+```dart
+// weeklyBonusWidget の onBonusClaimed コールバック内で実装
+// coins は WeeklyBonusNotifier.WEEKLY_BONUS_COINS (500)
+
+Future<void> _handleWeeklyBonusClaim(int coins) async {
+  // ① コイン加算
+  ref.read(coinProvider.notifier).addCoins(coins);
+  
+  // ② Firestore に記録（app-specific）
+  await FirebaseFirestore.instance
+    .collection('users')
+    .doc(userId)
+    .update({'totalCoinsEarned': FieldValue.increment(coins)});
+  
+  // ③ バッジ付与（streak達成）
+  ref.read(badgeProvider.notifier).awardBadge(
+    badgeId: 'weekly_streak_7',
+    subject: appId,
+  );
+  
+  // ④ Analytics 送信
+  await FirebaseAnalytics.instance.logEvent(
+    name: 'weekly_bonus_claimed',
+    parameters: {
+      'app_id': appId,
+      'coins': coins,
+      'timestamp': DateTime.now().toIso8601String(),
+    },
+  );
+}
+```
+
+### 実装状況（各アプリ）
+
+| アプリ | ブランチ | 状態 | 作業予定 |
+|---|---|---|---|
+| eigo（英語） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| sansu-kore（算数） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| kokugo-kore（国語） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| newrepo（理科） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| social_quiz_app（社会） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| shinshin（道徳） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| shogaku-kore-programming（プログラミング） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+| yourwish（SNS配信） | `claude/eigo-phase-4-23-ukrjs3` | ⏳ 統合待ち | Step 1-5 |
+
+### 動作仕様
+
+**週次リセット**:
+- 毎週日曜日 5:00 AM に自動リセット（Sunday = DateTime.weekday == 7）
+- リセット時に `completionDaysOfWeek` を 0クリア、`bonusClaimedThisWeek = false` に
+
+**連続日数計算**:
+- 当日から過去に向かってカウント（今日が月曜で月火が✅なら、連続2日）
+- スキップされた場合は途中でカウント止止
+
+**クレーム条件**:
+- `consecutiveDays >= 7 && !bonusClaimedThisWeek`
+
+### Firestore スキーマ例
+
+**collections/users/{userId}/bonuses/weekly**:
+```json
+{
+  "userId": "user123",
+  "consecutiveDays": 7,
+  "lastCompletionDate": "2026-09-12T15:30:00Z",
+  "resetDate": "2026-09-14T05:00:00Z",
+  "completionDaysOfWeek": [1, 1, 1, 1, 1, 1, 1],
+  "bonusClaimedThisWeek": true,
+  "totalWeeklyBonus": 500,
+  "updatedAt": "2026-09-12T15:35:00Z"
+}
+```
+
+---
+
+## Phase 4.21: Parental Gate Enhancement — 親管理機能統一化 ✅ (2026-09-12 実装完了)
+
+### 目的
+スクリーンタイム制限機能を大幅強化し、保護者による詳細な利用管理・リアルタイム監視・統計分析を実現。
+
+### 実装内容
+
+#### モデル拡張（`lib/models/screen_time_model.dart`）✅
+- **TimeSlot**: 時間帯別利用制限（平日/休日別、朝/昼/夜の時間帯ごと）
+  - `dayType`: 'weekday' | 'weekend'
+  - `startTime`/`endTime`: HH:MM 形式の時刻
+  - `limitMinutes`: その時間帯の上限（null = 無制限）
+- **MonitoringConfig**: 保護者向けの監視・通知設定
+  - `notificationThreshold`: 上限 80% で通知（カスタマイズ可能）
+  - `notificationsEnabled`/`weeklyReportEnabled`: 機能の ON/OFF
+- **UsageReport**: 週間・月間の利用統計
+  - `totalMinutes`, `averageMinutesPerDay`, `dailyBreakdown`
+
+#### UI コンポーネント（`lib/widgets/`）✅
+- **TimeSlotSettingsWidget** （新規）
+  - 平日・休日別の時間帯設定
+  - 時間帯の追加・編集・削除機能
+  - TimeOfDay ピッカーで直感的な設定
+- **ParentalDashboard** （新規）
+  - 子どもの週間利用グラフ（バーチャート）
+  - 統計情報（合計・平均・最高利用時間）
+  - 現在の設定情報表示
+  - 保護者専用の監視画面
+
+#### StateNotifier 拡張（`lib/providers/screen_time_provider.dart`）✅
+- `addTimeSlot()`: 時間帯制限を追加
+- `removeTimeSlot()`: 時間帯制限を削除
+- `updateTimeSlot()`: 時間帯制限を更新
+- `setMonitoringConfig()`: 監視設定を更新
+
+### 使用例（各アプリ）
+
+```dart
+import 'package:shared_core/models/screen_time_model.dart';
+import 'package:shared_core/widgets/time_slot_settings_widget.dart';
+import 'package:shared_core/widgets/parental_dashboard.dart';
+
+// ① 保護者ゲートを通す
+final passedGate = await requireParentalGate(context);
+if (!passedGate) return;
+
+// ② 時間帯設定画面を表示
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => Scaffold(
+      appBar: AppBar(title: const Text('利用時間の詳細設定')),
+      body: TimeSlotSettingsWidget(primaryColor: kAccentBlue),
+    ),
+  ),
+);
+
+// ③ 時間帯を追加（例：平日朝 9時-12時は 30分制限）
+final timeSlot = TimeSlot(
+  dayType: 'weekday',
+  startTime: '09:00',
+  endTime: '12:00',
+  limitMinutes: 30,
+);
+ref.read(screenTimeProvider.notifier).addTimeSlot(timeSlot);
+
+// ④ ダッシュボードを表示
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => ParentalDashboard(
+      childName: '太郎',
+      primaryColor: kAccentBlue,
+    ),
+  ),
+);
+
+// ⑤ 監視設定を更新
+ref.read(screenTimeProvider.notifier).setMonitoringConfig(
+  const MonitoringConfig(
+    notificationThreshold: 0.75, // 75% で通知
+    notificationsEnabled: true,
+    weeklyReportEnabled: true,
+  ),
+);
+```
+
+### 実装ファイル一覧
+
+| ファイル | 説明 | 状態 |
+|---------|------|------|
+| `lib/models/screen_time_model.dart` | TimeSlot, MonitoringConfig, UsageReport 追加 | ✅ |
+| `lib/widgets/time_slot_settings_widget.dart` | **【新規】** 時間帯制限設定 UI | ✅ |
+| `lib/widgets/parental_dashboard.dart` | **【新規】** 保護者向けダッシュボード | ✅ |
+| `lib/providers/screen_time_provider.dart` | TimeSlot/Monitor 管理メソッド追加 | ✅ |
+
+### Firestore スキーマ拡張
+
+**collections/users/{userId}/screen_time/settings**
+```json
+{
+  "enabled": true,
+  "dailyLimitMinutes": 120,
+  "timeSlots": [
+    {
+      "dayType": "weekday",
+      "startTime": "09:00",
+      "endTime": "12:00",
+      "limitMinutes": 30
+    },
+    {
+      "dayType": "weekend",
+      "startTime": "14:00",
+      "endTime": "17:00",
+      "limitMinutes": 60
+    }
+  ],
+  "monitoringConfig": {
+    "notificationThreshold": 0.8,
+    "notificationsEnabled": true,
+    "weeklyReportEnabled": true
+  }
+}
+```
+
+---
+
 ## 最新更新ログ
 
+- **2026-09-12**: Phase 4.21 Parental Gate Enhancement 実装完了 ✅
+  - TimeSlot モデル：時間帯別利用制限対応
+  - MonitoringConfig: 監視・通知設定
+  - TimeSlotSettingsWidget: 時間帯設定 UI
+  - ParentalDashboard: 保護者向けダッシュボード
+  - screen_time_provider.dart: TimeSlot 管理メソッド拡張
+- **2026-09-12**: Phase 4.20 デイリーミッション統一・週次ボーナスシステム実装完了 ✅
+  - weekly_bonus_provider.dart: 状態管理・リセット・連続日数計算
+  - weekly_bonus_widget.dart: フル版・コンパクト版 UI
+  - daily_mission_model.dart: WeeklyBonus モデル追加
 - **2026-09-11**: Cloud Functions・ユーザー分析自動実行実装完了（cloud_functions_model.dart, cloud_functions_provider.dart, cloud_functions_service.dart, cloud_functions_notifier.dart, cloud_functions_dashboard.dart）- Phase 4.17
 - **2026-09-11**: Analytics・レポート強化統一化実装完了（analytics_model.dart, analytics_provider.dart, analytics_notifier.dart, analytics_dashboard.dart）- Phase 4.16
 - **2026-09-11**: A/B テストフレームワーク実装完了（ab_test_model.dart, ab_test_providers.dart, ab_test_notifier.dart, ab_test_dashboard.dart）
@@ -1109,6 +1413,6 @@ Navigator.push(
 
 ---
 
-**最終更新**: 2026-09-11  
-**状態**: ✅ Phase 4.17 実装完了  
-**次フェーズ**: Phase 4.18 プッシュ通知・ユーザーリテンション（計画中）
+**最終更新**: 2026-09-12  
+**状態**: ✅ Phase 4.20 実装完了  
+**次フェーズ**: 各アプリへの Phase 4.20 統合（eigo, sansu-kore, kokugo-kore, newrepo, social_quiz_app, shinshin, shogaku-kore-programming, yourwish）

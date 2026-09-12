@@ -48,6 +48,7 @@ export 'providers/screen_time_provider.dart';      // BaseScreenTimeNotifier, sc
 export 'providers/global_ranking_provider.dart';  // GlobalRankingNotifier, globalRankingProvider, subjectRankingStreamProvider（Phase 4.3）
 export 'providers/mission_provider.dart';         // MissionNotifier, missionProvider, missionProgressProvider（Phase 4.5）
 export 'providers/daily_mission_provider.dart';   // DailyMissionNotifier, dailyMissionProvider, activeDailyMissionsProvider, dailyMissionCoinsProvider（Phase 4.20）
+export 'providers/weekly_bonus_provider.dart';    // WeeklyBonusNotifier, weeklyBonusProvider, consecutiveDaysProvider, weekCompletionEmojisProvider, canClaimWeeklyBonusProvider（Phase 4.20）
 export 'providers/retention_providers.dart';      // retentionConfigProvider, todayMissionsProvider, streakDataProvider, weeklyBonusProgressProvider（Phase 4.13）
 export 'providers/retention_notifier.dart';       // RetentionNotifier, retentionNotifierProvider（Phase 4.13）
 export 'providers/learning_metrics_provider.dart'; // todayMetricsProvider, weeklyMetricsProvider, monthlyMetricsProvider（Phase 4.10）
@@ -68,6 +69,8 @@ export 'widgets/lesson_menu_page.dart';            // LessonMenuPage, LessonDeta
 export 'widgets/feedback_form_page.dart';          // FeedbackFormPage（バグ報告・改善要望）
 export 'widgets/parental_gate.dart';               // ParentalGateDialog（保護者ゲート）
 export 'widgets/screen_time_limit_screen.dart';    // ScreenTimeLimitReachedWidget, ScreenTimeSettingsWidget（利用時間制限）
+export 'widgets/time_slot_settings_widget.dart';   // TimeSlotSettingsWidget（時間帯別利用制限設定 Phase 4.21）
+export 'widgets/parental_dashboard.dart';          // ParentalDashboard（保護者向けダッシュボード Phase 4.21）
 export 'widgets/reports/weekly_bar_chart.dart';    // WeeklyBarChartWidget（週次棒グラフ）
 export 'widgets/reports/score_radar_chart.dart';   // ScoreRadarChartWidget（スコア別レーダーチャート）
 export 'widgets/multiplayer/matchmaking_search_widget.dart'; // MatchmakingSearchWidget（マッチング待機アニメーション）
