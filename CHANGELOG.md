@@ -5,7 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.1] - 2026-09-12
+## [Unreleased]
+
+### 🔐 Phase 4.24 クイズアクセス制限（Paywall統合）
+
+#### 新機能
+- **無料期間制限** 💰
+  - ユーザー登録から14日間の無料アクセス
+  - 14日経過後はサブスク購読で全問題アクセス可能
+  - SharedPreferences で登録日を管理
+  - 各アプリで独立したペイウォール実装対応
+
+- **モデル・プロバイダー** 🛠️
+  - `quiz_access_model.dart`: QuizAccessControl, QuizAccessState
+  - `quiz_access_provider.dart`: Riverpod provider ベース実装
+  - `quiz_access_override_provider.dart`: 各アプリ用 override プロバイダー
+
+- **UI コンポーネント** 🎨
+  - `QuizAccessGuard`: クイズスクリーンをラップしてアクセス制御
+  - `FreeDaysWarning`: 無料期間終了前の警告ウィジェット
+  - ペイウォール画面との自動連携
+
+#### 実装方法
+1. shared_core: quiz_access_model.dart, quiz_access_provider.dart を追加
+2. 各アプリ: quiz_access_override_provider.dart でローカル実装
+3. クイズスクリーン: QuizAccessGuard でラップ
+4. ローカルで `flutter pub run build_runner build` を実行
+
+### [0.1.1] - 2026-09-12
 
 ### 📱 Phase 4.23 ローカル通知・リマインダーシステム統合
 
