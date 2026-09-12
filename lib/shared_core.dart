@@ -162,4 +162,6 @@ export 'providers/notification_provider.dart';              // notificationConfi
 export 'providers/notification_notifier.dart';              // NotificationNotifier, notificationNotifierProvider（Phase 4.18）
 export 'providers/retention_provider.dart';                 // RetentionNotifier, retentionNotifierProvider（Phase 4.18）
 export 'services/push_notification_service.dart';           // PushNotificationService（FCM 実行ロジック Phase 4.18）
+export 'widgets/notification_settings_page.dart';           // NotificationSettingsPage（通知設定ページ Phase 4.18）
+export 'widgets/retention_dashboard.dart';                  // RetentionDashboard（リテンションダッシュボード Phase 4.18）
 export 'widgets/notification_settings_widget.dart';         // NotificationSettingsScreen, RetentionAnalyticsDashboard（通知・リテンション設定ダッシュボード Phase 4.18）
