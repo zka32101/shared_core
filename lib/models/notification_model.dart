@@ -3,155 +3,85 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'notification_model.freezed.dart';
 part 'notification_model.g.dart';
 
+/// 通知タイプの列挙型
 enum NotificationType {
-  dailyReminder,
-  streakReminder,
-  goalAchieved,
-  churnRiskWarning,
-  specialOffer,
-  seasonalEvent,
-  friendActivity,
-  achievementUnlocked,
+  learningReminder, // 学習リマインダー
+  missionAchieved, // ミッション達成
+  friendInvite, // フレンド招待
+  streakMilestone, // ストリーク達成
+  badgeEarned, // バッジ獲得
+  weeklyReport, // 週次レポート
+  dailyBonus, // デイリーボーナス
+  levelUp, // レベルアップ
+  newContent, // 新規コンテンツ
+  appUpdate, // アプリ更新
+  specialEvent, // 特別イベント
 }
 
-enum NotificationFrequency {
-  always,
-  daily,
-  weekly,
-  never,
-}
-
-@freezed
-class PushNotificationConfig with _$PushNotificationConfig {
-  const factory PushNotificationConfig({
-    required bool enablePushNotifications,
-    required Map<String, bool> enabledNotificationTypes,
-    required NotificationFrequency defaultFrequency,
-    required List<int> quietHours, // [9, 21] = 9:00-21:00
-    required bool enableAIPoweredNotifications,
-    required int retentionDaysThreshold,
-    required Map<String, dynamic> campaignConfig,
-  }) = _PushNotificationConfig;
-
-  factory PushNotificationConfig.fromJson(Map<String, dynamic> json) =>
-      _$PushNotificationConfigFromJson(json);
+/// 通知スケジュールタイプ
+enum NotificationScheduleType {
+  immediate, // 即座に配信
+  scheduled, // 指定時刻に配信
+  daily, // 毎日配信
+  weekly, // 毎週配信
+  adaptive, // 適応的（ユーザーの活動パターンに基づく）
 }
 
 @freezed
-class UserNotificationPreference with _$UserNotificationPreference {
-  const factory UserNotificationPreference({
-    required String userId,
-    required String fcmToken,
-    required NotificationFrequency frequency,
-    required List<NotificationType> enabledTypes,
-    required List<int> quietHours,
-    required bool enableSound,
-    required bool enableVibration,
-    required bool enableLEDFlash,
-    required DateTime updatedAt,
-    required bool isOptedIn,
-  }) = _UserNotificationPreference;
-
-  factory UserNotificationPreference.fromJson(Map<String, dynamic> json) =>
-      _$UserNotificationPreferenceFromJson(json);
-}
-
-@freezed
-class PushNotificationEvent with _$PushNotificationEvent {
-  const factory PushNotificationEvent({
-    required String notificationId,
+class PushNotification with _$PushNotification {
+  const factory PushNotification({
+    required String id,
     required String userId,
     required NotificationType type,
     required String title,
     required String body,
-    required Map<String, dynamic> data,
-    required DateTime sentAt,
-    required bool wasOpened,
-    required DateTime? openedAt,
-    required int? actionIndex, // which button was tapped
-  }) = _PushNotificationEvent;
-
-  factory PushNotificationEvent.fromJson(Map<String, dynamic> json) =>
-      _$PushNotificationEventFromJson(json);
-}
-
-@freezed
-class NotificationCampaign with _$NotificationCampaign {
-  const factory NotificationCampaign({
-    required String campaignId,
-    required String name,
-    required String description,
-    required NotificationType type,
-    required String title,
-    required String body,
-    required Map<String, dynamic> data,
-    required DateTime startDate,
-    required DateTime endDate,
-    required bool isActive,
-    required List<String> targetSegments, // ['newUser', 'active', 'churnRisk']
-    required int maxSendCount,
-    required int sendIntervalHours,
-    required Map<String, dynamic> abTestConfig, // A/B test for content
+    required NotificationScheduleType scheduleType,
     required DateTime createdAt,
-  }) = _NotificationCampaign;
+    DateTime? scheduledFor,
+    required bool isRead,
+    DateTime? readAt,
+    required Map<String, dynamic> metadata,
+    String? actionUrl,
+    String? imageUrl,
+    required bool isActive,
+  }) = _PushNotification;
 
-  factory NotificationCampaign.fromJson(Map<String, dynamic> json) =>
-      _$NotificationCampaignFromJson(json);
+  factory PushNotification.fromJson(Map<String, dynamic> json) =>
+      _$PushNotificationFromJson(json);
 }
 
 @freezed
-class RetentionMetrics with _$RetentionMetrics {
-  const factory RetentionMetrics({
+class NotificationPreferences with _$NotificationPreferences {
+  const factory NotificationPreferences({
     required String userId,
-    required int daysActive,
-    required int consecutiveActiveStreak,
-    required DateTime lastActiveDate,
-    required int daysSinceLastActive,
-    required double churnRiskScore,
-    required String riskLevel, // 'low', 'medium', 'high', 'critical'
-    required List<String> recommendedRetentionActions,
-    required int notificationClickRate,
-    required int totalNotificationsSent,
-    required DateTime analyzedAt,
-  }) = _RetentionMetrics;
+    required bool enableAllNotifications,
+    required Map<String, bool> typePreferences,
+    required String? preferredNotificationTime,
+    required bool enableQuietHours,
+    String? quietHoursStart,
+    String? quietHoursEnd,
+    required bool enableAppNotifications,
+    required bool enableEmailDigest,
+    required String emailDigestFrequency,
+    required DateTime updatedAt,
+  }) = _NotificationPreferences;
 
-  factory RetentionMetrics.fromJson(Map<String, dynamic> json) =>
-      _$RetentionMetricsFromJson(json);
+  factory NotificationPreferences.fromJson(Map<String, dynamic> json) =>
+      _$NotificationPreferencesFromJson(json);
 }
 
 @freezed
-class CampaignPerformance with _$CampaignPerformance {
-  const factory CampaignPerformance({
-    required String campaignId,
-    required int totalSent,
-    required int totalOpened,
-    required double openRate,
-    required int totalClicked,
-    required double clickRate,
-    required int conversionCount,
-    required double conversionRate,
-    required double estimatedLTV,
-    required List<String> performanceBySegment,
-    required DateTime analyzedAt,
-  }) = _CampaignPerformance;
-
-  factory CampaignPerformance.fromJson(Map<String, dynamic> json) =>
-      _$CampaignPerformanceFromJson(json);
-}
-
-@freezed
-class RetentionAction with _$RetentionAction {
-  const factory RetentionAction({
-    required String actionId,
+class DeviceToken with _$DeviceToken {
+  const factory DeviceToken({
     required String userId,
-    required String actionType, // 'offer_discount', 'send_motivation', 're_engagement_campaign'
-    required String actionValue,
-    required DateTime scheduledAt,
-    required bool wasExecuted,
-    required DateTime? executedAt,
-    required String? result, // 'success', 'failed', 'skipped'
-  }) = _RetentionAction;
+    required String token,
+    required String platform,
+    required String appVersion,
+    required DateTime registeredAt,
+    DateTime? lastUsedAt,
+    required bool isActive,
+  }) = _DeviceToken;
 
-  factory RetentionAction.fromJson(Map<String, dynamic> json) =>
-      _$RetentionActionFromJson(json);
+  factory DeviceToken.fromJson(Map<String, dynamic> json) =>
+      _$DeviceTokenFromJson(json);
 }
