@@ -10,6 +10,7 @@ export 'models/lesson_content_model.dart'; // LessonContent, LessonSection（解
 export 'models/feedback_model.dart'; // FeedbackType, FeedbackReport（バグ報告・改善要望）
 export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilter（ランキング）
 export 'models/friend_model.dart'; // Friend（友達機能の共通基盤）
+export 'models/friend_request_model.dart'; // FriendRequest, UserProfile, FriendRequestStatus, FriendshipStatus（Phase 4.19）
 export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, PlayerRating（マルチプレイ対戦の共通基盤）
 export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
 export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRankingEntry, UserRankingStats（Phase 4.3）
@@ -40,6 +41,7 @@ export 'providers/lesson_provider.dart';           // LessonNotifier, lessonProv
 export 'providers/feedback_provider.dart';         // FeedbackNotifier, feedbackProvider（バグ報告・改善要望）
 export 'providers/ranking_provider.dart';          // RankingNotifier, rankingProvider（ランキング）
 export 'providers/friend_provider.dart';           // FriendNotifier, friendProvider（友達機能の共通基盤）
+export 'providers/friend_request_provider.dart';   // FriendRequestNotifier, friendRequestProvider, incomingFriendRequestsProvider, outgoingFriendRequestsProvider（Phase 4.19）
 export 'providers/matchmaking_provider.dart';      // BaseMatchmakingNotifier, matchmakingProvider, MatchmakingHandlers（マッチメイキング）
 export 'providers/match_provider.dart';            // BaseMatchNotifier, currentMatchProvider, MatchHandlers（対戦中マッチ状態）
 export 'providers/screen_time_provider.dart';      // BaseScreenTimeNotifier, screenTimeProvider（利用時間制限）
@@ -72,6 +74,7 @@ export 'widgets/multiplayer/matchmaking_search_widget.dart'; // MatchmakingSearc
 export 'widgets/multiplayer/player_rating_card.dart';        // PlayerRatingCard（自分のレーティングカード）
 export 'widgets/multiplayer/leaderboard_view.dart';          // LeaderboardView（ランキング表示）
 export 'widgets/multiplayer/match_history_tile.dart';        // MatchHistoryTile（対戦履歴1件表示）
+export 'widgets/add_friend_dialog.dart';                      // AddFriendDialog, AddFriendButton（フレンド追加ダイアログ Phase 4.19）
 export 'widgets/friend_search_page.dart';                     // FriendSearchPage（フレンド検索・申請 Phase 4.4）
 export 'widgets/friend_requests_page.dart';                   // FriendRequestsPage（フレンドリクエスト管理 Phase 4.4）
 export 'widgets/friends_list_page.dart';                      // FriendsListPage（フレンド一覧・管理 Phase 4.4）
