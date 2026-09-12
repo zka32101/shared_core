@@ -4,6 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/daily_mission_model.dart';
 
+/// 実際のデイリーミッション取得・進捗更新処理（Firestore等）は各アプリ側から注入する。
+/// 各アプリのバックエンド構成がバラバラなため、shared_core は型と共通ロジックのみを
+/// 提供し、実処理はコールバックとして外から与えてもらう（feedback/ranking と同じ
+/// 「型・共通ロジックは shared_core、実処理はアプリ側」という設計）。
+typedef DailyMissionFetchHandler = Future<List<DailyMission>> Function(String appId);
+typedef DailyMissionProgressHandler = Future<void> Function(String userId, String missionId, int currentValue);
+typedef DailyMissionCompleteHandler = Future<void> Function(String userId, String missionId, MissionReward reward);
+
 /// State for daily mission management
 class DailyMissionState {
   final List<DailyMission> missions;
