@@ -356,7 +356,6 @@ const allBadges = [
 // バッジ定義を一元管理し、取得条件の自動判定ロジックを提供
 
 class BadgeLibrary {
-  static const List<BadgeModel> allBadges = allBadges;
 
   /// バッジIDからバッジモデルを取得
   static BadgeModel? getBadgeById(String badgeId) {
