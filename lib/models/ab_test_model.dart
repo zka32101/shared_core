@@ -101,7 +101,7 @@ class PopulationStats with _$PopulationStats {
 class ABTestState with _$ABTestState {
   const factory ABTestState({
     @Default({}) Map<String, ABTestResult> results,
-    @Default({}) Map<String, TestVariant> userAssignments,
+    @Default({}) Map<String, String> userAssignments, // Variant names as Strings
     @Default(false) bool isLoading,
     String? error,
   }) = _ABTestState;
