@@ -70,7 +70,7 @@ class SeasonalOffer with _$SeasonalOffer {
 class PricingConfig with _$PricingConfig {
   const factory PricingConfig({
     required int basePrice,                    // ¥120
-    required Map<UserSegment, int> segmentPrices,
+    required Map<String, int> segmentPrices,  // {"newUser": 50, "vip": 80, ...}
     @Default([]) List<SeasonalOffer> seasonalOffers,
     @Default(1000) int vipThresholdMinutes,          // VIP判定: 1000分
     @Default(7) int inactiveThresholdDays,          // 非アクティブ: 7日
