@@ -27,7 +27,7 @@ class ABTestConfig with _$ABTestConfig {
     required DateTime startDate,
     DateTime? endDate,
     required bool isActive,
-    required Map<TestVariant, double> trafficAllocation, // {control: 0.5, variant_b: 0.3, variant_c: 0.2}
+    required Map<String, double> trafficAllocation, // {"control": 0.5, "variant_b": 0.3, "variant_c": 0.2}
     required Map<String, dynamic> config,  // テスト設定（Paywall variant など）
   }) = _ABTestConfig;
 
