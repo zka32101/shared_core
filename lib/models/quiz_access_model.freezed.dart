@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,445 +9,549 @@ part of 'quiz_access_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$QuizAccessControl {
-  /// ユーザー登録日
-  DateTime get registeredAt => throw _privateConstructorUsedError;
 
-  /// サブスク購読状態
-  bool get isSubscribed => throw _privateConstructorUsedError;
+/// ユーザー登録日
+ DateTime get registeredAt;/// サブスク購読状態
+ bool get isSubscribed;/// 無料期間（日数）
+ int get freeTrialDays;
+/// Create a copy of QuizAccessControl
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$QuizAccessControlCopyWith<QuizAccessControl> get copyWith => _$QuizAccessControlCopyWithImpl<QuizAccessControl>(this as QuizAccessControl, _$identity);
 
-  /// 無料期間（日数）
-  int get freeTrialDays => throw _privateConstructorUsedError;
 
-  /// Create a copy of QuizAccessControl
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $QuizAccessControlCopyWith<QuizAccessControl> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizAccessControl&&(identical(other.registeredAt, registeredAt) || other.registeredAt == registeredAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.freeTrialDays, freeTrialDays) || other.freeTrialDays == freeTrialDays));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,registeredAt,isSubscribed,freeTrialDays);
+
+@override
+String toString() {
+  return 'QuizAccessControl(registeredAt: $registeredAt, isSubscribed: $isSubscribed, freeTrialDays: $freeTrialDays)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $QuizAccessControlCopyWith<$Res> {
-  factory $QuizAccessControlCopyWith(
-    QuizAccessControl value,
-    $Res Function(QuizAccessControl) then,
-  ) = _$QuizAccessControlCopyWithImpl<$Res, QuizAccessControl>;
-  @useResult
-  $Res call({DateTime registeredAt, bool isSubscribed, int freeTrialDays});
-}
+abstract mixin class $QuizAccessControlCopyWith<$Res>  {
+  factory $QuizAccessControlCopyWith(QuizAccessControl value, $Res Function(QuizAccessControl) _then) = _$QuizAccessControlCopyWithImpl;
+@useResult
+$Res call({
+ DateTime registeredAt, bool isSubscribed, int freeTrialDays
+});
 
+
+
+
+}
 /// @nodoc
-class _$QuizAccessControlCopyWithImpl<$Res, $Val extends QuizAccessControl>
+class _$QuizAccessControlCopyWithImpl<$Res>
     implements $QuizAccessControlCopyWith<$Res> {
-  _$QuizAccessControlCopyWithImpl(this._value, this._then);
+  _$QuizAccessControlCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final QuizAccessControl _self;
+  final $Res Function(QuizAccessControl) _then;
 
-  /// Create a copy of QuizAccessControl
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? registeredAt = null,
-    Object? isSubscribed = null,
-    Object? freeTrialDays = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            registeredAt: null == registeredAt
-                ? _value.registeredAt
-                : registeredAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            isSubscribed: null == isSubscribed
-                ? _value.isSubscribed
-                : isSubscribed // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            freeTrialDays: null == freeTrialDays
-                ? _value.freeTrialDays
-                : freeTrialDays // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of QuizAccessControl
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? registeredAt = null,Object? isSubscribed = null,Object? freeTrialDays = null,}) {
+  return _then(_self.copyWith(
+registeredAt: null == registeredAt ? _self.registeredAt : registeredAt // ignore: cast_nullable_to_non_nullable
+as DateTime,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
+as bool,freeTrialDays: null == freeTrialDays ? _self.freeTrialDays : freeTrialDays // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [QuizAccessControl].
+extension QuizAccessControlPatterns on QuizAccessControl {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuizAccessControl value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _QuizAccessControl() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuizAccessControl value)  $default,){
+final _that = this;
+switch (_that) {
+case _QuizAccessControl():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuizAccessControl value)?  $default,){
+final _that = this;
+switch (_that) {
+case _QuizAccessControl() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime registeredAt,  bool isSubscribed,  int freeTrialDays)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _QuizAccessControl() when $default != null:
+return $default(_that.registeredAt,_that.isSubscribed,_that.freeTrialDays);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime registeredAt,  bool isSubscribed,  int freeTrialDays)  $default,) {final _that = this;
+switch (_that) {
+case _QuizAccessControl():
+return $default(_that.registeredAt,_that.isSubscribed,_that.freeTrialDays);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime registeredAt,  bool isSubscribed,  int freeTrialDays)?  $default,) {final _that = this;
+switch (_that) {
+case _QuizAccessControl() when $default != null:
+return $default(_that.registeredAt,_that.isSubscribed,_that.freeTrialDays);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$QuizAccessControlImplCopyWith<$Res>
-    implements $QuizAccessControlCopyWith<$Res> {
-  factory _$$QuizAccessControlImplCopyWith(
-    _$QuizAccessControlImpl value,
-    $Res Function(_$QuizAccessControlImpl) then,
-  ) = __$$QuizAccessControlImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({DateTime registeredAt, bool isSubscribed, int freeTrialDays});
+
+
+class _QuizAccessControl implements QuizAccessControl {
+  const _QuizAccessControl({required this.registeredAt, required this.isSubscribed, this.freeTrialDays = 14});
+  
+
+/// ユーザー登録日
+@override final  DateTime registeredAt;
+/// サブスク購読状態
+@override final  bool isSubscribed;
+/// 無料期間（日数）
+@override@JsonKey() final  int freeTrialDays;
+
+/// Create a copy of QuizAccessControl
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$QuizAccessControlCopyWith<_QuizAccessControl> get copyWith => __$QuizAccessControlCopyWithImpl<_QuizAccessControl>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizAccessControl&&(identical(other.registeredAt, registeredAt) || other.registeredAt == registeredAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.freeTrialDays, freeTrialDays) || other.freeTrialDays == freeTrialDays));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,registeredAt,isSubscribed,freeTrialDays);
+
+@override
+String toString() {
+  return 'QuizAccessControl(registeredAt: $registeredAt, isSubscribed: $isSubscribed, freeTrialDays: $freeTrialDays)';
+}
+
+
 }
 
 /// @nodoc
-class __$$QuizAccessControlImplCopyWithImpl<$Res>
-    extends _$QuizAccessControlCopyWithImpl<$Res, _$QuizAccessControlImpl>
-    implements _$$QuizAccessControlImplCopyWith<$Res> {
-  __$$QuizAccessControlImplCopyWithImpl(
-    _$QuizAccessControlImpl _value,
-    $Res Function(_$QuizAccessControlImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$QuizAccessControlCopyWith<$Res> implements $QuizAccessControlCopyWith<$Res> {
+  factory _$QuizAccessControlCopyWith(_QuizAccessControl value, $Res Function(_QuizAccessControl) _then) = __$QuizAccessControlCopyWithImpl;
+@override @useResult
+$Res call({
+ DateTime registeredAt, bool isSubscribed, int freeTrialDays
+});
 
-  /// Create a copy of QuizAccessControl
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? registeredAt = null,
-    Object? isSubscribed = null,
-    Object? freeTrialDays = null,
-  }) {
-    return _then(
-      _$QuizAccessControlImpl(
-        registeredAt: null == registeredAt
-            ? _value.registeredAt
-            : registeredAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        isSubscribed: null == isSubscribed
-            ? _value.isSubscribed
-            : isSubscribed // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        freeTrialDays: null == freeTrialDays
-            ? _value.freeTrialDays
-            : freeTrialDays // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$QuizAccessControlCopyWithImpl<$Res>
+    implements _$QuizAccessControlCopyWith<$Res> {
+  __$QuizAccessControlCopyWithImpl(this._self, this._then);
 
-class _$QuizAccessControlImpl implements _QuizAccessControl {
-  const _$QuizAccessControlImpl({
-    required this.registeredAt,
-    required this.isSubscribed,
-    this.freeTrialDays = 14,
-  });
+  final _QuizAccessControl _self;
+  final $Res Function(_QuizAccessControl) _then;
 
-  /// ユーザー登録日
-  @override
-  final DateTime registeredAt;
-
-  /// サブスク購読状態
-  @override
-  final bool isSubscribed;
-
-  /// 無料期間（日数）
-  @override
-  @JsonKey()
-  final int freeTrialDays;
-
-  @override
-  String toString() {
-    return 'QuizAccessControl(registeredAt: $registeredAt, isSubscribed: $isSubscribed, freeTrialDays: $freeTrialDays)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuizAccessControlImpl &&
-            (identical(other.registeredAt, registeredAt) ||
-                other.registeredAt == registeredAt) &&
-            (identical(other.isSubscribed, isSubscribed) ||
-                other.isSubscribed == isSubscribed) &&
-            (identical(other.freeTrialDays, freeTrialDays) ||
-                other.freeTrialDays == freeTrialDays));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, registeredAt, isSubscribed, freeTrialDays);
-
-  /// Create a copy of QuizAccessControl
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuizAccessControlImplCopyWith<_$QuizAccessControlImpl> get copyWith =>
-      __$$QuizAccessControlImplCopyWithImpl<_$QuizAccessControlImpl>(
-        this,
-        _$identity,
-      );
+/// Create a copy of QuizAccessControl
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? registeredAt = null,Object? isSubscribed = null,Object? freeTrialDays = null,}) {
+  return _then(_QuizAccessControl(
+registeredAt: null == registeredAt ? _self.registeredAt : registeredAt // ignore: cast_nullable_to_non_nullable
+as DateTime,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
+as bool,freeTrialDays: null == freeTrialDays ? _self.freeTrialDays : freeTrialDays // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-abstract class _QuizAccessControl implements QuizAccessControl {
-  const factory _QuizAccessControl({
-    required final DateTime registeredAt,
-    required final bool isSubscribed,
-    final int freeTrialDays,
-  }) = _$QuizAccessControlImpl;
 
-  /// ユーザー登録日
-  @override
-  DateTime get registeredAt;
-
-  /// サブスク購読状態
-  @override
-  bool get isSubscribed;
-
-  /// 無料期間（日数）
-  @override
-  int get freeTrialDays;
-
-  /// Create a copy of QuizAccessControl
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuizAccessControlImplCopyWith<_$QuizAccessControlImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$QuizAccessState {
-  /// 全問題へのアクセス可否
-  bool get canAccessAllQuizzes => throw _privateConstructorUsedError;
 
-  /// 無料期間の残り日数（-1 = 無制限またはサブスク購読者）
-  int get remainingFreeDays => throw _privateConstructorUsedError;
+/// 全問題へのアクセス可否
+ bool get canAccessAllQuizzes;/// 無料期間の残り日数（-1 = 無制限またはサブスク購読者）
+ int get remainingFreeDays;/// ペイウォール表示が必要か
+ bool get shouldShowPaywall;/// ロック理由
+ String? get lockReason;
+/// Create a copy of QuizAccessState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$QuizAccessStateCopyWith<QuizAccessState> get copyWith => _$QuizAccessStateCopyWithImpl<QuizAccessState>(this as QuizAccessState, _$identity);
 
-  /// ペイウォール表示が必要か
-  bool get shouldShowPaywall => throw _privateConstructorUsedError;
 
-  /// ロック理由
-  String? get lockReason => throw _privateConstructorUsedError;
 
-  /// Create a copy of QuizAccessState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $QuizAccessStateCopyWith<QuizAccessState> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizAccessState&&(identical(other.canAccessAllQuizzes, canAccessAllQuizzes) || other.canAccessAllQuizzes == canAccessAllQuizzes)&&(identical(other.remainingFreeDays, remainingFreeDays) || other.remainingFreeDays == remainingFreeDays)&&(identical(other.shouldShowPaywall, shouldShowPaywall) || other.shouldShowPaywall == shouldShowPaywall)&&(identical(other.lockReason, lockReason) || other.lockReason == lockReason));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,canAccessAllQuizzes,remainingFreeDays,shouldShowPaywall,lockReason);
+
+@override
+String toString() {
+  return 'QuizAccessState(canAccessAllQuizzes: $canAccessAllQuizzes, remainingFreeDays: $remainingFreeDays, shouldShowPaywall: $shouldShowPaywall, lockReason: $lockReason)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $QuizAccessStateCopyWith<$Res> {
-  factory $QuizAccessStateCopyWith(
-    QuizAccessState value,
-    $Res Function(QuizAccessState) then,
-  ) = _$QuizAccessStateCopyWithImpl<$Res, QuizAccessState>;
-  @useResult
-  $Res call({
-    bool canAccessAllQuizzes,
-    int remainingFreeDays,
-    bool shouldShowPaywall,
-    String? lockReason,
-  });
-}
+abstract mixin class $QuizAccessStateCopyWith<$Res>  {
+  factory $QuizAccessStateCopyWith(QuizAccessState value, $Res Function(QuizAccessState) _then) = _$QuizAccessStateCopyWithImpl;
+@useResult
+$Res call({
+ bool canAccessAllQuizzes, int remainingFreeDays, bool shouldShowPaywall, String? lockReason
+});
 
+
+
+
+}
 /// @nodoc
-class _$QuizAccessStateCopyWithImpl<$Res, $Val extends QuizAccessState>
+class _$QuizAccessStateCopyWithImpl<$Res>
     implements $QuizAccessStateCopyWith<$Res> {
-  _$QuizAccessStateCopyWithImpl(this._value, this._then);
+  _$QuizAccessStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final QuizAccessState _self;
+  final $Res Function(QuizAccessState) _then;
 
-  /// Create a copy of QuizAccessState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? canAccessAllQuizzes = null,
-    Object? remainingFreeDays = null,
-    Object? shouldShowPaywall = null,
-    Object? lockReason = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            canAccessAllQuizzes: null == canAccessAllQuizzes
-                ? _value.canAccessAllQuizzes
-                : canAccessAllQuizzes // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            remainingFreeDays: null == remainingFreeDays
-                ? _value.remainingFreeDays
-                : remainingFreeDays // ignore: cast_nullable_to_non_nullable
-                      as int,
-            shouldShowPaywall: null == shouldShowPaywall
-                ? _value.shouldShowPaywall
-                : shouldShowPaywall // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            lockReason: freezed == lockReason
-                ? _value.lockReason
-                : lockReason // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of QuizAccessState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? canAccessAllQuizzes = null,Object? remainingFreeDays = null,Object? shouldShowPaywall = null,Object? lockReason = freezed,}) {
+  return _then(_self.copyWith(
+canAccessAllQuizzes: null == canAccessAllQuizzes ? _self.canAccessAllQuizzes : canAccessAllQuizzes // ignore: cast_nullable_to_non_nullable
+as bool,remainingFreeDays: null == remainingFreeDays ? _self.remainingFreeDays : remainingFreeDays // ignore: cast_nullable_to_non_nullable
+as int,shouldShowPaywall: null == shouldShowPaywall ? _self.shouldShowPaywall : shouldShowPaywall // ignore: cast_nullable_to_non_nullable
+as bool,lockReason: freezed == lockReason ? _self.lockReason : lockReason // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [QuizAccessState].
+extension QuizAccessStatePatterns on QuizAccessState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuizAccessState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _QuizAccessState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuizAccessState value)  $default,){
+final _that = this;
+switch (_that) {
+case _QuizAccessState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuizAccessState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _QuizAccessState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool canAccessAllQuizzes,  int remainingFreeDays,  bool shouldShowPaywall,  String? lockReason)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _QuizAccessState() when $default != null:
+return $default(_that.canAccessAllQuizzes,_that.remainingFreeDays,_that.shouldShowPaywall,_that.lockReason);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool canAccessAllQuizzes,  int remainingFreeDays,  bool shouldShowPaywall,  String? lockReason)  $default,) {final _that = this;
+switch (_that) {
+case _QuizAccessState():
+return $default(_that.canAccessAllQuizzes,_that.remainingFreeDays,_that.shouldShowPaywall,_that.lockReason);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool canAccessAllQuizzes,  int remainingFreeDays,  bool shouldShowPaywall,  String? lockReason)?  $default,) {final _that = this;
+switch (_that) {
+case _QuizAccessState() when $default != null:
+return $default(_that.canAccessAllQuizzes,_that.remainingFreeDays,_that.shouldShowPaywall,_that.lockReason);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$QuizAccessStateImplCopyWith<$Res>
-    implements $QuizAccessStateCopyWith<$Res> {
-  factory _$$QuizAccessStateImplCopyWith(
-    _$QuizAccessStateImpl value,
-    $Res Function(_$QuizAccessStateImpl) then,
-  ) = __$$QuizAccessStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    bool canAccessAllQuizzes,
-    int remainingFreeDays,
-    bool shouldShowPaywall,
-    String? lockReason,
-  });
+
+
+class _QuizAccessState implements QuizAccessState {
+  const _QuizAccessState({required this.canAccessAllQuizzes, required this.remainingFreeDays, required this.shouldShowPaywall, this.lockReason});
+  
+
+/// 全問題へのアクセス可否
+@override final  bool canAccessAllQuizzes;
+/// 無料期間の残り日数（-1 = 無制限またはサブスク購読者）
+@override final  int remainingFreeDays;
+/// ペイウォール表示が必要か
+@override final  bool shouldShowPaywall;
+/// ロック理由
+@override final  String? lockReason;
+
+/// Create a copy of QuizAccessState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$QuizAccessStateCopyWith<_QuizAccessState> get copyWith => __$QuizAccessStateCopyWithImpl<_QuizAccessState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizAccessState&&(identical(other.canAccessAllQuizzes, canAccessAllQuizzes) || other.canAccessAllQuizzes == canAccessAllQuizzes)&&(identical(other.remainingFreeDays, remainingFreeDays) || other.remainingFreeDays == remainingFreeDays)&&(identical(other.shouldShowPaywall, shouldShowPaywall) || other.shouldShowPaywall == shouldShowPaywall)&&(identical(other.lockReason, lockReason) || other.lockReason == lockReason));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,canAccessAllQuizzes,remainingFreeDays,shouldShowPaywall,lockReason);
+
+@override
+String toString() {
+  return 'QuizAccessState(canAccessAllQuizzes: $canAccessAllQuizzes, remainingFreeDays: $remainingFreeDays, shouldShowPaywall: $shouldShowPaywall, lockReason: $lockReason)';
+}
+
+
 }
 
 /// @nodoc
-class __$$QuizAccessStateImplCopyWithImpl<$Res>
-    extends _$QuizAccessStateCopyWithImpl<$Res, _$QuizAccessStateImpl>
-    implements _$$QuizAccessStateImplCopyWith<$Res> {
-  __$$QuizAccessStateImplCopyWithImpl(
-    _$QuizAccessStateImpl _value,
-    $Res Function(_$QuizAccessStateImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$QuizAccessStateCopyWith<$Res> implements $QuizAccessStateCopyWith<$Res> {
+  factory _$QuizAccessStateCopyWith(_QuizAccessState value, $Res Function(_QuizAccessState) _then) = __$QuizAccessStateCopyWithImpl;
+@override @useResult
+$Res call({
+ bool canAccessAllQuizzes, int remainingFreeDays, bool shouldShowPaywall, String? lockReason
+});
 
-  /// Create a copy of QuizAccessState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? canAccessAllQuizzes = null,
-    Object? remainingFreeDays = null,
-    Object? shouldShowPaywall = null,
-    Object? lockReason = freezed,
-  }) {
-    return _then(
-      _$QuizAccessStateImpl(
-        canAccessAllQuizzes: null == canAccessAllQuizzes
-            ? _value.canAccessAllQuizzes
-            : canAccessAllQuizzes // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        remainingFreeDays: null == remainingFreeDays
-            ? _value.remainingFreeDays
-            : remainingFreeDays // ignore: cast_nullable_to_non_nullable
-                  as int,
-        shouldShowPaywall: null == shouldShowPaywall
-            ? _value.shouldShowPaywall
-            : shouldShowPaywall // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        lockReason: freezed == lockReason
-            ? _value.lockReason
-            : lockReason // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$QuizAccessStateCopyWithImpl<$Res>
+    implements _$QuizAccessStateCopyWith<$Res> {
+  __$QuizAccessStateCopyWithImpl(this._self, this._then);
 
-class _$QuizAccessStateImpl implements _QuizAccessState {
-  const _$QuizAccessStateImpl({
-    required this.canAccessAllQuizzes,
-    required this.remainingFreeDays,
-    required this.shouldShowPaywall,
-    this.lockReason,
-  });
+  final _QuizAccessState _self;
+  final $Res Function(_QuizAccessState) _then;
 
-  /// 全問題へのアクセス可否
-  @override
-  final bool canAccessAllQuizzes;
-
-  /// 無料期間の残り日数（-1 = 無制限またはサブスク購読者）
-  @override
-  final int remainingFreeDays;
-
-  /// ペイウォール表示が必要か
-  @override
-  final bool shouldShowPaywall;
-
-  /// ロック理由
-  @override
-  final String? lockReason;
-
-  @override
-  String toString() {
-    return 'QuizAccessState(canAccessAllQuizzes: $canAccessAllQuizzes, remainingFreeDays: $remainingFreeDays, shouldShowPaywall: $shouldShowPaywall, lockReason: $lockReason)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuizAccessStateImpl &&
-            (identical(other.canAccessAllQuizzes, canAccessAllQuizzes) ||
-                other.canAccessAllQuizzes == canAccessAllQuizzes) &&
-            (identical(other.remainingFreeDays, remainingFreeDays) ||
-                other.remainingFreeDays == remainingFreeDays) &&
-            (identical(other.shouldShowPaywall, shouldShowPaywall) ||
-                other.shouldShowPaywall == shouldShowPaywall) &&
-            (identical(other.lockReason, lockReason) ||
-                other.lockReason == lockReason));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    canAccessAllQuizzes,
-    remainingFreeDays,
-    shouldShowPaywall,
-    lockReason,
-  );
-
-  /// Create a copy of QuizAccessState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuizAccessStateImplCopyWith<_$QuizAccessStateImpl> get copyWith =>
-      __$$QuizAccessStateImplCopyWithImpl<_$QuizAccessStateImpl>(
-        this,
-        _$identity,
-      );
+/// Create a copy of QuizAccessState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? canAccessAllQuizzes = null,Object? remainingFreeDays = null,Object? shouldShowPaywall = null,Object? lockReason = freezed,}) {
+  return _then(_QuizAccessState(
+canAccessAllQuizzes: null == canAccessAllQuizzes ? _self.canAccessAllQuizzes : canAccessAllQuizzes // ignore: cast_nullable_to_non_nullable
+as bool,remainingFreeDays: null == remainingFreeDays ? _self.remainingFreeDays : remainingFreeDays // ignore: cast_nullable_to_non_nullable
+as int,shouldShowPaywall: null == shouldShowPaywall ? _self.shouldShowPaywall : shouldShowPaywall // ignore: cast_nullable_to_non_nullable
+as bool,lockReason: freezed == lockReason ? _self.lockReason : lockReason // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-abstract class _QuizAccessState implements QuizAccessState {
-  const factory _QuizAccessState({
-    required final bool canAccessAllQuizzes,
-    required final int remainingFreeDays,
-    required final bool shouldShowPaywall,
-    final String? lockReason,
-  }) = _$QuizAccessStateImpl;
 
-  /// 全問題へのアクセス可否
-  @override
-  bool get canAccessAllQuizzes;
-
-  /// 無料期間の残り日数（-1 = 無制限またはサブスク購読者）
-  @override
-  int get remainingFreeDays;
-
-  /// ペイウォール表示が必要か
-  @override
-  bool get shouldShowPaywall;
-
-  /// ロック理由
-  @override
-  String? get lockReason;
-
-  /// Create a copy of QuizAccessState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuizAccessStateImplCopyWith<_$QuizAccessStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

@@ -6,8 +6,8 @@ part of 'retention_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DailyMissionImpl _$$DailyMissionImplFromJson(Map<String, dynamic> json) =>
-    _$DailyMissionImpl(
+_DailyMission _$DailyMissionFromJson(Map<String, dynamic> json) =>
+    _DailyMission(
       id: json['id'] as String,
       type: $enumDecode(_$MissionTypeEnumMap, json['type']),
       title: json['title'] as String,
@@ -24,7 +24,7 @@ _$DailyMissionImpl _$$DailyMissionImplFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['completedAt'] as String),
     );
 
-Map<String, dynamic> _$$DailyMissionImplToJson(_$DailyMissionImpl instance) =>
+Map<String, dynamic> _$DailyMissionToJson(_DailyMission instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': _$MissionTypeEnumMap[instance.type]!,
@@ -48,19 +48,18 @@ const _$MissionTypeEnumMap = {
   MissionType.achievements: 'achievements',
 };
 
-_$StreakDataImpl _$$StreakDataImplFromJson(Map<String, dynamic> json) =>
-    _$StreakDataImpl(
-      userId: json['userId'] as String,
-      currentStreak: (json['currentStreak'] as num).toInt(),
-      longestStreak: (json['longestStreak'] as num).toInt(),
-      lastActivityAt: DateTime.parse(json['lastActivityAt'] as String),
-      totalStreakCoins: (json['totalStreakCoins'] as num).toInt(),
-      streakBadges: (json['streakBadges'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-    );
+_StreakData _$StreakDataFromJson(Map<String, dynamic> json) => _StreakData(
+  userId: json['userId'] as String,
+  currentStreak: (json['currentStreak'] as num).toInt(),
+  longestStreak: (json['longestStreak'] as num).toInt(),
+  lastActivityAt: DateTime.parse(json['lastActivityAt'] as String),
+  totalStreakCoins: (json['totalStreakCoins'] as num).toInt(),
+  streakBadges: (json['streakBadges'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList(),
+);
 
-Map<String, dynamic> _$$StreakDataImplToJson(_$StreakDataImpl instance) =>
+Map<String, dynamic> _$StreakDataToJson(_StreakData instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'currentStreak': instance.currentStreak,
@@ -70,16 +69,15 @@ Map<String, dynamic> _$$StreakDataImplToJson(_$StreakDataImpl instance) =>
       'streakBadges': instance.streakBadges,
     };
 
-_$WeeklyBonusImpl _$$WeeklyBonusImplFromJson(Map<String, dynamic> json) =>
-    _$WeeklyBonusImpl(
-      dayNumber: (json['dayNumber'] as num).toInt(),
-      requiredMissions: (json['requiredMissions'] as num).toInt(),
-      coinReward: (json['coinReward'] as num).toInt(),
-      badgeId: json['badgeId'] as String?,
-      isCompleted: json['isCompleted'] as bool,
-    );
+_WeeklyBonus _$WeeklyBonusFromJson(Map<String, dynamic> json) => _WeeklyBonus(
+  dayNumber: (json['dayNumber'] as num).toInt(),
+  requiredMissions: (json['requiredMissions'] as num).toInt(),
+  coinReward: (json['coinReward'] as num).toInt(),
+  badgeId: json['badgeId'] as String?,
+  isCompleted: json['isCompleted'] as bool,
+);
 
-Map<String, dynamic> _$$WeeklyBonusImplToJson(_$WeeklyBonusImpl instance) =>
+Map<String, dynamic> _$WeeklyBonusToJson(_WeeklyBonus instance) =>
     <String, dynamic>{
       'dayNumber': instance.dayNumber,
       'requiredMissions': instance.requiredMissions,
@@ -88,23 +86,22 @@ Map<String, dynamic> _$$WeeklyBonusImplToJson(_$WeeklyBonusImpl instance) =>
       'isCompleted': instance.isCompleted,
     };
 
-_$WeeklyBonusProgressImpl _$$WeeklyBonusProgressImplFromJson(
-  Map<String, dynamic> json,
-) => _$WeeklyBonusProgressImpl(
-  userId: json['userId'] as String,
-  weekNumber: (json['weekNumber'] as num).toInt(),
-  bonuses: (json['bonuses'] as List<dynamic>)
-      .map((e) => WeeklyBonus.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  completedDays: (json['completedDays'] as num).toInt(),
-  startedAt: DateTime.parse(json['startedAt'] as String),
-  completedAt: json['completedAt'] == null
-      ? null
-      : DateTime.parse(json['completedAt'] as String),
-);
+_WeeklyBonusProgress _$WeeklyBonusProgressFromJson(Map<String, dynamic> json) =>
+    _WeeklyBonusProgress(
+      userId: json['userId'] as String,
+      weekNumber: (json['weekNumber'] as num).toInt(),
+      bonuses: (json['bonuses'] as List<dynamic>)
+          .map((e) => WeeklyBonus.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      completedDays: (json['completedDays'] as num).toInt(),
+      startedAt: DateTime.parse(json['startedAt'] as String),
+      completedAt: json['completedAt'] == null
+          ? null
+          : DateTime.parse(json['completedAt'] as String),
+    );
 
-Map<String, dynamic> _$$WeeklyBonusProgressImplToJson(
-  _$WeeklyBonusProgressImpl instance,
+Map<String, dynamic> _$WeeklyBonusProgressToJson(
+  _WeeklyBonusProgress instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'weekNumber': instance.weekNumber,
@@ -114,28 +111,26 @@ Map<String, dynamic> _$$WeeklyBonusProgressImplToJson(
   'completedAt': instance.completedAt?.toIso8601String(),
 };
 
-_$RetentionConfigImpl _$$RetentionConfigImplFromJson(
-  Map<String, dynamic> json,
-) => _$RetentionConfigImpl(
-  dailyMissionCount: (json['dailyMissionCount'] as num).toInt(),
-  streakCoinMultiplier: (json['streakCoinMultiplier'] as num).toInt(),
-  maxStreakBonusPerDay: (json['maxStreakBonusPerDay'] as num).toInt(),
-  weeklyBonusCoins: (json['weeklyBonusCoins'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), (e as num).toInt()),
-  ),
-  streakMilestones: (json['streakMilestones'] as List<dynamic>)
-      .map((e) => (e as num).toInt())
-      .toList(),
-);
+_RetentionConfig _$RetentionConfigFromJson(Map<String, dynamic> json) =>
+    _RetentionConfig(
+      dailyMissionCount: (json['dailyMissionCount'] as num).toInt(),
+      streakCoinMultiplier: (json['streakCoinMultiplier'] as num).toInt(),
+      maxStreakBonusPerDay: (json['maxStreakBonusPerDay'] as num).toInt(),
+      weeklyBonusCoins: (json['weeklyBonusCoins'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(int.parse(k), (e as num).toInt()),
+      ),
+      streakMilestones: (json['streakMilestones'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+    );
 
-Map<String, dynamic> _$$RetentionConfigImplToJson(
-  _$RetentionConfigImpl instance,
-) => <String, dynamic>{
-  'dailyMissionCount': instance.dailyMissionCount,
-  'streakCoinMultiplier': instance.streakCoinMultiplier,
-  'maxStreakBonusPerDay': instance.maxStreakBonusPerDay,
-  'weeklyBonusCoins': instance.weeklyBonusCoins.map(
-    (k, e) => MapEntry(k.toString(), e),
-  ),
-  'streakMilestones': instance.streakMilestones,
-};
+Map<String, dynamic> _$RetentionConfigToJson(_RetentionConfig instance) =>
+    <String, dynamic>{
+      'dailyMissionCount': instance.dailyMissionCount,
+      'streakCoinMultiplier': instance.streakCoinMultiplier,
+      'maxStreakBonusPerDay': instance.maxStreakBonusPerDay,
+      'weeklyBonusCoins': instance.weeklyBonusCoins.map(
+        (k, e) => MapEntry(k.toString(), e),
+      ),
+      'streakMilestones': instance.streakMilestones,
+    };

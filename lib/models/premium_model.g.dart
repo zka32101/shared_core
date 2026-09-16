@@ -6,8 +6,8 @@ part of 'premium_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PremiumStateImpl _$$PremiumStateImplFromJson(Map<String, dynamic> json) =>
-    _$PremiumStateImpl(
+_PremiumState _$PremiumStateFromJson(Map<String, dynamic> json) =>
+    _PremiumState(
       isSubscribed: json['isSubscribed'] as bool,
       subscriptionExpiryDate: json['subscriptionExpiryDate'] == null
           ? null
@@ -20,8 +20,8 @@ _$PremiumStateImpl _$$PremiumStateImplFromJson(Map<String, dynamic> json) =>
       isLoading: json['isLoading'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$PremiumStateImplToJson(
-  _$PremiumStateImpl instance,
+Map<String, dynamic> _$PremiumStateToJson(
+  _PremiumState instance,
 ) => <String, dynamic>{
   'isSubscribed': instance.isSubscribed,
   'subscriptionExpiryDate': instance.subscriptionExpiryDate?.toIso8601String(),
@@ -31,16 +31,16 @@ Map<String, dynamic> _$$PremiumStateImplToJson(
   'isLoading': instance.isLoading,
 };
 
-_$SubscriptionCheckRequestImpl _$$SubscriptionCheckRequestImplFromJson(
+_SubscriptionCheckRequest _$SubscriptionCheckRequestFromJson(
   Map<String, dynamic> json,
-) => _$SubscriptionCheckRequestImpl(
+) => _SubscriptionCheckRequest(
   userId: json['userId'] as String,
   platform: json['platform'] as String,
   packageName: json['packageName'] as String,
 );
 
-Map<String, dynamic> _$$SubscriptionCheckRequestImplToJson(
-  _$SubscriptionCheckRequestImpl instance,
+Map<String, dynamic> _$SubscriptionCheckRequestToJson(
+  _SubscriptionCheckRequest instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'platform': instance.platform,

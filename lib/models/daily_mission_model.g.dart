@@ -6,8 +6,8 @@ part of 'daily_mission_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DailyMissionImpl _$$DailyMissionImplFromJson(Map<String, dynamic> json) =>
-    _$DailyMissionImpl(
+_DailyMission _$DailyMissionFromJson(Map<String, dynamic> json) =>
+    _DailyMission(
       missionId: json['missionId'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
@@ -24,7 +24,7 @@ _$DailyMissionImpl _$$DailyMissionImplFromJson(Map<String, dynamic> json) =>
           const [],
     );
 
-Map<String, dynamic> _$$DailyMissionImplToJson(_$DailyMissionImpl instance) =>
+Map<String, dynamic> _$DailyMissionToJson(_DailyMission instance) =>
     <String, dynamic>{
       'missionId': instance.missionId,
       'title': instance.title,
@@ -38,15 +38,15 @@ Map<String, dynamic> _$$DailyMissionImplToJson(_$DailyMissionImpl instance) =>
       'appIds': instance.appIds,
     };
 
-_$MissionRewardImpl _$$MissionRewardImplFromJson(Map<String, dynamic> json) =>
-    _$MissionRewardImpl(
+_MissionReward _$MissionRewardFromJson(Map<String, dynamic> json) =>
+    _MissionReward(
       type: $enumDecode(_$RewardTypeEnumMap, json['type']),
       amount: (json['amount'] as num).toInt(),
       itemId: json['itemId'] as String?,
       badgeId: json['badgeId'] as String?,
     );
 
-Map<String, dynamic> _$$MissionRewardImplToJson(_$MissionRewardImpl instance) =>
+Map<String, dynamic> _$MissionRewardToJson(_MissionReward instance) =>
     <String, dynamic>{
       'type': _$RewardTypeEnumMap[instance.type]!,
       'amount': instance.amount,
@@ -61,9 +61,9 @@ const _$RewardTypeEnumMap = {
   RewardType.items: 'items',
 };
 
-_$DailyMissionProgressImpl _$$DailyMissionProgressImplFromJson(
+_DailyMissionProgress _$DailyMissionProgressFromJson(
   Map<String, dynamic> json,
-) => _$DailyMissionProgressImpl(
+) => _DailyMissionProgress(
   userId: json['userId'] as String,
   missionId: json['missionId'] as String,
   currentValue: (json['currentValue'] as num).toInt(),
@@ -75,8 +75,8 @@ _$DailyMissionProgressImpl _$$DailyMissionProgressImplFromJson(
       : DateTime.parse(json['completedAt'] as String),
 );
 
-Map<String, dynamic> _$$DailyMissionProgressImplToJson(
-  _$DailyMissionProgressImpl instance,
+Map<String, dynamic> _$DailyMissionProgressToJson(
+  _DailyMissionProgress instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'missionId': instance.missionId,
@@ -87,9 +87,9 @@ Map<String, dynamic> _$$DailyMissionProgressImplToJson(
   'completedAt': instance.completedAt?.toIso8601String(),
 };
 
-_$DailyMissionListItemImpl _$$DailyMissionListItemImplFromJson(
+_DailyMissionListItem _$DailyMissionListItemFromJson(
   Map<String, dynamic> json,
-) => _$DailyMissionListItemImpl(
+) => _DailyMissionListItem(
   mission: DailyMission.fromJson(json['mission'] as Map<String, dynamic>),
   progress: DailyMissionProgress.fromJson(
     json['progress'] as Map<String, dynamic>,
@@ -98,8 +98,8 @@ _$DailyMissionListItemImpl _$$DailyMissionListItemImplFromJson(
   progressPercentage: (json['progressPercentage'] as num).toInt(),
 );
 
-Map<String, dynamic> _$$DailyMissionListItemImplToJson(
-  _$DailyMissionListItemImpl instance,
+Map<String, dynamic> _$DailyMissionListItemToJson(
+  _DailyMissionListItem instance,
 ) => <String, dynamic>{
   'mission': instance.mission,
   'progress': instance.progress,
@@ -107,20 +107,19 @@ Map<String, dynamic> _$$DailyMissionListItemImplToJson(
   'progressPercentage': instance.progressPercentage,
 };
 
-_$WeeklyBonusImpl _$$WeeklyBonusImplFromJson(Map<String, dynamic> json) =>
-    _$WeeklyBonusImpl(
-      userId: json['userId'] as String,
-      consecutiveDays: (json['consecutiveDays'] as num).toInt(),
-      lastCompletionDate: DateTime.parse(json['lastCompletionDate'] as String),
-      resetDate: DateTime.parse(json['resetDate'] as String),
-      completionDaysOfWeek: (json['completionDaysOfWeek'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
-      bonusClaimedThisWeek: json['bonusClaimedThisWeek'] as bool? ?? false,
-      totalWeeklyBonus: (json['totalWeeklyBonus'] as num?)?.toInt() ?? 0,
-    );
+_WeeklyBonus _$WeeklyBonusFromJson(Map<String, dynamic> json) => _WeeklyBonus(
+  userId: json['userId'] as String,
+  consecutiveDays: (json['consecutiveDays'] as num).toInt(),
+  lastCompletionDate: DateTime.parse(json['lastCompletionDate'] as String),
+  resetDate: DateTime.parse(json['resetDate'] as String),
+  completionDaysOfWeek: (json['completionDaysOfWeek'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
+  bonusClaimedThisWeek: json['bonusClaimedThisWeek'] as bool? ?? false,
+  totalWeeklyBonus: (json['totalWeeklyBonus'] as num?)?.toInt() ?? 0,
+);
 
-Map<String, dynamic> _$$WeeklyBonusImplToJson(_$WeeklyBonusImpl instance) =>
+Map<String, dynamic> _$WeeklyBonusToJson(_WeeklyBonus instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'consecutiveDays': instance.consecutiveDays,

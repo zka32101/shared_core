@@ -6,8 +6,8 @@ part of 'ab_test_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ABTestConfigImpl _$$ABTestConfigImplFromJson(Map<String, dynamic> json) =>
-    _$ABTestConfigImpl(
+_ABTestConfig _$ABTestConfigFromJson(Map<String, dynamic> json) =>
+    _ABTestConfig(
       testId: json['testId'] as String,
       testName: json['testName'] as String,
       description: json['description'] as String,
@@ -24,8 +24,8 @@ _$ABTestConfigImpl _$$ABTestConfigImplFromJson(Map<String, dynamic> json) =>
       config: json['config'] as Map<String, dynamic>,
     );
 
-Map<String, dynamic> _$$ABTestConfigImplToJson(
-  _$ABTestConfigImpl instance,
+Map<String, dynamic> _$ABTestConfigToJson(
+  _ABTestConfig instance,
 ) => <String, dynamic>{
   'testId': instance.testId,
   'testName': instance.testName,
@@ -44,38 +44,38 @@ const _$TestVariantEnumMap = {
   TestVariant.variant_c: 'variant_c',
 };
 
-_$ABTestAssignmentImpl _$$ABTestAssignmentImplFromJson(
-  Map<String, dynamic> json,
-) => _$ABTestAssignmentImpl(
-  userId: json['userId'] as String,
-  testId: json['testId'] as String,
-  assignedVariant: $enumDecode(_$TestVariantEnumMap, json['assignedVariant']),
-  assignedAt: DateTime.parse(json['assignedAt'] as String),
-  isSticky: json['isSticky'] as bool,
-);
-
-Map<String, dynamic> _$$ABTestAssignmentImplToJson(
-  _$ABTestAssignmentImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'testId': instance.testId,
-  'assignedVariant': _$TestVariantEnumMap[instance.assignedVariant]!,
-  'assignedAt': instance.assignedAt.toIso8601String(),
-  'isSticky': instance.isSticky,
-};
-
-_$ABTestEventImpl _$$ABTestEventImplFromJson(Map<String, dynamic> json) =>
-    _$ABTestEventImpl(
+_ABTestAssignment _$ABTestAssignmentFromJson(Map<String, dynamic> json) =>
+    _ABTestAssignment(
       userId: json['userId'] as String,
       testId: json['testId'] as String,
-      variant: $enumDecode(_$TestVariantEnumMap, json['variant']),
-      metric: $enumDecode(_$TestMetricEnumMap, json['metric']),
-      value: (json['value'] as num).toInt(),
-      eventTime: DateTime.parse(json['eventTime'] as String),
-      customData: json['customData'] as Map<String, dynamic>?,
+      assignedVariant: $enumDecode(
+        _$TestVariantEnumMap,
+        json['assignedVariant'],
+      ),
+      assignedAt: DateTime.parse(json['assignedAt'] as String),
+      isSticky: json['isSticky'] as bool,
     );
 
-Map<String, dynamic> _$$ABTestEventImplToJson(_$ABTestEventImpl instance) =>
+Map<String, dynamic> _$ABTestAssignmentToJson(_ABTestAssignment instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'testId': instance.testId,
+      'assignedVariant': _$TestVariantEnumMap[instance.assignedVariant]!,
+      'assignedAt': instance.assignedAt.toIso8601String(),
+      'isSticky': instance.isSticky,
+    };
+
+_ABTestEvent _$ABTestEventFromJson(Map<String, dynamic> json) => _ABTestEvent(
+  userId: json['userId'] as String,
+  testId: json['testId'] as String,
+  variant: $enumDecode(_$TestVariantEnumMap, json['variant']),
+  metric: $enumDecode(_$TestMetricEnumMap, json['metric']),
+  value: (json['value'] as num).toInt(),
+  eventTime: DateTime.parse(json['eventTime'] as String),
+  customData: json['customData'] as Map<String, dynamic>?,
+);
+
+Map<String, dynamic> _$ABTestEventToJson(_ABTestEvent instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'testId': instance.testId,
@@ -94,8 +94,8 @@ const _$TestMetricEnumMap = {
   TestMetric.churnRate: 'churnRate',
 };
 
-_$ABTestResultImpl _$$ABTestResultImplFromJson(Map<String, dynamic> json) =>
-    _$ABTestResultImpl(
+_ABTestResult _$ABTestResultFromJson(Map<String, dynamic> json) =>
+    _ABTestResult(
       testId: json['testId'] as String,
       variant: $enumDecode(_$TestVariantEnumMap, json['variant']),
       impressions: (json['impressions'] as num).toInt(),
@@ -106,7 +106,7 @@ _$ABTestResultImpl _$$ABTestResultImplFromJson(Map<String, dynamic> json) =>
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
 
-Map<String, dynamic> _$$ABTestResultImplToJson(_$ABTestResultImpl instance) =>
+Map<String, dynamic> _$ABTestResultToJson(_ABTestResult instance) =>
     <String, dynamic>{
       'testId': instance.testId,
       'variant': _$TestVariantEnumMap[instance.variant]!,
@@ -118,26 +118,24 @@ Map<String, dynamic> _$$ABTestResultImplToJson(_$ABTestResultImpl instance) =>
       'updatedAt': instance.updatedAt.toIso8601String(),
     };
 
-_$PopulationStatsImpl _$$PopulationStatsImplFromJson(
-  Map<String, dynamic> json,
-) => _$PopulationStatsImpl(
-  totalUsers: (json['totalUsers'] as num).toInt(),
-  activeUsers: (json['activeUsers'] as num).toInt(),
-  churned: (json['churned'] as num).toInt(),
-  churnRate: (json['churnRate'] as num).toDouble(),
-  segmentDistribution: Map<String, int>.from(
-    json['segmentDistribution'] as Map,
-  ),
-  sampledAt: DateTime.parse(json['sampledAt'] as String),
-);
+_PopulationStats _$PopulationStatsFromJson(Map<String, dynamic> json) =>
+    _PopulationStats(
+      totalUsers: (json['totalUsers'] as num).toInt(),
+      activeUsers: (json['activeUsers'] as num).toInt(),
+      churned: (json['churned'] as num).toInt(),
+      churnRate: (json['churnRate'] as num).toDouble(),
+      segmentDistribution: Map<String, int>.from(
+        json['segmentDistribution'] as Map,
+      ),
+      sampledAt: DateTime.parse(json['sampledAt'] as String),
+    );
 
-Map<String, dynamic> _$$PopulationStatsImplToJson(
-  _$PopulationStatsImpl instance,
-) => <String, dynamic>{
-  'totalUsers': instance.totalUsers,
-  'activeUsers': instance.activeUsers,
-  'churned': instance.churned,
-  'churnRate': instance.churnRate,
-  'segmentDistribution': instance.segmentDistribution,
-  'sampledAt': instance.sampledAt.toIso8601String(),
-};
+Map<String, dynamic> _$PopulationStatsToJson(_PopulationStats instance) =>
+    <String, dynamic>{
+      'totalUsers': instance.totalUsers,
+      'activeUsers': instance.activeUsers,
+      'churned': instance.churned,
+      'churnRate': instance.churnRate,
+      'segmentDistribution': instance.segmentDistribution,
+      'sampledAt': instance.sampledAt.toIso8601String(),
+    };

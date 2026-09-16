@@ -6,48 +6,46 @@ part of 'coaching_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CoachingSessionImpl _$$CoachingSessionImplFromJson(
-  Map<String, dynamic> json,
-) => _$CoachingSessionImpl(
-  userId: json['userId'] as String,
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
-  sessionId: json['sessionId'] as String,
-  analyzedSubjects: (json['analyzedSubjects'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  advices: (json['advices'] as List<dynamic>)
-      .map((e) => CoachingAdvice.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  learningInsight: LearningInsight.fromJson(
-    json['learningInsight'] as Map<String, dynamic>,
-  ),
-  motivationScore: (json['motivationScore'] as num).toInt(),
-  coachingPhase: json['coachingPhase'] as String,
-  recommendedTopics: (json['recommendedTopics'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  isActive: json['isActive'] as bool,
-);
+_CoachingSession _$CoachingSessionFromJson(Map<String, dynamic> json) =>
+    _CoachingSession(
+      userId: json['userId'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      sessionId: json['sessionId'] as String,
+      analyzedSubjects: (json['analyzedSubjects'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      advices: (json['advices'] as List<dynamic>)
+          .map((e) => CoachingAdvice.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      learningInsight: LearningInsight.fromJson(
+        json['learningInsight'] as Map<String, dynamic>,
+      ),
+      motivationScore: (json['motivationScore'] as num).toInt(),
+      coachingPhase: json['coachingPhase'] as String,
+      recommendedTopics: (json['recommendedTopics'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      isActive: json['isActive'] as bool,
+    );
 
-Map<String, dynamic> _$$CoachingSessionImplToJson(
-  _$CoachingSessionImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt.toIso8601String(),
-  'sessionId': instance.sessionId,
-  'analyzedSubjects': instance.analyzedSubjects,
-  'advices': instance.advices,
-  'learningInsight': instance.learningInsight,
-  'motivationScore': instance.motivationScore,
-  'coachingPhase': instance.coachingPhase,
-  'recommendedTopics': instance.recommendedTopics,
-  'isActive': instance.isActive,
-};
+Map<String, dynamic> _$CoachingSessionToJson(_CoachingSession instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'sessionId': instance.sessionId,
+      'analyzedSubjects': instance.analyzedSubjects,
+      'advices': instance.advices,
+      'learningInsight': instance.learningInsight,
+      'motivationScore': instance.motivationScore,
+      'coachingPhase': instance.coachingPhase,
+      'recommendedTopics': instance.recommendedTopics,
+      'isActive': instance.isActive,
+    };
 
-_$CoachingAdviceImpl _$$CoachingAdviceImplFromJson(Map<String, dynamic> json) =>
-    _$CoachingAdviceImpl(
+_CoachingAdvice _$CoachingAdviceFromJson(Map<String, dynamic> json) =>
+    _CoachingAdvice(
       adviceId: json['adviceId'] as String,
       category: json['category'] as String,
       title: json['title'] as String,
@@ -63,69 +61,67 @@ _$CoachingAdviceImpl _$$CoachingAdviceImplFromJson(Map<String, dynamic> json) =>
       expectedImpactScore: (json['expectedImpactScore'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$CoachingAdviceImplToJson(
-  _$CoachingAdviceImpl instance,
-) => <String, dynamic>{
-  'adviceId': instance.adviceId,
-  'category': instance.category,
-  'title': instance.title,
-  'description': instance.description,
-  'actionableHint': instance.actionableHint,
-  'priority': instance.priority,
-  'givenAt': instance.givenAt.toIso8601String(),
-  'targetSubject': instance.targetSubject,
-  'isActedUpon': instance.isActedUpon,
-  'actedUponAt': instance.actedUponAt?.toIso8601String(),
-  'expectedImpactScore': instance.expectedImpactScore,
-};
+Map<String, dynamic> _$CoachingAdviceToJson(_CoachingAdvice instance) =>
+    <String, dynamic>{
+      'adviceId': instance.adviceId,
+      'category': instance.category,
+      'title': instance.title,
+      'description': instance.description,
+      'actionableHint': instance.actionableHint,
+      'priority': instance.priority,
+      'givenAt': instance.givenAt.toIso8601String(),
+      'targetSubject': instance.targetSubject,
+      'isActedUpon': instance.isActedUpon,
+      'actedUponAt': instance.actedUponAt?.toIso8601String(),
+      'expectedImpactScore': instance.expectedImpactScore,
+    };
 
-_$LearningInsightImpl _$$LearningInsightImplFromJson(
-  Map<String, dynamic> json,
-) => _$LearningInsightImpl(
-  userId: json['userId'] as String,
-  analyzedAt: DateTime.parse(json['analyzedAt'] as String),
-  subjectInsights: (json['subjectInsights'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, SubjectInsight.fromJson(e as Map<String, dynamic>)),
-  ),
-  overallLearningPattern: json['overallLearningPattern'] as String,
-  strengthAreas: (json['strengthAreas'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  weaknessAreas: (json['weaknessAreas'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  consistencyTrendScore: (json['consistencyTrendScore'] as num).toDouble(),
-  engagementTrendScore: (json['engagementTrendScore'] as num).toDouble(),
-  recommendedFocusArea: json['recommendedFocusArea'] as String,
-  estimatedDaysToImprovement: (json['estimatedDaysToImprovement'] as num)
-      .toInt(),
-  successPatterns: (json['successPatterns'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  failurePatterns: (json['failurePatterns'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-);
+_LearningInsight _$LearningInsightFromJson(Map<String, dynamic> json) =>
+    _LearningInsight(
+      userId: json['userId'] as String,
+      analyzedAt: DateTime.parse(json['analyzedAt'] as String),
+      subjectInsights: (json['subjectInsights'] as Map<String, dynamic>).map(
+        (k, e) =>
+            MapEntry(k, SubjectInsight.fromJson(e as Map<String, dynamic>)),
+      ),
+      overallLearningPattern: json['overallLearningPattern'] as String,
+      strengthAreas: (json['strengthAreas'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      weaknessAreas: (json['weaknessAreas'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      consistencyTrendScore: (json['consistencyTrendScore'] as num).toDouble(),
+      engagementTrendScore: (json['engagementTrendScore'] as num).toDouble(),
+      recommendedFocusArea: json['recommendedFocusArea'] as String,
+      estimatedDaysToImprovement: (json['estimatedDaysToImprovement'] as num)
+          .toInt(),
+      successPatterns: (json['successPatterns'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      failurePatterns: (json['failurePatterns'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+    );
 
-Map<String, dynamic> _$$LearningInsightImplToJson(
-  _$LearningInsightImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'analyzedAt': instance.analyzedAt.toIso8601String(),
-  'subjectInsights': instance.subjectInsights,
-  'overallLearningPattern': instance.overallLearningPattern,
-  'strengthAreas': instance.strengthAreas,
-  'weaknessAreas': instance.weaknessAreas,
-  'consistencyTrendScore': instance.consistencyTrendScore,
-  'engagementTrendScore': instance.engagementTrendScore,
-  'recommendedFocusArea': instance.recommendedFocusArea,
-  'estimatedDaysToImprovement': instance.estimatedDaysToImprovement,
-  'successPatterns': instance.successPatterns,
-  'failurePatterns': instance.failurePatterns,
-};
+Map<String, dynamic> _$LearningInsightToJson(_LearningInsight instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'analyzedAt': instance.analyzedAt.toIso8601String(),
+      'subjectInsights': instance.subjectInsights,
+      'overallLearningPattern': instance.overallLearningPattern,
+      'strengthAreas': instance.strengthAreas,
+      'weaknessAreas': instance.weaknessAreas,
+      'consistencyTrendScore': instance.consistencyTrendScore,
+      'engagementTrendScore': instance.engagementTrendScore,
+      'recommendedFocusArea': instance.recommendedFocusArea,
+      'estimatedDaysToImprovement': instance.estimatedDaysToImprovement,
+      'successPatterns': instance.successPatterns,
+      'failurePatterns': instance.failurePatterns,
+    };
 
-_$SubjectInsightImpl _$$SubjectInsightImplFromJson(Map<String, dynamic> json) =>
-    _$SubjectInsightImpl(
+_SubjectInsight _$SubjectInsightFromJson(Map<String, dynamic> json) =>
+    _SubjectInsight(
       appId: json['appId'] as String,
       appName: json['appName'] as String,
       currentAccuracy: (json['currentAccuracy'] as num).toDouble(),
@@ -143,24 +139,23 @@ _$SubjectInsightImpl _$$SubjectInsightImplFromJson(Map<String, dynamic> json) =>
       estimatedReadiness: (json['estimatedReadiness'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$SubjectInsightImplToJson(
-  _$SubjectInsightImpl instance,
-) => <String, dynamic>{
-  'appId': instance.appId,
-  'appName': instance.appName,
-  'currentAccuracy': instance.currentAccuracy,
-  'accuracyTrend': instance.accuracyTrend,
-  'totalLearningMinutes': instance.totalLearningMinutes,
-  'averageSessionDuration': instance.averageSessionDuration,
-  'topicStrengths': instance.topicStrengths,
-  'strugglingTopics': instance.strugglingTopics,
-  'daysSinceLastSession': instance.daysSinceLastSession,
-  'consecutiveDaysLearned': instance.consecutiveDaysLearned,
-  'estimatedReadiness': instance.estimatedReadiness,
-};
+Map<String, dynamic> _$SubjectInsightToJson(_SubjectInsight instance) =>
+    <String, dynamic>{
+      'appId': instance.appId,
+      'appName': instance.appName,
+      'currentAccuracy': instance.currentAccuracy,
+      'accuracyTrend': instance.accuracyTrend,
+      'totalLearningMinutes': instance.totalLearningMinutes,
+      'averageSessionDuration': instance.averageSessionDuration,
+      'topicStrengths': instance.topicStrengths,
+      'strugglingTopics': instance.strugglingTopics,
+      'daysSinceLastSession': instance.daysSinceLastSession,
+      'consecutiveDaysLearned': instance.consecutiveDaysLearned,
+      'estimatedReadiness': instance.estimatedReadiness,
+    };
 
-_$TopicStrengthImpl _$$TopicStrengthImplFromJson(Map<String, dynamic> json) =>
-    _$TopicStrengthImpl(
+_TopicStrength _$TopicStrengthFromJson(Map<String, dynamic> json) =>
+    _TopicStrength(
       topicId: json['topicId'] as String,
       topicName: json['topicName'] as String,
       masteryLevel: (json['masteryLevel'] as num).toDouble(),
@@ -169,7 +164,7 @@ _$TopicStrengthImpl _$$TopicStrengthImplFromJson(Map<String, dynamic> json) =>
       timeSpentMinutes: (json['timeSpentMinutes'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$TopicStrengthImplToJson(_$TopicStrengthImpl instance) =>
+Map<String, dynamic> _$TopicStrengthToJson(_TopicStrength instance) =>
     <String, dynamic>{
       'topicId': instance.topicId,
       'topicName': instance.topicName,
@@ -179,8 +174,8 @@ Map<String, dynamic> _$$TopicStrengthImplToJson(_$TopicStrengthImpl instance) =>
       'timeSpentMinutes': instance.timeSpentMinutes,
     };
 
-_$CoachingGoalImpl _$$CoachingGoalImplFromJson(Map<String, dynamic> json) =>
-    _$CoachingGoalImpl(
+_CoachingGoal _$CoachingGoalFromJson(Map<String, dynamic> json) =>
+    _CoachingGoal(
       goalId: json['goalId'] as String,
       userId: json['userId'] as String,
       targetSubject: json['targetSubject'] as String,
@@ -198,7 +193,7 @@ _$CoachingGoalImpl _$$CoachingGoalImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$CoachingGoalImplToJson(_$CoachingGoalImpl instance) =>
+Map<String, dynamic> _$CoachingGoalToJson(_CoachingGoal instance) =>
     <String, dynamic>{
       'goalId': instance.goalId,
       'userId': instance.userId,
@@ -213,36 +208,34 @@ Map<String, dynamic> _$$CoachingGoalImplToJson(_$CoachingGoalImpl instance) =>
       'relatedAdvices': instance.relatedAdvices,
     };
 
-_$CoachingFeedbackImpl _$$CoachingFeedbackImplFromJson(
-  Map<String, dynamic> json,
-) => _$CoachingFeedbackImpl(
-  feedbackId: json['feedbackId'] as String,
-  userId: json['userId'] as String,
-  adviceId: json['adviceId'] as String,
-  givenAt: DateTime.parse(json['givenAt'] as String),
-  wasHelpful: json['wasHelpful'] as bool,
-  helpfulnessScore: (json['helpfulnessScore'] as num).toInt(),
-  userFeedback: json['userFeedback'] as String,
-  feedbackAt: json['feedbackAt'] == null
-      ? null
-      : DateTime.parse(json['feedbackAt'] as String),
-);
+_CoachingFeedback _$CoachingFeedbackFromJson(Map<String, dynamic> json) =>
+    _CoachingFeedback(
+      feedbackId: json['feedbackId'] as String,
+      userId: json['userId'] as String,
+      adviceId: json['adviceId'] as String,
+      givenAt: DateTime.parse(json['givenAt'] as String),
+      wasHelpful: json['wasHelpful'] as bool,
+      helpfulnessScore: (json['helpfulnessScore'] as num).toInt(),
+      userFeedback: json['userFeedback'] as String,
+      feedbackAt: json['feedbackAt'] == null
+          ? null
+          : DateTime.parse(json['feedbackAt'] as String),
+    );
 
-Map<String, dynamic> _$$CoachingFeedbackImplToJson(
-  _$CoachingFeedbackImpl instance,
-) => <String, dynamic>{
-  'feedbackId': instance.feedbackId,
-  'userId': instance.userId,
-  'adviceId': instance.adviceId,
-  'givenAt': instance.givenAt.toIso8601String(),
-  'wasHelpful': instance.wasHelpful,
-  'helpfulnessScore': instance.helpfulnessScore,
-  'userFeedback': instance.userFeedback,
-  'feedbackAt': instance.feedbackAt?.toIso8601String(),
-};
+Map<String, dynamic> _$CoachingFeedbackToJson(_CoachingFeedback instance) =>
+    <String, dynamic>{
+      'feedbackId': instance.feedbackId,
+      'userId': instance.userId,
+      'adviceId': instance.adviceId,
+      'givenAt': instance.givenAt.toIso8601String(),
+      'wasHelpful': instance.wasHelpful,
+      'helpfulnessScore': instance.helpfulnessScore,
+      'userFeedback': instance.userFeedback,
+      'feedbackAt': instance.feedbackAt?.toIso8601String(),
+    };
 
-_$AICoachPromptImpl _$$AICoachPromptImplFromJson(Map<String, dynamic> json) =>
-    _$AICoachPromptImpl(
+_AICoachPrompt _$AICoachPromptFromJson(Map<String, dynamic> json) =>
+    _AICoachPrompt(
       userId: json['userId'] as String,
       subjectIds: (json['subjectIds'] as List<dynamic>)
           .map((e) => e as String)
@@ -257,7 +250,7 @@ _$AICoachPromptImpl _$$AICoachPromptImplFromJson(Map<String, dynamic> json) =>
       coachingStyle: json['coachingStyle'] as String,
     );
 
-Map<String, dynamic> _$$AICoachPromptImplToJson(_$AICoachPromptImpl instance) =>
+Map<String, dynamic> _$AICoachPromptToJson(_AICoachPrompt instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'subjectIds': instance.subjectIds,
@@ -267,9 +260,9 @@ Map<String, dynamic> _$$AICoachPromptImplToJson(_$AICoachPromptImpl instance) =>
       'coachingStyle': instance.coachingStyle,
     };
 
-_$CoachingAnalyticsEventImpl _$$CoachingAnalyticsEventImplFromJson(
+_CoachingAnalyticsEvent _$CoachingAnalyticsEventFromJson(
   Map<String, dynamic> json,
-) => _$CoachingAnalyticsEventImpl(
+) => _CoachingAnalyticsEvent(
   userId: json['userId'] as String,
   sessionId: json['sessionId'] as String,
   eventType: json['eventType'] as String,
@@ -277,8 +270,8 @@ _$CoachingAnalyticsEventImpl _$$CoachingAnalyticsEventImplFromJson(
   eventData: json['eventData'] as Map<String, dynamic>,
 );
 
-Map<String, dynamic> _$$CoachingAnalyticsEventImplToJson(
-  _$CoachingAnalyticsEventImpl instance,
+Map<String, dynamic> _$CoachingAnalyticsEventToJson(
+  _CoachingAnalyticsEvent instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'sessionId': instance.sessionId,

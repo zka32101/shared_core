@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,529 +9,567 @@ part of 'premium_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-PremiumState _$PremiumStateFromJson(Map<String, dynamic> json) {
-  return _PremiumState.fromJson(json);
-}
 
 /// @nodoc
 mixin _$PremiumState {
-  /// ユーザーがアクティブなサブスクリプションを持っているか
-  bool get isSubscribed => throw _privateConstructorUsedError;
 
-  /// サブスクリプションの有効期限（null の場合は無期限または未検証）
-  DateTime? get subscriptionExpiryDate => throw _privateConstructorUsedError;
-
-  /// サブスクリプション種別（'monthly', 'yearly', など）
-  String? get subscriptionType => throw _privateConstructorUsedError;
-
-  /// 最後の検証時刻
-  DateTime? get lastValidatedAt => throw _privateConstructorUsedError;
-
-  /// エラーメッセージ（検証失敗時）
-  String? get error => throw _privateConstructorUsedError;
-
-  /// ローディング状態
-  bool get isLoading => throw _privateConstructorUsedError;
+/// ユーザーがアクティブなサブスクリプションを持っているか
+ bool get isSubscribed;/// サブスクリプションの有効期限（null の場合は無期限または未検証）
+ DateTime? get subscriptionExpiryDate;/// サブスクリプション種別（'monthly', 'yearly', など）
+ String? get subscriptionType;/// 最後の検証時刻
+ DateTime? get lastValidatedAt;/// エラーメッセージ（検証失敗時）
+ String? get error;/// ローディング状態
+ bool get isLoading;
+/// Create a copy of PremiumState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PremiumStateCopyWith<PremiumState> get copyWith => _$PremiumStateCopyWithImpl<PremiumState>(this as PremiumState, _$identity);
 
   /// Serializes this PremiumState to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of PremiumState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PremiumStateCopyWith<PremiumState> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PremiumState&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.subscriptionExpiryDate, subscriptionExpiryDate) || other.subscriptionExpiryDate == subscriptionExpiryDate)&&(identical(other.subscriptionType, subscriptionType) || other.subscriptionType == subscriptionType)&&(identical(other.lastValidatedAt, lastValidatedAt) || other.lastValidatedAt == lastValidatedAt)&&(identical(other.error, error) || other.error == error)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,isSubscribed,subscriptionExpiryDate,subscriptionType,lastValidatedAt,error,isLoading);
+
+@override
+String toString() {
+  return 'PremiumState(isSubscribed: $isSubscribed, subscriptionExpiryDate: $subscriptionExpiryDate, subscriptionType: $subscriptionType, lastValidatedAt: $lastValidatedAt, error: $error, isLoading: $isLoading)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PremiumStateCopyWith<$Res> {
-  factory $PremiumStateCopyWith(
-    PremiumState value,
-    $Res Function(PremiumState) then,
-  ) = _$PremiumStateCopyWithImpl<$Res, PremiumState>;
-  @useResult
-  $Res call({
-    bool isSubscribed,
-    DateTime? subscriptionExpiryDate,
-    String? subscriptionType,
-    DateTime? lastValidatedAt,
-    String? error,
-    bool isLoading,
-  });
-}
+abstract mixin class $PremiumStateCopyWith<$Res>  {
+  factory $PremiumStateCopyWith(PremiumState value, $Res Function(PremiumState) _then) = _$PremiumStateCopyWithImpl;
+@useResult
+$Res call({
+ bool isSubscribed, DateTime? subscriptionExpiryDate, String? subscriptionType, DateTime? lastValidatedAt, String? error, bool isLoading
+});
 
+
+
+
+}
 /// @nodoc
-class _$PremiumStateCopyWithImpl<$Res, $Val extends PremiumState>
+class _$PremiumStateCopyWithImpl<$Res>
     implements $PremiumStateCopyWith<$Res> {
-  _$PremiumStateCopyWithImpl(this._value, this._then);
+  _$PremiumStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final PremiumState _self;
+  final $Res Function(PremiumState) _then;
 
-  /// Create a copy of PremiumState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? isSubscribed = null,
-    Object? subscriptionExpiryDate = freezed,
-    Object? subscriptionType = freezed,
-    Object? lastValidatedAt = freezed,
-    Object? error = freezed,
-    Object? isLoading = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            isSubscribed: null == isSubscribed
-                ? _value.isSubscribed
-                : isSubscribed // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            subscriptionExpiryDate: freezed == subscriptionExpiryDate
-                ? _value.subscriptionExpiryDate
-                : subscriptionExpiryDate // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            subscriptionType: freezed == subscriptionType
-                ? _value.subscriptionType
-                : subscriptionType // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            lastValidatedAt: freezed == lastValidatedAt
-                ? _value.lastValidatedAt
-                : lastValidatedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            error: freezed == error
-                ? _value.error
-                : error // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            isLoading: null == isLoading
-                ? _value.isLoading
-                : isLoading // ignore: cast_nullable_to_non_nullable
-                      as bool,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of PremiumState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? subscriptionExpiryDate = freezed,Object? subscriptionType = freezed,Object? lastValidatedAt = freezed,Object? error = freezed,Object? isLoading = null,}) {
+  return _then(_self.copyWith(
+isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
+as bool,subscriptionExpiryDate: freezed == subscriptionExpiryDate ? _self.subscriptionExpiryDate : subscriptionExpiryDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,subscriptionType: freezed == subscriptionType ? _self.subscriptionType : subscriptionType // ignore: cast_nullable_to_non_nullable
+as String?,lastValidatedAt: freezed == lastValidatedAt ? _self.lastValidatedAt : lastValidatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
 }
 
-/// @nodoc
-abstract class _$$PremiumStateImplCopyWith<$Res>
-    implements $PremiumStateCopyWith<$Res> {
-  factory _$$PremiumStateImplCopyWith(
-    _$PremiumStateImpl value,
-    $Res Function(_$PremiumStateImpl) then,
-  ) = __$$PremiumStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    bool isSubscribed,
-    DateTime? subscriptionExpiryDate,
-    String? subscriptionType,
-    DateTime? lastValidatedAt,
-    String? error,
-    bool isLoading,
-  });
 }
 
-/// @nodoc
-class __$$PremiumStateImplCopyWithImpl<$Res>
-    extends _$PremiumStateCopyWithImpl<$Res, _$PremiumStateImpl>
-    implements _$$PremiumStateImplCopyWith<$Res> {
-  __$$PremiumStateImplCopyWithImpl(
-    _$PremiumStateImpl _value,
-    $Res Function(_$PremiumStateImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of PremiumState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? isSubscribed = null,
-    Object? subscriptionExpiryDate = freezed,
-    Object? subscriptionType = freezed,
-    Object? lastValidatedAt = freezed,
-    Object? error = freezed,
-    Object? isLoading = null,
-  }) {
-    return _then(
-      _$PremiumStateImpl(
-        isSubscribed: null == isSubscribed
-            ? _value.isSubscribed
-            : isSubscribed // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        subscriptionExpiryDate: freezed == subscriptionExpiryDate
-            ? _value.subscriptionExpiryDate
-            : subscriptionExpiryDate // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        subscriptionType: freezed == subscriptionType
-            ? _value.subscriptionType
-            : subscriptionType // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        lastValidatedAt: freezed == lastValidatedAt
-            ? _value.lastValidatedAt
-            : lastValidatedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        error: freezed == error
-            ? _value.error
-            : error // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        isLoading: null == isLoading
-            ? _value.isLoading
-            : isLoading // ignore: cast_nullable_to_non_nullable
-                  as bool,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [PremiumState].
+extension PremiumStatePatterns on PremiumState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PremiumState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PremiumState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PremiumState value)  $default,){
+final _that = this;
+switch (_that) {
+case _PremiumState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PremiumState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PremiumState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isSubscribed,  DateTime? subscriptionExpiryDate,  String? subscriptionType,  DateTime? lastValidatedAt,  String? error,  bool isLoading)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PremiumState() when $default != null:
+return $default(_that.isSubscribed,_that.subscriptionExpiryDate,_that.subscriptionType,_that.lastValidatedAt,_that.error,_that.isLoading);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isSubscribed,  DateTime? subscriptionExpiryDate,  String? subscriptionType,  DateTime? lastValidatedAt,  String? error,  bool isLoading)  $default,) {final _that = this;
+switch (_that) {
+case _PremiumState():
+return $default(_that.isSubscribed,_that.subscriptionExpiryDate,_that.subscriptionType,_that.lastValidatedAt,_that.error,_that.isLoading);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isSubscribed,  DateTime? subscriptionExpiryDate,  String? subscriptionType,  DateTime? lastValidatedAt,  String? error,  bool isLoading)?  $default,) {final _that = this;
+switch (_that) {
+case _PremiumState() when $default != null:
+return $default(_that.isSubscribed,_that.subscriptionExpiryDate,_that.subscriptionType,_that.lastValidatedAt,_that.error,_that.isLoading);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$PremiumStateImpl implements _PremiumState {
-  const _$PremiumStateImpl({
-    required this.isSubscribed,
-    this.subscriptionExpiryDate,
-    this.subscriptionType,
-    this.lastValidatedAt,
-    this.error,
-    this.isLoading = false,
-  });
 
-  factory _$PremiumStateImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PremiumStateImplFromJson(json);
+class _PremiumState implements PremiumState {
+  const _PremiumState({required this.isSubscribed, this.subscriptionExpiryDate, this.subscriptionType, this.lastValidatedAt, this.error, this.isLoading = false});
+  factory _PremiumState.fromJson(Map<String, dynamic> json) => _$PremiumStateFromJson(json);
 
-  /// ユーザーがアクティブなサブスクリプションを持っているか
-  @override
-  final bool isSubscribed;
+/// ユーザーがアクティブなサブスクリプションを持っているか
+@override final  bool isSubscribed;
+/// サブスクリプションの有効期限（null の場合は無期限または未検証）
+@override final  DateTime? subscriptionExpiryDate;
+/// サブスクリプション種別（'monthly', 'yearly', など）
+@override final  String? subscriptionType;
+/// 最後の検証時刻
+@override final  DateTime? lastValidatedAt;
+/// エラーメッセージ（検証失敗時）
+@override final  String? error;
+/// ローディング状態
+@override@JsonKey() final  bool isLoading;
 
-  /// サブスクリプションの有効期限（null の場合は無期限または未検証）
-  @override
-  final DateTime? subscriptionExpiryDate;
+/// Create a copy of PremiumState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PremiumStateCopyWith<_PremiumState> get copyWith => __$PremiumStateCopyWithImpl<_PremiumState>(this, _$identity);
 
-  /// サブスクリプション種別（'monthly', 'yearly', など）
-  @override
-  final String? subscriptionType;
-
-  /// 最後の検証時刻
-  @override
-  final DateTime? lastValidatedAt;
-
-  /// エラーメッセージ（検証失敗時）
-  @override
-  final String? error;
-
-  /// ローディング状態
-  @override
-  @JsonKey()
-  final bool isLoading;
-
-  @override
-  String toString() {
-    return 'PremiumState(isSubscribed: $isSubscribed, subscriptionExpiryDate: $subscriptionExpiryDate, subscriptionType: $subscriptionType, lastValidatedAt: $lastValidatedAt, error: $error, isLoading: $isLoading)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PremiumStateImpl &&
-            (identical(other.isSubscribed, isSubscribed) ||
-                other.isSubscribed == isSubscribed) &&
-            (identical(other.subscriptionExpiryDate, subscriptionExpiryDate) ||
-                other.subscriptionExpiryDate == subscriptionExpiryDate) &&
-            (identical(other.subscriptionType, subscriptionType) ||
-                other.subscriptionType == subscriptionType) &&
-            (identical(other.lastValidatedAt, lastValidatedAt) ||
-                other.lastValidatedAt == lastValidatedAt) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isSubscribed,
-    subscriptionExpiryDate,
-    subscriptionType,
-    lastValidatedAt,
-    error,
-    isLoading,
-  );
-
-  /// Create a copy of PremiumState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PremiumStateImplCopyWith<_$PremiumStateImpl> get copyWith =>
-      __$$PremiumStateImplCopyWithImpl<_$PremiumStateImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PremiumStateImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$PremiumStateToJson(this, );
 }
 
-abstract class _PremiumState implements PremiumState {
-  const factory _PremiumState({
-    required final bool isSubscribed,
-    final DateTime? subscriptionExpiryDate,
-    final String? subscriptionType,
-    final DateTime? lastValidatedAt,
-    final String? error,
-    final bool isLoading,
-  }) = _$PremiumStateImpl;
-
-  factory _PremiumState.fromJson(Map<String, dynamic> json) =
-      _$PremiumStateImpl.fromJson;
-
-  /// ユーザーがアクティブなサブスクリプションを持っているか
-  @override
-  bool get isSubscribed;
-
-  /// サブスクリプションの有効期限（null の場合は無期限または未検証）
-  @override
-  DateTime? get subscriptionExpiryDate;
-
-  /// サブスクリプション種別（'monthly', 'yearly', など）
-  @override
-  String? get subscriptionType;
-
-  /// 最後の検証時刻
-  @override
-  DateTime? get lastValidatedAt;
-
-  /// エラーメッセージ（検証失敗時）
-  @override
-  String? get error;
-
-  /// ローディング状態
-  @override
-  bool get isLoading;
-
-  /// Create a copy of PremiumState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PremiumStateImplCopyWith<_$PremiumStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PremiumState&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.subscriptionExpiryDate, subscriptionExpiryDate) || other.subscriptionExpiryDate == subscriptionExpiryDate)&&(identical(other.subscriptionType, subscriptionType) || other.subscriptionType == subscriptionType)&&(identical(other.lastValidatedAt, lastValidatedAt) || other.lastValidatedAt == lastValidatedAt)&&(identical(other.error, error) || other.error == error)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading));
 }
 
-SubscriptionCheckRequest _$SubscriptionCheckRequestFromJson(
-  Map<String, dynamic> json,
-) {
-  return _SubscriptionCheckRequest.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,isSubscribed,subscriptionExpiryDate,subscriptionType,lastValidatedAt,error,isLoading);
+
+@override
+String toString() {
+  return 'PremiumState(isSubscribed: $isSubscribed, subscriptionExpiryDate: $subscriptionExpiryDate, subscriptionType: $subscriptionType, lastValidatedAt: $lastValidatedAt, error: $error, isLoading: $isLoading)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PremiumStateCopyWith<$Res> implements $PremiumStateCopyWith<$Res> {
+  factory _$PremiumStateCopyWith(_PremiumState value, $Res Function(_PremiumState) _then) = __$PremiumStateCopyWithImpl;
+@override @useResult
+$Res call({
+ bool isSubscribed, DateTime? subscriptionExpiryDate, String? subscriptionType, DateTime? lastValidatedAt, String? error, bool isLoading
+});
+
+
+
+
+}
+/// @nodoc
+class __$PremiumStateCopyWithImpl<$Res>
+    implements _$PremiumStateCopyWith<$Res> {
+  __$PremiumStateCopyWithImpl(this._self, this._then);
+
+  final _PremiumState _self;
+  final $Res Function(_PremiumState) _then;
+
+/// Create a copy of PremiumState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,Object? subscriptionExpiryDate = freezed,Object? subscriptionType = freezed,Object? lastValidatedAt = freezed,Object? error = freezed,Object? isLoading = null,}) {
+  return _then(_PremiumState(
+isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
+as bool,subscriptionExpiryDate: freezed == subscriptionExpiryDate ? _self.subscriptionExpiryDate : subscriptionExpiryDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,subscriptionType: freezed == subscriptionType ? _self.subscriptionType : subscriptionType // ignore: cast_nullable_to_non_nullable
+as String?,lastValidatedAt: freezed == lastValidatedAt ? _self.lastValidatedAt : lastValidatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$SubscriptionCheckRequest {
-  String get userId => throw _privateConstructorUsedError;
-  String get platform =>
-      throw _privateConstructorUsedError; // 'android' or 'ios'
-  String get packageName => throw _privateConstructorUsedError;
+
+ String get userId; String get platform;// 'android' or 'ios'
+ String get packageName;
+/// Create a copy of SubscriptionCheckRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionCheckRequestCopyWith<SubscriptionCheckRequest> get copyWith => _$SubscriptionCheckRequestCopyWithImpl<SubscriptionCheckRequest>(this as SubscriptionCheckRequest, _$identity);
 
   /// Serializes this SubscriptionCheckRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SubscriptionCheckRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SubscriptionCheckRequestCopyWith<SubscriptionCheckRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionCheckRequest&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.packageName, packageName) || other.packageName == packageName));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,userId,platform,packageName);
+
+@override
+String toString() {
+  return 'SubscriptionCheckRequest(userId: $userId, platform: $platform, packageName: $packageName)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SubscriptionCheckRequestCopyWith<$Res> {
-  factory $SubscriptionCheckRequestCopyWith(
-    SubscriptionCheckRequest value,
-    $Res Function(SubscriptionCheckRequest) then,
-  ) = _$SubscriptionCheckRequestCopyWithImpl<$Res, SubscriptionCheckRequest>;
-  @useResult
-  $Res call({String userId, String platform, String packageName});
-}
+abstract mixin class $SubscriptionCheckRequestCopyWith<$Res>  {
+  factory $SubscriptionCheckRequestCopyWith(SubscriptionCheckRequest value, $Res Function(SubscriptionCheckRequest) _then) = _$SubscriptionCheckRequestCopyWithImpl;
+@useResult
+$Res call({
+ String userId, String platform, String packageName
+});
 
+
+
+
+}
 /// @nodoc
-class _$SubscriptionCheckRequestCopyWithImpl<
-  $Res,
-  $Val extends SubscriptionCheckRequest
->
+class _$SubscriptionCheckRequestCopyWithImpl<$Res>
     implements $SubscriptionCheckRequestCopyWith<$Res> {
-  _$SubscriptionCheckRequestCopyWithImpl(this._value, this._then);
+  _$SubscriptionCheckRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SubscriptionCheckRequest _self;
+  final $Res Function(SubscriptionCheckRequest) _then;
 
-  /// Create a copy of SubscriptionCheckRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? platform = null,
-    Object? packageName = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            platform: null == platform
-                ? _value.platform
-                : platform // ignore: cast_nullable_to_non_nullable
-                      as String,
-            packageName: null == packageName
-                ? _value.packageName
-                : packageName // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of SubscriptionCheckRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? platform = null,Object? packageName = null,}) {
+  return _then(_self.copyWith(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as String,packageName: null == packageName ? _self.packageName : packageName // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SubscriptionCheckRequestImplCopyWith<$Res>
-    implements $SubscriptionCheckRequestCopyWith<$Res> {
-  factory _$$SubscriptionCheckRequestImplCopyWith(
-    _$SubscriptionCheckRequestImpl value,
-    $Res Function(_$SubscriptionCheckRequestImpl) then,
-  ) = __$$SubscriptionCheckRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String userId, String platform, String packageName});
 }
 
-/// @nodoc
-class __$$SubscriptionCheckRequestImplCopyWithImpl<$Res>
-    extends
-        _$SubscriptionCheckRequestCopyWithImpl<
-          $Res,
-          _$SubscriptionCheckRequestImpl
-        >
-    implements _$$SubscriptionCheckRequestImplCopyWith<$Res> {
-  __$$SubscriptionCheckRequestImplCopyWithImpl(
-    _$SubscriptionCheckRequestImpl _value,
-    $Res Function(_$SubscriptionCheckRequestImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of SubscriptionCheckRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? platform = null,
-    Object? packageName = null,
-  }) {
-    return _then(
-      _$SubscriptionCheckRequestImpl(
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        platform: null == platform
-            ? _value.platform
-            : platform // ignore: cast_nullable_to_non_nullable
-                  as String,
-        packageName: null == packageName
-            ? _value.packageName
-            : packageName // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [SubscriptionCheckRequest].
+extension SubscriptionCheckRequestPatterns on SubscriptionCheckRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SubscriptionCheckRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SubscriptionCheckRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SubscriptionCheckRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _SubscriptionCheckRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SubscriptionCheckRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SubscriptionCheckRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String platform,  String packageName)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SubscriptionCheckRequest() when $default != null:
+return $default(_that.userId,_that.platform,_that.packageName);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String platform,  String packageName)  $default,) {final _that = this;
+switch (_that) {
+case _SubscriptionCheckRequest():
+return $default(_that.userId,_that.platform,_that.packageName);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String platform,  String packageName)?  $default,) {final _that = this;
+switch (_that) {
+case _SubscriptionCheckRequest() when $default != null:
+return $default(_that.userId,_that.platform,_that.packageName);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SubscriptionCheckRequestImpl implements _SubscriptionCheckRequest {
-  const _$SubscriptionCheckRequestImpl({
-    required this.userId,
-    required this.platform,
-    required this.packageName,
-  });
 
-  factory _$SubscriptionCheckRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SubscriptionCheckRequestImplFromJson(json);
+class _SubscriptionCheckRequest implements SubscriptionCheckRequest {
+  const _SubscriptionCheckRequest({required this.userId, required this.platform, required this.packageName});
+  factory _SubscriptionCheckRequest.fromJson(Map<String, dynamic> json) => _$SubscriptionCheckRequestFromJson(json);
 
-  @override
-  final String userId;
-  @override
-  final String platform;
-  // 'android' or 'ios'
-  @override
-  final String packageName;
+@override final  String userId;
+@override final  String platform;
+// 'android' or 'ios'
+@override final  String packageName;
 
-  @override
-  String toString() {
-    return 'SubscriptionCheckRequest(userId: $userId, platform: $platform, packageName: $packageName)';
-  }
+/// Create a copy of SubscriptionCheckRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubscriptionCheckRequestCopyWith<_SubscriptionCheckRequest> get copyWith => __$SubscriptionCheckRequestCopyWithImpl<_SubscriptionCheckRequest>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SubscriptionCheckRequestImpl &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.platform, platform) ||
-                other.platform == platform) &&
-            (identical(other.packageName, packageName) ||
-                other.packageName == packageName));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, userId, platform, packageName);
-
-  /// Create a copy of SubscriptionCheckRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SubscriptionCheckRequestImplCopyWith<_$SubscriptionCheckRequestImpl>
-  get copyWith =>
-      __$$SubscriptionCheckRequestImplCopyWithImpl<
-        _$SubscriptionCheckRequestImpl
-      >(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SubscriptionCheckRequestImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$SubscriptionCheckRequestToJson(this, );
 }
 
-abstract class _SubscriptionCheckRequest implements SubscriptionCheckRequest {
-  const factory _SubscriptionCheckRequest({
-    required final String userId,
-    required final String platform,
-    required final String packageName,
-  }) = _$SubscriptionCheckRequestImpl;
-
-  factory _SubscriptionCheckRequest.fromJson(Map<String, dynamic> json) =
-      _$SubscriptionCheckRequestImpl.fromJson;
-
-  @override
-  String get userId;
-  @override
-  String get platform; // 'android' or 'ios'
-  @override
-  String get packageName;
-
-  /// Create a copy of SubscriptionCheckRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SubscriptionCheckRequestImplCopyWith<_$SubscriptionCheckRequestImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionCheckRequest&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.packageName, packageName) || other.packageName == packageName));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,userId,platform,packageName);
+
+@override
+String toString() {
+  return 'SubscriptionCheckRequest(userId: $userId, platform: $platform, packageName: $packageName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SubscriptionCheckRequestCopyWith<$Res> implements $SubscriptionCheckRequestCopyWith<$Res> {
+  factory _$SubscriptionCheckRequestCopyWith(_SubscriptionCheckRequest value, $Res Function(_SubscriptionCheckRequest) _then) = __$SubscriptionCheckRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ String userId, String platform, String packageName
+});
+
+
+
+
+}
+/// @nodoc
+class __$SubscriptionCheckRequestCopyWithImpl<$Res>
+    implements _$SubscriptionCheckRequestCopyWith<$Res> {
+  __$SubscriptionCheckRequestCopyWithImpl(this._self, this._then);
+
+  final _SubscriptionCheckRequest _self;
+  final $Res Function(_SubscriptionCheckRequest) _then;
+
+/// Create a copy of SubscriptionCheckRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? platform = null,Object? packageName = null,}) {
+  return _then(_SubscriptionCheckRequest(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as String,packageName: null == packageName ? _self.packageName : packageName // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

@@ -6,8 +6,8 @@ part of 'cross_app_report_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CrossAppReportImpl _$$CrossAppReportImplFromJson(Map<String, dynamic> json) =>
-    _$CrossAppReportImpl(
+_CrossAppReport _$CrossAppReportFromJson(Map<String, dynamic> json) =>
+    _CrossAppReport(
       userId: json['userId'] as String,
       appReports: (json['appReports'] as Map<String, dynamic>).map(
         (k, e) =>
@@ -20,46 +20,43 @@ _$CrossAppReportImpl _$$CrossAppReportImplFromJson(Map<String, dynamic> json) =>
       reportPeriod: json['reportPeriod'] as String,
     );
 
-Map<String, dynamic> _$$CrossAppReportImplToJson(
-  _$CrossAppReportImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'appReports': instance.appReports,
-  'generatedAt': instance.generatedAt.toIso8601String(),
-  'totalStats': instance.totalStats,
-  'reportPeriod': instance.reportPeriod,
-};
+Map<String, dynamic> _$CrossAppReportToJson(_CrossAppReport instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'appReports': instance.appReports,
+      'generatedAt': instance.generatedAt.toIso8601String(),
+      'totalStats': instance.totalStats,
+      'reportPeriod': instance.reportPeriod,
+    };
 
-_$AppReportSummaryImpl _$$AppReportSummaryImplFromJson(
-  Map<String, dynamic> json,
-) => _$AppReportSummaryImpl(
-  appId: json['appId'] as String,
-  appName: json['appName'] as String,
-  totalLearningMinutes: (json['totalLearningMinutes'] as num).toInt(),
-  averageAccuracy: (json['averageAccuracy'] as num).toDouble(),
-  quizzesCompleted: (json['quizzesCompleted'] as num).toInt(),
-  badgesEarned: (json['badgesEarned'] as num).toInt(),
-  coinsEarned: (json['coinsEarned'] as num).toInt(),
-  growthTrend: (json['growthTrend'] as num).toDouble(),
-  performanceLevel: json['performanceLevel'] as String,
-);
+_AppReportSummary _$AppReportSummaryFromJson(Map<String, dynamic> json) =>
+    _AppReportSummary(
+      appId: json['appId'] as String,
+      appName: json['appName'] as String,
+      totalLearningMinutes: (json['totalLearningMinutes'] as num).toInt(),
+      averageAccuracy: (json['averageAccuracy'] as num).toDouble(),
+      quizzesCompleted: (json['quizzesCompleted'] as num).toInt(),
+      badgesEarned: (json['badgesEarned'] as num).toInt(),
+      coinsEarned: (json['coinsEarned'] as num).toInt(),
+      growthTrend: (json['growthTrend'] as num).toDouble(),
+      performanceLevel: json['performanceLevel'] as String,
+    );
 
-Map<String, dynamic> _$$AppReportSummaryImplToJson(
-  _$AppReportSummaryImpl instance,
-) => <String, dynamic>{
-  'appId': instance.appId,
-  'appName': instance.appName,
-  'totalLearningMinutes': instance.totalLearningMinutes,
-  'averageAccuracy': instance.averageAccuracy,
-  'quizzesCompleted': instance.quizzesCompleted,
-  'badgesEarned': instance.badgesEarned,
-  'coinsEarned': instance.coinsEarned,
-  'growthTrend': instance.growthTrend,
-  'performanceLevel': instance.performanceLevel,
-};
+Map<String, dynamic> _$AppReportSummaryToJson(_AppReportSummary instance) =>
+    <String, dynamic>{
+      'appId': instance.appId,
+      'appName': instance.appName,
+      'totalLearningMinutes': instance.totalLearningMinutes,
+      'averageAccuracy': instance.averageAccuracy,
+      'quizzesCompleted': instance.quizzesCompleted,
+      'badgesEarned': instance.badgesEarned,
+      'coinsEarned': instance.coinsEarned,
+      'growthTrend': instance.growthTrend,
+      'performanceLevel': instance.performanceLevel,
+    };
 
-_$CrossAppStatsImpl _$$CrossAppStatsImplFromJson(Map<String, dynamic> json) =>
-    _$CrossAppStatsImpl(
+_CrossAppStats _$CrossAppStatsFromJson(Map<String, dynamic> json) =>
+    _CrossAppStats(
       totalLearningMinutes: (json['totalLearningMinutes'] as num).toInt(),
       totalQuizzesCompleted: (json['totalQuizzesCompleted'] as num).toInt(),
       overallAverageAccuracy: (json['overallAverageAccuracy'] as num)
@@ -75,7 +72,7 @@ _$CrossAppStatsImpl _$$CrossAppStatsImplFromJson(Map<String, dynamic> json) =>
       consecutiveDaysLearning: (json['consecutiveDaysLearning'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$CrossAppStatsImplToJson(_$CrossAppStatsImpl instance) =>
+Map<String, dynamic> _$CrossAppStatsToJson(_CrossAppStats instance) =>
     <String, dynamic>{
       'totalLearningMinutes': instance.totalLearningMinutes,
       'totalQuizzesCompleted': instance.totalQuizzesCompleted,
@@ -89,9 +86,9 @@ Map<String, dynamic> _$$CrossAppStatsImplToJson(_$CrossAppStatsImpl instance) =>
       'consecutiveDaysLearning': instance.consecutiveDaysLearning,
     };
 
-_$WeeklyReportComparisonImpl _$$WeeklyReportComparisonImplFromJson(
+_WeeklyReportComparison _$WeeklyReportComparisonFromJson(
   Map<String, dynamic> json,
-) => _$WeeklyReportComparisonImpl(
+) => _WeeklyReportComparison(
   startDate: DateTime.parse(json['startDate'] as String),
   endDate: DateTime.parse(json['endDate'] as String),
   dailyStats: (json['dailyStats'] as Map<String, dynamic>).map(
@@ -101,8 +98,8 @@ _$WeeklyReportComparisonImpl _$$WeeklyReportComparisonImplFromJson(
   bestDayMinutes: (json['bestDayMinutes'] as num).toInt(),
 );
 
-Map<String, dynamic> _$$WeeklyReportComparisonImplToJson(
-  _$WeeklyReportComparisonImpl instance,
+Map<String, dynamic> _$WeeklyReportComparisonToJson(
+  _WeeklyReportComparison instance,
 ) => <String, dynamic>{
   'startDate': instance.startDate.toIso8601String(),
   'endDate': instance.endDate.toIso8601String(),
@@ -111,8 +108,8 @@ Map<String, dynamic> _$$WeeklyReportComparisonImplToJson(
   'bestDayMinutes': instance.bestDayMinutes,
 };
 
-_$DailyAppStatsImpl _$$DailyAppStatsImplFromJson(Map<String, dynamic> json) =>
-    _$DailyAppStatsImpl(
+_DailyAppStats _$DailyAppStatsFromJson(Map<String, dynamic> json) =>
+    _DailyAppStats(
       date: DateTime.parse(json['date'] as String),
       appLearningMinutes: Map<String, int>.from(
         json['appLearningMinutes'] as Map,
@@ -120,16 +117,16 @@ _$DailyAppStatsImpl _$$DailyAppStatsImplFromJson(Map<String, dynamic> json) =>
       totalMinutes: (json['totalMinutes'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$DailyAppStatsImplToJson(_$DailyAppStatsImpl instance) =>
+Map<String, dynamic> _$DailyAppStatsToJson(_DailyAppStats instance) =>
     <String, dynamic>{
       'date': instance.date.toIso8601String(),
       'appLearningMinutes': instance.appLearningMinutes,
       'totalMinutes': instance.totalMinutes,
     };
 
-_$MonthlyReportComparisonImpl _$$MonthlyReportComparisonImplFromJson(
+_MonthlyReportComparison _$MonthlyReportComparisonFromJson(
   Map<String, dynamic> json,
-) => _$MonthlyReportComparisonImpl(
+) => _MonthlyReportComparison(
   month: (json['month'] as num).toInt(),
   year: (json['year'] as num).toInt(),
   appMonthlyStats: (json['appMonthlyStats'] as Map<String, dynamic>).map(
@@ -143,8 +140,8 @@ _$MonthlyReportComparisonImpl _$$MonthlyReportComparisonImplFromJson(
       .toList(),
 );
 
-Map<String, dynamic> _$$MonthlyReportComparisonImplToJson(
-  _$MonthlyReportComparisonImpl instance,
+Map<String, dynamic> _$MonthlyReportComparisonToJson(
+  _MonthlyReportComparison instance,
 ) => <String, dynamic>{
   'month': instance.month,
   'year': instance.year,
@@ -153,28 +150,26 @@ Map<String, dynamic> _$$MonthlyReportComparisonImplToJson(
   'achievements': instance.achievements,
 };
 
-_$AppMonthlyStatsImpl _$$AppMonthlyStatsImplFromJson(
-  Map<String, dynamic> json,
-) => _$AppMonthlyStatsImpl(
-  appId: json['appId'] as String,
-  totalLearningMinutes: (json['totalLearningMinutes'] as num).toInt(),
-  averageAccuracy: (json['averageAccuracy'] as num).toDouble(),
-  quizzesCompleted: (json['quizzesCompleted'] as num).toInt(),
-  badgesEarned: (json['badgesEarned'] as num).toInt(),
-  improvementRate: (json['improvementRate'] as num).toDouble(),
-  topicsLearned: (json['topicsLearned'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-);
+_AppMonthlyStats _$AppMonthlyStatsFromJson(Map<String, dynamic> json) =>
+    _AppMonthlyStats(
+      appId: json['appId'] as String,
+      totalLearningMinutes: (json['totalLearningMinutes'] as num).toInt(),
+      averageAccuracy: (json['averageAccuracy'] as num).toDouble(),
+      quizzesCompleted: (json['quizzesCompleted'] as num).toInt(),
+      badgesEarned: (json['badgesEarned'] as num).toInt(),
+      improvementRate: (json['improvementRate'] as num).toDouble(),
+      topicsLearned: (json['topicsLearned'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+    );
 
-Map<String, dynamic> _$$AppMonthlyStatsImplToJson(
-  _$AppMonthlyStatsImpl instance,
-) => <String, dynamic>{
-  'appId': instance.appId,
-  'totalLearningMinutes': instance.totalLearningMinutes,
-  'averageAccuracy': instance.averageAccuracy,
-  'quizzesCompleted': instance.quizzesCompleted,
-  'badgesEarned': instance.badgesEarned,
-  'improvementRate': instance.improvementRate,
-  'topicsLearned': instance.topicsLearned,
-};
+Map<String, dynamic> _$AppMonthlyStatsToJson(_AppMonthlyStats instance) =>
+    <String, dynamic>{
+      'appId': instance.appId,
+      'totalLearningMinutes': instance.totalLearningMinutes,
+      'averageAccuracy': instance.averageAccuracy,
+      'quizzesCompleted': instance.quizzesCompleted,
+      'badgesEarned': instance.badgesEarned,
+      'improvementRate': instance.improvementRate,
+      'topicsLearned': instance.topicsLearned,
+    };

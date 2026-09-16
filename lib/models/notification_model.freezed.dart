@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,1015 +9,1116 @@ part of 'notification_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$AppNotification {
-  String get id => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  String get body => throw _privateConstructorUsedError;
-  String get type =>
-      throw _privateConstructorUsedError; // 'daily_reminder', 'achievement', 'friend_request', 'weekly_summary', 'engagement'
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  bool get isRead => throw _privateConstructorUsedError;
-  String? get actionUrl => throw _privateConstructorUsedError;
-  Map<String, dynamic>? get data => throw _privateConstructorUsedError;
 
-  /// Create a copy of AppNotification
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AppNotificationCopyWith<AppNotification> get copyWith =>
-      throw _privateConstructorUsedError;
+ String get id; String get title; String get body; String get type;// 'daily_reminder', 'achievement', 'friend_request', 'weekly_summary', 'engagement'
+ DateTime get createdAt; bool get isRead; String? get actionUrl; Map<String, dynamic>? get data;
+/// Create a copy of AppNotification
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppNotificationCopyWith<AppNotification> get copyWith => _$AppNotificationCopyWithImpl<AppNotification>(this as AppNotification, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppNotification&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.actionUrl, actionUrl) || other.actionUrl == actionUrl)&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,title,body,type,createdAt,isRead,actionUrl,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'AppNotification(id: $id, title: $title, body: $body, type: $type, createdAt: $createdAt, isRead: $isRead, actionUrl: $actionUrl, data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AppNotificationCopyWith<$Res> {
-  factory $AppNotificationCopyWith(
-    AppNotification value,
-    $Res Function(AppNotification) then,
-  ) = _$AppNotificationCopyWithImpl<$Res, AppNotification>;
-  @useResult
-  $Res call({
-    String id,
-    String title,
-    String body,
-    String type,
-    DateTime createdAt,
-    bool isRead,
-    String? actionUrl,
-    Map<String, dynamic>? data,
-  });
-}
+abstract mixin class $AppNotificationCopyWith<$Res>  {
+  factory $AppNotificationCopyWith(AppNotification value, $Res Function(AppNotification) _then) = _$AppNotificationCopyWithImpl;
+@useResult
+$Res call({
+ String id, String title, String body, String type, DateTime createdAt, bool isRead, String? actionUrl, Map<String, dynamic>? data
+});
 
+
+
+
+}
 /// @nodoc
-class _$AppNotificationCopyWithImpl<$Res, $Val extends AppNotification>
+class _$AppNotificationCopyWithImpl<$Res>
     implements $AppNotificationCopyWith<$Res> {
-  _$AppNotificationCopyWithImpl(this._value, this._then);
+  _$AppNotificationCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AppNotification _self;
+  final $Res Function(AppNotification) _then;
 
-  /// Create a copy of AppNotification
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? body = null,
-    Object? type = null,
-    Object? createdAt = null,
-    Object? isRead = null,
-    Object? actionUrl = freezed,
-    Object? data = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            title: null == title
-                ? _value.title
-                : title // ignore: cast_nullable_to_non_nullable
-                      as String,
-            body: null == body
-                ? _value.body
-                : body // ignore: cast_nullable_to_non_nullable
-                      as String,
-            type: null == type
-                ? _value.type
-                : type // ignore: cast_nullable_to_non_nullable
-                      as String,
-            createdAt: null == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            isRead: null == isRead
-                ? _value.isRead
-                : isRead // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            actionUrl: freezed == actionUrl
-                ? _value.actionUrl
-                : actionUrl // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            data: freezed == data
-                ? _value.data
-                : data // ignore: cast_nullable_to_non_nullable
-                      as Map<String, dynamic>?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of AppNotification
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? body = null,Object? type = null,Object? createdAt = null,Object? isRead = null,Object? actionUrl = freezed,Object? data = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
+as bool,actionUrl: freezed == actionUrl ? _self.actionUrl : actionUrl // ignore: cast_nullable_to_non_nullable
+as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AppNotification].
+extension AppNotificationPatterns on AppNotification {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AppNotification value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AppNotification() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AppNotification value)  $default,){
+final _that = this;
+switch (_that) {
+case _AppNotification():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AppNotification value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AppNotification() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String body,  String type,  DateTime createdAt,  bool isRead,  String? actionUrl,  Map<String, dynamic>? data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AppNotification() when $default != null:
+return $default(_that.id,_that.title,_that.body,_that.type,_that.createdAt,_that.isRead,_that.actionUrl,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String body,  String type,  DateTime createdAt,  bool isRead,  String? actionUrl,  Map<String, dynamic>? data)  $default,) {final _that = this;
+switch (_that) {
+case _AppNotification():
+return $default(_that.id,_that.title,_that.body,_that.type,_that.createdAt,_that.isRead,_that.actionUrl,_that.data);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String body,  String type,  DateTime createdAt,  bool isRead,  String? actionUrl,  Map<String, dynamic>? data)?  $default,) {final _that = this;
+switch (_that) {
+case _AppNotification() when $default != null:
+return $default(_that.id,_that.title,_that.body,_that.type,_that.createdAt,_that.isRead,_that.actionUrl,_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$AppNotificationImplCopyWith<$Res>
-    implements $AppNotificationCopyWith<$Res> {
-  factory _$$AppNotificationImplCopyWith(
-    _$AppNotificationImpl value,
-    $Res Function(_$AppNotificationImpl) then,
-  ) = __$$AppNotificationImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String id,
-    String title,
-    String body,
-    String type,
-    DateTime createdAt,
-    bool isRead,
-    String? actionUrl,
-    Map<String, dynamic>? data,
-  });
+
+
+class _AppNotification extends AppNotification {
+  const _AppNotification({required this.id, required this.title, required this.body, required this.type, required this.createdAt, required this.isRead, this.actionUrl, final  Map<String, dynamic>? data}): _data = data,super._();
+  
+
+@override final  String id;
+@override final  String title;
+@override final  String body;
+@override final  String type;
+// 'daily_reminder', 'achievement', 'friend_request', 'weekly_summary', 'engagement'
+@override final  DateTime createdAt;
+@override final  bool isRead;
+@override final  String? actionUrl;
+ final  Map<String, dynamic>? _data;
+@override Map<String, dynamic>? get data {
+  final value = _data;
+  if (value == null) return null;
+  if (_data is EqualUnmodifiableMapView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+
+/// Create a copy of AppNotification
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppNotificationCopyWith<_AppNotification> get copyWith => __$AppNotificationCopyWithImpl<_AppNotification>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppNotification&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.type, type) || other.type == type)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.actionUrl, actionUrl) || other.actionUrl == actionUrl)&&const DeepCollectionEquality().equals(other._data, _data));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,title,body,type,createdAt,isRead,actionUrl,const DeepCollectionEquality().hash(_data));
+
+@override
+String toString() {
+  return 'AppNotification(id: $id, title: $title, body: $body, type: $type, createdAt: $createdAt, isRead: $isRead, actionUrl: $actionUrl, data: $data)';
+}
+
+
 }
 
 /// @nodoc
-class __$$AppNotificationImplCopyWithImpl<$Res>
-    extends _$AppNotificationCopyWithImpl<$Res, _$AppNotificationImpl>
-    implements _$$AppNotificationImplCopyWith<$Res> {
-  __$$AppNotificationImplCopyWithImpl(
-    _$AppNotificationImpl _value,
-    $Res Function(_$AppNotificationImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$AppNotificationCopyWith<$Res> implements $AppNotificationCopyWith<$Res> {
+  factory _$AppNotificationCopyWith(_AppNotification value, $Res Function(_AppNotification) _then) = __$AppNotificationCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String title, String body, String type, DateTime createdAt, bool isRead, String? actionUrl, Map<String, dynamic>? data
+});
 
-  /// Create a copy of AppNotification
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? body = null,
-    Object? type = null,
-    Object? createdAt = null,
-    Object? isRead = null,
-    Object? actionUrl = freezed,
-    Object? data = freezed,
-  }) {
-    return _then(
-      _$AppNotificationImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        title: null == title
-            ? _value.title
-            : title // ignore: cast_nullable_to_non_nullable
-                  as String,
-        body: null == body
-            ? _value.body
-            : body // ignore: cast_nullable_to_non_nullable
-                  as String,
-        type: null == type
-            ? _value.type
-            : type // ignore: cast_nullable_to_non_nullable
-                  as String,
-        createdAt: null == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        isRead: null == isRead
-            ? _value.isRead
-            : isRead // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        actionUrl: freezed == actionUrl
-            ? _value.actionUrl
-            : actionUrl // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        data: freezed == data
-            ? _value._data
-            : data // ignore: cast_nullable_to_non_nullable
-                  as Map<String, dynamic>?,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$AppNotificationCopyWithImpl<$Res>
+    implements _$AppNotificationCopyWith<$Res> {
+  __$AppNotificationCopyWithImpl(this._self, this._then);
 
-class _$AppNotificationImpl extends _AppNotification {
-  const _$AppNotificationImpl({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.type,
-    required this.createdAt,
-    required this.isRead,
-    this.actionUrl,
-    final Map<String, dynamic>? data,
-  }) : _data = data,
-       super._();
+  final _AppNotification _self;
+  final $Res Function(_AppNotification) _then;
 
-  @override
-  final String id;
-  @override
-  final String title;
-  @override
-  final String body;
-  @override
-  final String type;
-  // 'daily_reminder', 'achievement', 'friend_request', 'weekly_summary', 'engagement'
-  @override
-  final DateTime createdAt;
-  @override
-  final bool isRead;
-  @override
-  final String? actionUrl;
-  final Map<String, dynamic>? _data;
-  @override
-  Map<String, dynamic>? get data {
-    final value = _data;
-    if (value == null) return null;
-    if (_data is EqualUnmodifiableMapView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  @override
-  String toString() {
-    return 'AppNotification(id: $id, title: $title, body: $body, type: $type, createdAt: $createdAt, isRead: $isRead, actionUrl: $actionUrl, data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AppNotificationImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.body, body) || other.body == body) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.isRead, isRead) || other.isRead == isRead) &&
-            (identical(other.actionUrl, actionUrl) ||
-                other.actionUrl == actionUrl) &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    title,
-    body,
-    type,
-    createdAt,
-    isRead,
-    actionUrl,
-    const DeepCollectionEquality().hash(_data),
-  );
-
-  /// Create a copy of AppNotification
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AppNotificationImplCopyWith<_$AppNotificationImpl> get copyWith =>
-      __$$AppNotificationImplCopyWithImpl<_$AppNotificationImpl>(
-        this,
-        _$identity,
-      );
+/// Create a copy of AppNotification
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? body = null,Object? type = null,Object? createdAt = null,Object? isRead = null,Object? actionUrl = freezed,Object? data = freezed,}) {
+  return _then(_AppNotification(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
+as bool,actionUrl: freezed == actionUrl ? _self.actionUrl : actionUrl // ignore: cast_nullable_to_non_nullable
+as String?,data: freezed == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
 }
 
-abstract class _AppNotification extends AppNotification {
-  const factory _AppNotification({
-    required final String id,
-    required final String title,
-    required final String body,
-    required final String type,
-    required final DateTime createdAt,
-    required final bool isRead,
-    final String? actionUrl,
-    final Map<String, dynamic>? data,
-  }) = _$AppNotificationImpl;
-  const _AppNotification._() : super._();
 
-  @override
-  String get id;
-  @override
-  String get title;
-  @override
-  String get body;
-  @override
-  String get type; // 'daily_reminder', 'achievement', 'friend_request', 'weekly_summary', 'engagement'
-  @override
-  DateTime get createdAt;
-  @override
-  bool get isRead;
-  @override
-  String? get actionUrl;
-  @override
-  Map<String, dynamic>? get data;
-
-  /// Create a copy of AppNotification
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AppNotificationImplCopyWith<_$AppNotificationImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$ReminderConfig {
-  bool get enableDailyReminder => throw _privateConstructorUsedError;
-  bool get enableAchievementNotification => throw _privateConstructorUsedError;
-  bool get enableFriendNotification => throw _privateConstructorUsedError;
-  bool get enableWeeklyReport => throw _privateConstructorUsedError;
-  bool get enableEngagementReminder => throw _privateConstructorUsedError;
-  TimeOfDay get dailyReminderTime => throw _privateConstructorUsedError;
-  int get weeklyReportDayOfWeek => throw _privateConstructorUsedError;
 
-  /// Create a copy of ReminderConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ReminderConfigCopyWith<ReminderConfig> get copyWith =>
-      throw _privateConstructorUsedError;
+ bool get enableDailyReminder; bool get enableAchievementNotification; bool get enableFriendNotification; bool get enableWeeklyReport; bool get enableEngagementReminder; TimeOfDay get dailyReminderTime; int get weeklyReportDayOfWeek;
+/// Create a copy of ReminderConfig
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReminderConfigCopyWith<ReminderConfig> get copyWith => _$ReminderConfigCopyWithImpl<ReminderConfig>(this as ReminderConfig, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReminderConfig&&(identical(other.enableDailyReminder, enableDailyReminder) || other.enableDailyReminder == enableDailyReminder)&&(identical(other.enableAchievementNotification, enableAchievementNotification) || other.enableAchievementNotification == enableAchievementNotification)&&(identical(other.enableFriendNotification, enableFriendNotification) || other.enableFriendNotification == enableFriendNotification)&&(identical(other.enableWeeklyReport, enableWeeklyReport) || other.enableWeeklyReport == enableWeeklyReport)&&(identical(other.enableEngagementReminder, enableEngagementReminder) || other.enableEngagementReminder == enableEngagementReminder)&&(identical(other.dailyReminderTime, dailyReminderTime) || other.dailyReminderTime == dailyReminderTime)&&(identical(other.weeklyReportDayOfWeek, weeklyReportDayOfWeek) || other.weeklyReportDayOfWeek == weeklyReportDayOfWeek));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,enableDailyReminder,enableAchievementNotification,enableFriendNotification,enableWeeklyReport,enableEngagementReminder,dailyReminderTime,weeklyReportDayOfWeek);
+
+@override
+String toString() {
+  return 'ReminderConfig(enableDailyReminder: $enableDailyReminder, enableAchievementNotification: $enableAchievementNotification, enableFriendNotification: $enableFriendNotification, enableWeeklyReport: $enableWeeklyReport, enableEngagementReminder: $enableEngagementReminder, dailyReminderTime: $dailyReminderTime, weeklyReportDayOfWeek: $weeklyReportDayOfWeek)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ReminderConfigCopyWith<$Res> {
-  factory $ReminderConfigCopyWith(
-    ReminderConfig value,
-    $Res Function(ReminderConfig) then,
-  ) = _$ReminderConfigCopyWithImpl<$Res, ReminderConfig>;
-  @useResult
-  $Res call({
-    bool enableDailyReminder,
-    bool enableAchievementNotification,
-    bool enableFriendNotification,
-    bool enableWeeklyReport,
-    bool enableEngagementReminder,
-    TimeOfDay dailyReminderTime,
-    int weeklyReportDayOfWeek,
-  });
+abstract mixin class $ReminderConfigCopyWith<$Res>  {
+  factory $ReminderConfigCopyWith(ReminderConfig value, $Res Function(ReminderConfig) _then) = _$ReminderConfigCopyWithImpl;
+@useResult
+$Res call({
+ bool enableDailyReminder, bool enableAchievementNotification, bool enableFriendNotification, bool enableWeeklyReport, bool enableEngagementReminder, TimeOfDay dailyReminderTime, int weeklyReportDayOfWeek
+});
 
-  $TimeOfDayCopyWith<$Res> get dailyReminderTime;
+
+$TimeOfDayCopyWith<$Res> get dailyReminderTime;
+
 }
-
 /// @nodoc
-class _$ReminderConfigCopyWithImpl<$Res, $Val extends ReminderConfig>
+class _$ReminderConfigCopyWithImpl<$Res>
     implements $ReminderConfigCopyWith<$Res> {
-  _$ReminderConfigCopyWithImpl(this._value, this._then);
+  _$ReminderConfigCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ReminderConfig _self;
+  final $Res Function(ReminderConfig) _then;
 
-  /// Create a copy of ReminderConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? enableDailyReminder = null,
-    Object? enableAchievementNotification = null,
-    Object? enableFriendNotification = null,
-    Object? enableWeeklyReport = null,
-    Object? enableEngagementReminder = null,
-    Object? dailyReminderTime = null,
-    Object? weeklyReportDayOfWeek = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            enableDailyReminder: null == enableDailyReminder
-                ? _value.enableDailyReminder
-                : enableDailyReminder // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            enableAchievementNotification: null == enableAchievementNotification
-                ? _value.enableAchievementNotification
-                : enableAchievementNotification // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            enableFriendNotification: null == enableFriendNotification
-                ? _value.enableFriendNotification
-                : enableFriendNotification // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            enableWeeklyReport: null == enableWeeklyReport
-                ? _value.enableWeeklyReport
-                : enableWeeklyReport // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            enableEngagementReminder: null == enableEngagementReminder
-                ? _value.enableEngagementReminder
-                : enableEngagementReminder // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            dailyReminderTime: null == dailyReminderTime
-                ? _value.dailyReminderTime
-                : dailyReminderTime // ignore: cast_nullable_to_non_nullable
-                      as TimeOfDay,
-            weeklyReportDayOfWeek: null == weeklyReportDayOfWeek
-                ? _value.weeklyReportDayOfWeek
-                : weeklyReportDayOfWeek // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of ReminderConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $TimeOfDayCopyWith<$Res> get dailyReminderTime {
-    return $TimeOfDayCopyWith<$Res>(_value.dailyReminderTime, (value) {
-      return _then(_value.copyWith(dailyReminderTime: value) as $Val);
-    });
-  }
+/// Create a copy of ReminderConfig
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? enableDailyReminder = null,Object? enableAchievementNotification = null,Object? enableFriendNotification = null,Object? enableWeeklyReport = null,Object? enableEngagementReminder = null,Object? dailyReminderTime = null,Object? weeklyReportDayOfWeek = null,}) {
+  return _then(_self.copyWith(
+enableDailyReminder: null == enableDailyReminder ? _self.enableDailyReminder : enableDailyReminder // ignore: cast_nullable_to_non_nullable
+as bool,enableAchievementNotification: null == enableAchievementNotification ? _self.enableAchievementNotification : enableAchievementNotification // ignore: cast_nullable_to_non_nullable
+as bool,enableFriendNotification: null == enableFriendNotification ? _self.enableFriendNotification : enableFriendNotification // ignore: cast_nullable_to_non_nullable
+as bool,enableWeeklyReport: null == enableWeeklyReport ? _self.enableWeeklyReport : enableWeeklyReport // ignore: cast_nullable_to_non_nullable
+as bool,enableEngagementReminder: null == enableEngagementReminder ? _self.enableEngagementReminder : enableEngagementReminder // ignore: cast_nullable_to_non_nullable
+as bool,dailyReminderTime: null == dailyReminderTime ? _self.dailyReminderTime : dailyReminderTime // ignore: cast_nullable_to_non_nullable
+as TimeOfDay,weeklyReportDayOfWeek: null == weeklyReportDayOfWeek ? _self.weeklyReportDayOfWeek : weeklyReportDayOfWeek // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
-
-/// @nodoc
-abstract class _$$ReminderConfigImplCopyWith<$Res>
-    implements $ReminderConfigCopyWith<$Res> {
-  factory _$$ReminderConfigImplCopyWith(
-    _$ReminderConfigImpl value,
-    $Res Function(_$ReminderConfigImpl) then,
-  ) = __$$ReminderConfigImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    bool enableDailyReminder,
-    bool enableAchievementNotification,
-    bool enableFriendNotification,
-    bool enableWeeklyReport,
-    bool enableEngagementReminder,
-    TimeOfDay dailyReminderTime,
-    int weeklyReportDayOfWeek,
+/// Create a copy of ReminderConfig
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TimeOfDayCopyWith<$Res> get dailyReminderTime {
+  
+  return $TimeOfDayCopyWith<$Res>(_self.dailyReminderTime, (value) {
+    return _then(_self.copyWith(dailyReminderTime: value));
   });
+}
+}
 
-  @override
-  $TimeOfDayCopyWith<$Res> get dailyReminderTime;
+
+/// Adds pattern-matching-related methods to [ReminderConfig].
+extension ReminderConfigPatterns on ReminderConfig {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ReminderConfig value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ReminderConfig() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ReminderConfig value)  $default,){
+final _that = this;
+switch (_that) {
+case _ReminderConfig():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ReminderConfig value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ReminderConfig() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enableDailyReminder,  bool enableAchievementNotification,  bool enableFriendNotification,  bool enableWeeklyReport,  bool enableEngagementReminder,  TimeOfDay dailyReminderTime,  int weeklyReportDayOfWeek)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ReminderConfig() when $default != null:
+return $default(_that.enableDailyReminder,_that.enableAchievementNotification,_that.enableFriendNotification,_that.enableWeeklyReport,_that.enableEngagementReminder,_that.dailyReminderTime,_that.weeklyReportDayOfWeek);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enableDailyReminder,  bool enableAchievementNotification,  bool enableFriendNotification,  bool enableWeeklyReport,  bool enableEngagementReminder,  TimeOfDay dailyReminderTime,  int weeklyReportDayOfWeek)  $default,) {final _that = this;
+switch (_that) {
+case _ReminderConfig():
+return $default(_that.enableDailyReminder,_that.enableAchievementNotification,_that.enableFriendNotification,_that.enableWeeklyReport,_that.enableEngagementReminder,_that.dailyReminderTime,_that.weeklyReportDayOfWeek);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enableDailyReminder,  bool enableAchievementNotification,  bool enableFriendNotification,  bool enableWeeklyReport,  bool enableEngagementReminder,  TimeOfDay dailyReminderTime,  int weeklyReportDayOfWeek)?  $default,) {final _that = this;
+switch (_that) {
+case _ReminderConfig() when $default != null:
+return $default(_that.enableDailyReminder,_that.enableAchievementNotification,_that.enableFriendNotification,_that.enableWeeklyReport,_that.enableEngagementReminder,_that.dailyReminderTime,_that.weeklyReportDayOfWeek);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-class __$$ReminderConfigImplCopyWithImpl<$Res>
-    extends _$ReminderConfigCopyWithImpl<$Res, _$ReminderConfigImpl>
-    implements _$$ReminderConfigImplCopyWith<$Res> {
-  __$$ReminderConfigImplCopyWithImpl(
-    _$ReminderConfigImpl _value,
-    $Res Function(_$ReminderConfigImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of ReminderConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? enableDailyReminder = null,
-    Object? enableAchievementNotification = null,
-    Object? enableFriendNotification = null,
-    Object? enableWeeklyReport = null,
-    Object? enableEngagementReminder = null,
-    Object? dailyReminderTime = null,
-    Object? weeklyReportDayOfWeek = null,
-  }) {
-    return _then(
-      _$ReminderConfigImpl(
-        enableDailyReminder: null == enableDailyReminder
-            ? _value.enableDailyReminder
-            : enableDailyReminder // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        enableAchievementNotification: null == enableAchievementNotification
-            ? _value.enableAchievementNotification
-            : enableAchievementNotification // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        enableFriendNotification: null == enableFriendNotification
-            ? _value.enableFriendNotification
-            : enableFriendNotification // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        enableWeeklyReport: null == enableWeeklyReport
-            ? _value.enableWeeklyReport
-            : enableWeeklyReport // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        enableEngagementReminder: null == enableEngagementReminder
-            ? _value.enableEngagementReminder
-            : enableEngagementReminder // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        dailyReminderTime: null == dailyReminderTime
-            ? _value.dailyReminderTime
-            : dailyReminderTime // ignore: cast_nullable_to_non_nullable
-                  as TimeOfDay,
-        weeklyReportDayOfWeek: null == weeklyReportDayOfWeek
-            ? _value.weeklyReportDayOfWeek
-            : weeklyReportDayOfWeek // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+
+class _ReminderConfig extends ReminderConfig {
+  const _ReminderConfig({required this.enableDailyReminder, required this.enableAchievementNotification, required this.enableFriendNotification, required this.enableWeeklyReport, required this.enableEngagementReminder, required this.dailyReminderTime, required this.weeklyReportDayOfWeek}): super._();
+  
+
+@override final  bool enableDailyReminder;
+@override final  bool enableAchievementNotification;
+@override final  bool enableFriendNotification;
+@override final  bool enableWeeklyReport;
+@override final  bool enableEngagementReminder;
+@override final  TimeOfDay dailyReminderTime;
+@override final  int weeklyReportDayOfWeek;
+
+/// Create a copy of ReminderConfig
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReminderConfigCopyWith<_ReminderConfig> get copyWith => __$ReminderConfigCopyWithImpl<_ReminderConfig>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReminderConfig&&(identical(other.enableDailyReminder, enableDailyReminder) || other.enableDailyReminder == enableDailyReminder)&&(identical(other.enableAchievementNotification, enableAchievementNotification) || other.enableAchievementNotification == enableAchievementNotification)&&(identical(other.enableFriendNotification, enableFriendNotification) || other.enableFriendNotification == enableFriendNotification)&&(identical(other.enableWeeklyReport, enableWeeklyReport) || other.enableWeeklyReport == enableWeeklyReport)&&(identical(other.enableEngagementReminder, enableEngagementReminder) || other.enableEngagementReminder == enableEngagementReminder)&&(identical(other.dailyReminderTime, dailyReminderTime) || other.dailyReminderTime == dailyReminderTime)&&(identical(other.weeklyReportDayOfWeek, weeklyReportDayOfWeek) || other.weeklyReportDayOfWeek == weeklyReportDayOfWeek));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,enableDailyReminder,enableAchievementNotification,enableFriendNotification,enableWeeklyReport,enableEngagementReminder,dailyReminderTime,weeklyReportDayOfWeek);
+
+@override
+String toString() {
+  return 'ReminderConfig(enableDailyReminder: $enableDailyReminder, enableAchievementNotification: $enableAchievementNotification, enableFriendNotification: $enableFriendNotification, enableWeeklyReport: $enableWeeklyReport, enableEngagementReminder: $enableEngagementReminder, dailyReminderTime: $dailyReminderTime, weeklyReportDayOfWeek: $weeklyReportDayOfWeek)';
+}
+
+
 }
 
 /// @nodoc
+abstract mixin class _$ReminderConfigCopyWith<$Res> implements $ReminderConfigCopyWith<$Res> {
+  factory _$ReminderConfigCopyWith(_ReminderConfig value, $Res Function(_ReminderConfig) _then) = __$ReminderConfigCopyWithImpl;
+@override @useResult
+$Res call({
+ bool enableDailyReminder, bool enableAchievementNotification, bool enableFriendNotification, bool enableWeeklyReport, bool enableEngagementReminder, TimeOfDay dailyReminderTime, int weeklyReportDayOfWeek
+});
 
-class _$ReminderConfigImpl extends _ReminderConfig {
-  const _$ReminderConfigImpl({
-    required this.enableDailyReminder,
-    required this.enableAchievementNotification,
-    required this.enableFriendNotification,
-    required this.enableWeeklyReport,
-    required this.enableEngagementReminder,
-    required this.dailyReminderTime,
-    required this.weeklyReportDayOfWeek,
-  }) : super._();
 
-  @override
-  final bool enableDailyReminder;
-  @override
-  final bool enableAchievementNotification;
-  @override
-  final bool enableFriendNotification;
-  @override
-  final bool enableWeeklyReport;
-  @override
-  final bool enableEngagementReminder;
-  @override
-  final TimeOfDay dailyReminderTime;
-  @override
-  final int weeklyReportDayOfWeek;
+@override $TimeOfDayCopyWith<$Res> get dailyReminderTime;
 
-  @override
-  String toString() {
-    return 'ReminderConfig(enableDailyReminder: $enableDailyReminder, enableAchievementNotification: $enableAchievementNotification, enableFriendNotification: $enableFriendNotification, enableWeeklyReport: $enableWeeklyReport, enableEngagementReminder: $enableEngagementReminder, dailyReminderTime: $dailyReminderTime, weeklyReportDayOfWeek: $weeklyReportDayOfWeek)';
-  }
+}
+/// @nodoc
+class __$ReminderConfigCopyWithImpl<$Res>
+    implements _$ReminderConfigCopyWith<$Res> {
+  __$ReminderConfigCopyWithImpl(this._self, this._then);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ReminderConfigImpl &&
-            (identical(other.enableDailyReminder, enableDailyReminder) ||
-                other.enableDailyReminder == enableDailyReminder) &&
-            (identical(
-                  other.enableAchievementNotification,
-                  enableAchievementNotification,
-                ) ||
-                other.enableAchievementNotification ==
-                    enableAchievementNotification) &&
-            (identical(
-                  other.enableFriendNotification,
-                  enableFriendNotification,
-                ) ||
-                other.enableFriendNotification == enableFriendNotification) &&
-            (identical(other.enableWeeklyReport, enableWeeklyReport) ||
-                other.enableWeeklyReport == enableWeeklyReport) &&
-            (identical(
-                  other.enableEngagementReminder,
-                  enableEngagementReminder,
-                ) ||
-                other.enableEngagementReminder == enableEngagementReminder) &&
-            (identical(other.dailyReminderTime, dailyReminderTime) ||
-                other.dailyReminderTime == dailyReminderTime) &&
-            (identical(other.weeklyReportDayOfWeek, weeklyReportDayOfWeek) ||
-                other.weeklyReportDayOfWeek == weeklyReportDayOfWeek));
-  }
+  final _ReminderConfig _self;
+  final $Res Function(_ReminderConfig) _then;
 
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    enableDailyReminder,
-    enableAchievementNotification,
-    enableFriendNotification,
-    enableWeeklyReport,
-    enableEngagementReminder,
-    dailyReminderTime,
-    weeklyReportDayOfWeek,
-  );
-
-  /// Create a copy of ReminderConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ReminderConfigImplCopyWith<_$ReminderConfigImpl> get copyWith =>
-      __$$ReminderConfigImplCopyWithImpl<_$ReminderConfigImpl>(
-        this,
-        _$identity,
-      );
+/// Create a copy of ReminderConfig
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? enableDailyReminder = null,Object? enableAchievementNotification = null,Object? enableFriendNotification = null,Object? enableWeeklyReport = null,Object? enableEngagementReminder = null,Object? dailyReminderTime = null,Object? weeklyReportDayOfWeek = null,}) {
+  return _then(_ReminderConfig(
+enableDailyReminder: null == enableDailyReminder ? _self.enableDailyReminder : enableDailyReminder // ignore: cast_nullable_to_non_nullable
+as bool,enableAchievementNotification: null == enableAchievementNotification ? _self.enableAchievementNotification : enableAchievementNotification // ignore: cast_nullable_to_non_nullable
+as bool,enableFriendNotification: null == enableFriendNotification ? _self.enableFriendNotification : enableFriendNotification // ignore: cast_nullable_to_non_nullable
+as bool,enableWeeklyReport: null == enableWeeklyReport ? _self.enableWeeklyReport : enableWeeklyReport // ignore: cast_nullable_to_non_nullable
+as bool,enableEngagementReminder: null == enableEngagementReminder ? _self.enableEngagementReminder : enableEngagementReminder // ignore: cast_nullable_to_non_nullable
+as bool,dailyReminderTime: null == dailyReminderTime ? _self.dailyReminderTime : dailyReminderTime // ignore: cast_nullable_to_non_nullable
+as TimeOfDay,weeklyReportDayOfWeek: null == weeklyReportDayOfWeek ? _self.weeklyReportDayOfWeek : weeklyReportDayOfWeek // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-abstract class _ReminderConfig extends ReminderConfig {
-  const factory _ReminderConfig({
-    required final bool enableDailyReminder,
-    required final bool enableAchievementNotification,
-    required final bool enableFriendNotification,
-    required final bool enableWeeklyReport,
-    required final bool enableEngagementReminder,
-    required final TimeOfDay dailyReminderTime,
-    required final int weeklyReportDayOfWeek,
-  }) = _$ReminderConfigImpl;
-  const _ReminderConfig._() : super._();
-
-  @override
-  bool get enableDailyReminder;
-  @override
-  bool get enableAchievementNotification;
-  @override
-  bool get enableFriendNotification;
-  @override
-  bool get enableWeeklyReport;
-  @override
-  bool get enableEngagementReminder;
-  @override
-  TimeOfDay get dailyReminderTime;
-  @override
-  int get weeklyReportDayOfWeek;
-
-  /// Create a copy of ReminderConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ReminderConfigImplCopyWith<_$ReminderConfigImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+/// Create a copy of ReminderConfig
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TimeOfDayCopyWith<$Res> get dailyReminderTime {
+  
+  return $TimeOfDayCopyWith<$Res>(_self.dailyReminderTime, (value) {
+    return _then(_self.copyWith(dailyReminderTime: value));
+  });
+}
 }
 
 /// @nodoc
 mixin _$TimeOfDay {
-  int get hour => throw _privateConstructorUsedError;
-  int get minute => throw _privateConstructorUsedError;
 
-  /// Create a copy of TimeOfDay
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $TimeOfDayCopyWith<TimeOfDay> get copyWith =>
-      throw _privateConstructorUsedError;
+ int get hour; int get minute;
+/// Create a copy of TimeOfDay
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TimeOfDayCopyWith<TimeOfDay> get copyWith => _$TimeOfDayCopyWithImpl<TimeOfDay>(this as TimeOfDay, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimeOfDay&&(identical(other.hour, hour) || other.hour == hour)&&(identical(other.minute, minute) || other.minute == minute));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,hour,minute);
+
+@override
+String toString() {
+  return 'TimeOfDay(hour: $hour, minute: $minute)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TimeOfDayCopyWith<$Res> {
-  factory $TimeOfDayCopyWith(TimeOfDay value, $Res Function(TimeOfDay) then) =
-      _$TimeOfDayCopyWithImpl<$Res, TimeOfDay>;
-  @useResult
-  $Res call({int hour, int minute});
-}
+abstract mixin class $TimeOfDayCopyWith<$Res>  {
+  factory $TimeOfDayCopyWith(TimeOfDay value, $Res Function(TimeOfDay) _then) = _$TimeOfDayCopyWithImpl;
+@useResult
+$Res call({
+ int hour, int minute
+});
 
+
+
+
+}
 /// @nodoc
-class _$TimeOfDayCopyWithImpl<$Res, $Val extends TimeOfDay>
+class _$TimeOfDayCopyWithImpl<$Res>
     implements $TimeOfDayCopyWith<$Res> {
-  _$TimeOfDayCopyWithImpl(this._value, this._then);
+  _$TimeOfDayCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final TimeOfDay _self;
+  final $Res Function(TimeOfDay) _then;
 
-  /// Create a copy of TimeOfDay
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? hour = null, Object? minute = null}) {
-    return _then(
-      _value.copyWith(
-            hour: null == hour
-                ? _value.hour
-                : hour // ignore: cast_nullable_to_non_nullable
-                      as int,
-            minute: null == minute
-                ? _value.minute
-                : minute // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of TimeOfDay
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? hour = null,Object? minute = null,}) {
+  return _then(_self.copyWith(
+hour: null == hour ? _self.hour : hour // ignore: cast_nullable_to_non_nullable
+as int,minute: null == minute ? _self.minute : minute // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TimeOfDay].
+extension TimeOfDayPatterns on TimeOfDay {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TimeOfDay value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TimeOfDay() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TimeOfDay value)  $default,){
+final _that = this;
+switch (_that) {
+case _TimeOfDay():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TimeOfDay value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TimeOfDay() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int hour,  int minute)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TimeOfDay() when $default != null:
+return $default(_that.hour,_that.minute);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int hour,  int minute)  $default,) {final _that = this;
+switch (_that) {
+case _TimeOfDay():
+return $default(_that.hour,_that.minute);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int hour,  int minute)?  $default,) {final _that = this;
+switch (_that) {
+case _TimeOfDay() when $default != null:
+return $default(_that.hour,_that.minute);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$TimeOfDayImplCopyWith<$Res>
-    implements $TimeOfDayCopyWith<$Res> {
-  factory _$$TimeOfDayImplCopyWith(
-    _$TimeOfDayImpl value,
-    $Res Function(_$TimeOfDayImpl) then,
-  ) = __$$TimeOfDayImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int hour, int minute});
+
+
+class _TimeOfDay extends TimeOfDay {
+  const _TimeOfDay({required this.hour, required this.minute}): super._();
+  
+
+@override final  int hour;
+@override final  int minute;
+
+/// Create a copy of TimeOfDay
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TimeOfDayCopyWith<_TimeOfDay> get copyWith => __$TimeOfDayCopyWithImpl<_TimeOfDay>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimeOfDay&&(identical(other.hour, hour) || other.hour == hour)&&(identical(other.minute, minute) || other.minute == minute));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,hour,minute);
+
+@override
+String toString() {
+  return 'TimeOfDay(hour: $hour, minute: $minute)';
+}
+
+
 }
 
 /// @nodoc
-class __$$TimeOfDayImplCopyWithImpl<$Res>
-    extends _$TimeOfDayCopyWithImpl<$Res, _$TimeOfDayImpl>
-    implements _$$TimeOfDayImplCopyWith<$Res> {
-  __$$TimeOfDayImplCopyWithImpl(
-    _$TimeOfDayImpl _value,
-    $Res Function(_$TimeOfDayImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$TimeOfDayCopyWith<$Res> implements $TimeOfDayCopyWith<$Res> {
+  factory _$TimeOfDayCopyWith(_TimeOfDay value, $Res Function(_TimeOfDay) _then) = __$TimeOfDayCopyWithImpl;
+@override @useResult
+$Res call({
+ int hour, int minute
+});
 
-  /// Create a copy of TimeOfDay
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? hour = null, Object? minute = null}) {
-    return _then(
-      _$TimeOfDayImpl(
-        hour: null == hour
-            ? _value.hour
-            : hour // ignore: cast_nullable_to_non_nullable
-                  as int,
-        minute: null == minute
-            ? _value.minute
-            : minute // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$TimeOfDayCopyWithImpl<$Res>
+    implements _$TimeOfDayCopyWith<$Res> {
+  __$TimeOfDayCopyWithImpl(this._self, this._then);
 
-class _$TimeOfDayImpl extends _TimeOfDay {
-  const _$TimeOfDayImpl({required this.hour, required this.minute}) : super._();
+  final _TimeOfDay _self;
+  final $Res Function(_TimeOfDay) _then;
 
-  @override
-  final int hour;
-  @override
-  final int minute;
-
-  @override
-  String toString() {
-    return 'TimeOfDay(hour: $hour, minute: $minute)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TimeOfDayImpl &&
-            (identical(other.hour, hour) || other.hour == hour) &&
-            (identical(other.minute, minute) || other.minute == minute));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, hour, minute);
-
-  /// Create a copy of TimeOfDay
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TimeOfDayImplCopyWith<_$TimeOfDayImpl> get copyWith =>
-      __$$TimeOfDayImplCopyWithImpl<_$TimeOfDayImpl>(this, _$identity);
+/// Create a copy of TimeOfDay
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? hour = null,Object? minute = null,}) {
+  return _then(_TimeOfDay(
+hour: null == hour ? _self.hour : hour // ignore: cast_nullable_to_non_nullable
+as int,minute: null == minute ? _self.minute : minute // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-abstract class _TimeOfDay extends TimeOfDay {
-  const factory _TimeOfDay({
-    required final int hour,
-    required final int minute,
-  }) = _$TimeOfDayImpl;
-  const _TimeOfDay._() : super._();
 
-  @override
-  int get hour;
-  @override
-  int get minute;
-
-  /// Create a copy of TimeOfDay
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TimeOfDayImplCopyWith<_$TimeOfDayImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$NotificationStats {
-  int get totalNotifications => throw _privateConstructorUsedError;
-  int get unreadCount => throw _privateConstructorUsedError;
-  int get achievementCount => throw _privateConstructorUsedError;
-  int get friendRequestCount => throw _privateConstructorUsedError;
-  DateTime get lastCheckAt => throw _privateConstructorUsedError;
 
-  /// Create a copy of NotificationStats
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $NotificationStatsCopyWith<NotificationStats> get copyWith =>
-      throw _privateConstructorUsedError;
+ int get totalNotifications; int get unreadCount; int get achievementCount; int get friendRequestCount; DateTime get lastCheckAt;
+/// Create a copy of NotificationStats
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NotificationStatsCopyWith<NotificationStats> get copyWith => _$NotificationStatsCopyWithImpl<NotificationStats>(this as NotificationStats, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStats&&(identical(other.totalNotifications, totalNotifications) || other.totalNotifications == totalNotifications)&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.achievementCount, achievementCount) || other.achievementCount == achievementCount)&&(identical(other.friendRequestCount, friendRequestCount) || other.friendRequestCount == friendRequestCount)&&(identical(other.lastCheckAt, lastCheckAt) || other.lastCheckAt == lastCheckAt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,totalNotifications,unreadCount,achievementCount,friendRequestCount,lastCheckAt);
+
+@override
+String toString() {
+  return 'NotificationStats(totalNotifications: $totalNotifications, unreadCount: $unreadCount, achievementCount: $achievementCount, friendRequestCount: $friendRequestCount, lastCheckAt: $lastCheckAt)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $NotificationStatsCopyWith<$Res> {
-  factory $NotificationStatsCopyWith(
-    NotificationStats value,
-    $Res Function(NotificationStats) then,
-  ) = _$NotificationStatsCopyWithImpl<$Res, NotificationStats>;
-  @useResult
-  $Res call({
-    int totalNotifications,
-    int unreadCount,
-    int achievementCount,
-    int friendRequestCount,
-    DateTime lastCheckAt,
-  });
-}
+abstract mixin class $NotificationStatsCopyWith<$Res>  {
+  factory $NotificationStatsCopyWith(NotificationStats value, $Res Function(NotificationStats) _then) = _$NotificationStatsCopyWithImpl;
+@useResult
+$Res call({
+ int totalNotifications, int unreadCount, int achievementCount, int friendRequestCount, DateTime lastCheckAt
+});
 
+
+
+
+}
 /// @nodoc
-class _$NotificationStatsCopyWithImpl<$Res, $Val extends NotificationStats>
+class _$NotificationStatsCopyWithImpl<$Res>
     implements $NotificationStatsCopyWith<$Res> {
-  _$NotificationStatsCopyWithImpl(this._value, this._then);
+  _$NotificationStatsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final NotificationStats _self;
+  final $Res Function(NotificationStats) _then;
 
-  /// Create a copy of NotificationStats
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? totalNotifications = null,
-    Object? unreadCount = null,
-    Object? achievementCount = null,
-    Object? friendRequestCount = null,
-    Object? lastCheckAt = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            totalNotifications: null == totalNotifications
-                ? _value.totalNotifications
-                : totalNotifications // ignore: cast_nullable_to_non_nullable
-                      as int,
-            unreadCount: null == unreadCount
-                ? _value.unreadCount
-                : unreadCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            achievementCount: null == achievementCount
-                ? _value.achievementCount
-                : achievementCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            friendRequestCount: null == friendRequestCount
-                ? _value.friendRequestCount
-                : friendRequestCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            lastCheckAt: null == lastCheckAt
-                ? _value.lastCheckAt
-                : lastCheckAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of NotificationStats
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? totalNotifications = null,Object? unreadCount = null,Object? achievementCount = null,Object? friendRequestCount = null,Object? lastCheckAt = null,}) {
+  return _then(_self.copyWith(
+totalNotifications: null == totalNotifications ? _self.totalNotifications : totalNotifications // ignore: cast_nullable_to_non_nullable
+as int,unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
+as int,achievementCount: null == achievementCount ? _self.achievementCount : achievementCount // ignore: cast_nullable_to_non_nullable
+as int,friendRequestCount: null == friendRequestCount ? _self.friendRequestCount : friendRequestCount // ignore: cast_nullable_to_non_nullable
+as int,lastCheckAt: null == lastCheckAt ? _self.lastCheckAt : lastCheckAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [NotificationStats].
+extension NotificationStatsPatterns on NotificationStats {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _NotificationStats value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _NotificationStats() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _NotificationStats value)  $default,){
+final _that = this;
+switch (_that) {
+case _NotificationStats():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _NotificationStats value)?  $default,){
+final _that = this;
+switch (_that) {
+case _NotificationStats() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int totalNotifications,  int unreadCount,  int achievementCount,  int friendRequestCount,  DateTime lastCheckAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _NotificationStats() when $default != null:
+return $default(_that.totalNotifications,_that.unreadCount,_that.achievementCount,_that.friendRequestCount,_that.lastCheckAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int totalNotifications,  int unreadCount,  int achievementCount,  int friendRequestCount,  DateTime lastCheckAt)  $default,) {final _that = this;
+switch (_that) {
+case _NotificationStats():
+return $default(_that.totalNotifications,_that.unreadCount,_that.achievementCount,_that.friendRequestCount,_that.lastCheckAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int totalNotifications,  int unreadCount,  int achievementCount,  int friendRequestCount,  DateTime lastCheckAt)?  $default,) {final _that = this;
+switch (_that) {
+case _NotificationStats() when $default != null:
+return $default(_that.totalNotifications,_that.unreadCount,_that.achievementCount,_that.friendRequestCount,_that.lastCheckAt);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$NotificationStatsImplCopyWith<$Res>
-    implements $NotificationStatsCopyWith<$Res> {
-  factory _$$NotificationStatsImplCopyWith(
-    _$NotificationStatsImpl value,
-    $Res Function(_$NotificationStatsImpl) then,
-  ) = __$$NotificationStatsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    int totalNotifications,
-    int unreadCount,
-    int achievementCount,
-    int friendRequestCount,
-    DateTime lastCheckAt,
-  });
+
+
+class _NotificationStats extends NotificationStats {
+  const _NotificationStats({required this.totalNotifications, required this.unreadCount, required this.achievementCount, required this.friendRequestCount, required this.lastCheckAt}): super._();
+  
+
+@override final  int totalNotifications;
+@override final  int unreadCount;
+@override final  int achievementCount;
+@override final  int friendRequestCount;
+@override final  DateTime lastCheckAt;
+
+/// Create a copy of NotificationStats
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NotificationStatsCopyWith<_NotificationStats> get copyWith => __$NotificationStatsCopyWithImpl<_NotificationStats>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationStats&&(identical(other.totalNotifications, totalNotifications) || other.totalNotifications == totalNotifications)&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.achievementCount, achievementCount) || other.achievementCount == achievementCount)&&(identical(other.friendRequestCount, friendRequestCount) || other.friendRequestCount == friendRequestCount)&&(identical(other.lastCheckAt, lastCheckAt) || other.lastCheckAt == lastCheckAt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,totalNotifications,unreadCount,achievementCount,friendRequestCount,lastCheckAt);
+
+@override
+String toString() {
+  return 'NotificationStats(totalNotifications: $totalNotifications, unreadCount: $unreadCount, achievementCount: $achievementCount, friendRequestCount: $friendRequestCount, lastCheckAt: $lastCheckAt)';
+}
+
+
 }
 
 /// @nodoc
-class __$$NotificationStatsImplCopyWithImpl<$Res>
-    extends _$NotificationStatsCopyWithImpl<$Res, _$NotificationStatsImpl>
-    implements _$$NotificationStatsImplCopyWith<$Res> {
-  __$$NotificationStatsImplCopyWithImpl(
-    _$NotificationStatsImpl _value,
-    $Res Function(_$NotificationStatsImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$NotificationStatsCopyWith<$Res> implements $NotificationStatsCopyWith<$Res> {
+  factory _$NotificationStatsCopyWith(_NotificationStats value, $Res Function(_NotificationStats) _then) = __$NotificationStatsCopyWithImpl;
+@override @useResult
+$Res call({
+ int totalNotifications, int unreadCount, int achievementCount, int friendRequestCount, DateTime lastCheckAt
+});
 
-  /// Create a copy of NotificationStats
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? totalNotifications = null,
-    Object? unreadCount = null,
-    Object? achievementCount = null,
-    Object? friendRequestCount = null,
-    Object? lastCheckAt = null,
-  }) {
-    return _then(
-      _$NotificationStatsImpl(
-        totalNotifications: null == totalNotifications
-            ? _value.totalNotifications
-            : totalNotifications // ignore: cast_nullable_to_non_nullable
-                  as int,
-        unreadCount: null == unreadCount
-            ? _value.unreadCount
-            : unreadCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        achievementCount: null == achievementCount
-            ? _value.achievementCount
-            : achievementCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        friendRequestCount: null == friendRequestCount
-            ? _value.friendRequestCount
-            : friendRequestCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        lastCheckAt: null == lastCheckAt
-            ? _value.lastCheckAt
-            : lastCheckAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$NotificationStatsCopyWithImpl<$Res>
+    implements _$NotificationStatsCopyWith<$Res> {
+  __$NotificationStatsCopyWithImpl(this._self, this._then);
 
-class _$NotificationStatsImpl extends _NotificationStats {
-  const _$NotificationStatsImpl({
-    required this.totalNotifications,
-    required this.unreadCount,
-    required this.achievementCount,
-    required this.friendRequestCount,
-    required this.lastCheckAt,
-  }) : super._();
+  final _NotificationStats _self;
+  final $Res Function(_NotificationStats) _then;
 
-  @override
-  final int totalNotifications;
-  @override
-  final int unreadCount;
-  @override
-  final int achievementCount;
-  @override
-  final int friendRequestCount;
-  @override
-  final DateTime lastCheckAt;
-
-  @override
-  String toString() {
-    return 'NotificationStats(totalNotifications: $totalNotifications, unreadCount: $unreadCount, achievementCount: $achievementCount, friendRequestCount: $friendRequestCount, lastCheckAt: $lastCheckAt)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NotificationStatsImpl &&
-            (identical(other.totalNotifications, totalNotifications) ||
-                other.totalNotifications == totalNotifications) &&
-            (identical(other.unreadCount, unreadCount) ||
-                other.unreadCount == unreadCount) &&
-            (identical(other.achievementCount, achievementCount) ||
-                other.achievementCount == achievementCount) &&
-            (identical(other.friendRequestCount, friendRequestCount) ||
-                other.friendRequestCount == friendRequestCount) &&
-            (identical(other.lastCheckAt, lastCheckAt) ||
-                other.lastCheckAt == lastCheckAt));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    totalNotifications,
-    unreadCount,
-    achievementCount,
-    friendRequestCount,
-    lastCheckAt,
-  );
-
-  /// Create a copy of NotificationStats
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$NotificationStatsImplCopyWith<_$NotificationStatsImpl> get copyWith =>
-      __$$NotificationStatsImplCopyWithImpl<_$NotificationStatsImpl>(
-        this,
-        _$identity,
-      );
+/// Create a copy of NotificationStats
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? totalNotifications = null,Object? unreadCount = null,Object? achievementCount = null,Object? friendRequestCount = null,Object? lastCheckAt = null,}) {
+  return _then(_NotificationStats(
+totalNotifications: null == totalNotifications ? _self.totalNotifications : totalNotifications // ignore: cast_nullable_to_non_nullable
+as int,unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
+as int,achievementCount: null == achievementCount ? _self.achievementCount : achievementCount // ignore: cast_nullable_to_non_nullable
+as int,friendRequestCount: null == friendRequestCount ? _self.friendRequestCount : friendRequestCount // ignore: cast_nullable_to_non_nullable
+as int,lastCheckAt: null == lastCheckAt ? _self.lastCheckAt : lastCheckAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
 }
 
-abstract class _NotificationStats extends NotificationStats {
-  const factory _NotificationStats({
-    required final int totalNotifications,
-    required final int unreadCount,
-    required final int achievementCount,
-    required final int friendRequestCount,
-    required final DateTime lastCheckAt,
-  }) = _$NotificationStatsImpl;
-  const _NotificationStats._() : super._();
 
-  @override
-  int get totalNotifications;
-  @override
-  int get unreadCount;
-  @override
-  int get achievementCount;
-  @override
-  int get friendRequestCount;
-  @override
-  DateTime get lastCheckAt;
-
-  /// Create a copy of NotificationStats
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NotificationStatsImplCopyWith<_$NotificationStatsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,1495 +9,1485 @@ part of 'daily_mission_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-DailyMission _$DailyMissionFromJson(Map<String, dynamic> json) {
-  return _DailyMission.fromJson(json);
-}
 
 /// @nodoc
 mixin _$DailyMission {
-  String get missionId => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
-  int get targetValue => throw _privateConstructorUsedError;
-  String get unit => throw _privateConstructorUsedError;
-  String get subject =>
-      throw _privateConstructorUsedError; // 'sansu', 'kokugo', 'eigo', 'rika', 'shakai', 'programming', 'doutoku'
-  MissionReward get reward => throw _privateConstructorUsedError;
-  DateTime get resetTime =>
-      throw _privateConstructorUsedError; // Unix timestamp for daily reset (5:00 AM default)
-  bool get enabled => throw _privateConstructorUsedError;
-  List<String> get appIds => throw _privateConstructorUsedError;
+
+ String get missionId; String get title; String get description; int get targetValue; String get unit; String get subject;// 'sansu', 'kokugo', 'eigo', 'rika', 'shakai', 'programming', 'doutoku'
+ MissionReward get reward; DateTime get resetTime;// Unix timestamp for daily reset (5:00 AM default)
+ bool get enabled; List<String> get appIds;
+/// Create a copy of DailyMission
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DailyMissionCopyWith<DailyMission> get copyWith => _$DailyMissionCopyWithImpl<DailyMission>(this as DailyMission, _$identity);
 
   /// Serializes this DailyMission to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DailyMission
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DailyMissionCopyWith<DailyMission> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyMission&&(identical(other.missionId, missionId) || other.missionId == missionId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.targetValue, targetValue) || other.targetValue == targetValue)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.subject, subject) || other.subject == subject)&&(identical(other.reward, reward) || other.reward == reward)&&(identical(other.resetTime, resetTime) || other.resetTime == resetTime)&&(identical(other.enabled, enabled) || other.enabled == enabled)&&const DeepCollectionEquality().equals(other.appIds, appIds));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,missionId,title,description,targetValue,unit,subject,reward,resetTime,enabled,const DeepCollectionEquality().hash(appIds));
+
+@override
+String toString() {
+  return 'DailyMission(missionId: $missionId, title: $title, description: $description, targetValue: $targetValue, unit: $unit, subject: $subject, reward: $reward, resetTime: $resetTime, enabled: $enabled, appIds: $appIds)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DailyMissionCopyWith<$Res> {
-  factory $DailyMissionCopyWith(
-    DailyMission value,
-    $Res Function(DailyMission) then,
-  ) = _$DailyMissionCopyWithImpl<$Res, DailyMission>;
-  @useResult
-  $Res call({
-    String missionId,
-    String title,
-    String description,
-    int targetValue,
-    String unit,
-    String subject,
-    MissionReward reward,
-    DateTime resetTime,
-    bool enabled,
-    List<String> appIds,
-  });
+abstract mixin class $DailyMissionCopyWith<$Res>  {
+  factory $DailyMissionCopyWith(DailyMission value, $Res Function(DailyMission) _then) = _$DailyMissionCopyWithImpl;
+@useResult
+$Res call({
+ String missionId, String title, String description, int targetValue, String unit, String subject, MissionReward reward, DateTime resetTime, bool enabled, List<String> appIds
+});
 
-  $MissionRewardCopyWith<$Res> get reward;
+
+$MissionRewardCopyWith<$Res> get reward;
+
 }
-
 /// @nodoc
-class _$DailyMissionCopyWithImpl<$Res, $Val extends DailyMission>
+class _$DailyMissionCopyWithImpl<$Res>
     implements $DailyMissionCopyWith<$Res> {
-  _$DailyMissionCopyWithImpl(this._value, this._then);
+  _$DailyMissionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DailyMission _self;
+  final $Res Function(DailyMission) _then;
 
-  /// Create a copy of DailyMission
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? missionId = null,
-    Object? title = null,
-    Object? description = null,
-    Object? targetValue = null,
-    Object? unit = null,
-    Object? subject = null,
-    Object? reward = null,
-    Object? resetTime = null,
-    Object? enabled = null,
-    Object? appIds = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            missionId: null == missionId
-                ? _value.missionId
-                : missionId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            title: null == title
-                ? _value.title
-                : title // ignore: cast_nullable_to_non_nullable
-                      as String,
-            description: null == description
-                ? _value.description
-                : description // ignore: cast_nullable_to_non_nullable
-                      as String,
-            targetValue: null == targetValue
-                ? _value.targetValue
-                : targetValue // ignore: cast_nullable_to_non_nullable
-                      as int,
-            unit: null == unit
-                ? _value.unit
-                : unit // ignore: cast_nullable_to_non_nullable
-                      as String,
-            subject: null == subject
-                ? _value.subject
-                : subject // ignore: cast_nullable_to_non_nullable
-                      as String,
-            reward: null == reward
-                ? _value.reward
-                : reward // ignore: cast_nullable_to_non_nullable
-                      as MissionReward,
-            resetTime: null == resetTime
-                ? _value.resetTime
-                : resetTime // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            enabled: null == enabled
-                ? _value.enabled
-                : enabled // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            appIds: null == appIds
-                ? _value.appIds
-                : appIds // ignore: cast_nullable_to_non_nullable
-                      as List<String>,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of DailyMission
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $MissionRewardCopyWith<$Res> get reward {
-    return $MissionRewardCopyWith<$Res>(_value.reward, (value) {
-      return _then(_value.copyWith(reward: value) as $Val);
-    });
-  }
+/// Create a copy of DailyMission
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? missionId = null,Object? title = null,Object? description = null,Object? targetValue = null,Object? unit = null,Object? subject = null,Object? reward = null,Object? resetTime = null,Object? enabled = null,Object? appIds = null,}) {
+  return _then(_self.copyWith(
+missionId: null == missionId ? _self.missionId : missionId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,targetValue: null == targetValue ? _self.targetValue : targetValue // ignore: cast_nullable_to_non_nullable
+as int,unit: null == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
+as String,subject: null == subject ? _self.subject : subject // ignore: cast_nullable_to_non_nullable
+as String,reward: null == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
+as MissionReward,resetTime: null == resetTime ? _self.resetTime : resetTime // ignore: cast_nullable_to_non_nullable
+as DateTime,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,appIds: null == appIds ? _self.appIds : appIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
 }
-
-/// @nodoc
-abstract class _$$DailyMissionImplCopyWith<$Res>
-    implements $DailyMissionCopyWith<$Res> {
-  factory _$$DailyMissionImplCopyWith(
-    _$DailyMissionImpl value,
-    $Res Function(_$DailyMissionImpl) then,
-  ) = __$$DailyMissionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String missionId,
-    String title,
-    String description,
-    int targetValue,
-    String unit,
-    String subject,
-    MissionReward reward,
-    DateTime resetTime,
-    bool enabled,
-    List<String> appIds,
+/// Create a copy of DailyMission
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MissionRewardCopyWith<$Res> get reward {
+  
+  return $MissionRewardCopyWith<$Res>(_self.reward, (value) {
+    return _then(_self.copyWith(reward: value));
   });
-
-  @override
-  $MissionRewardCopyWith<$Res> get reward;
+}
 }
 
-/// @nodoc
-class __$$DailyMissionImplCopyWithImpl<$Res>
-    extends _$DailyMissionCopyWithImpl<$Res, _$DailyMissionImpl>
-    implements _$$DailyMissionImplCopyWith<$Res> {
-  __$$DailyMissionImplCopyWithImpl(
-    _$DailyMissionImpl _value,
-    $Res Function(_$DailyMissionImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DailyMission
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? missionId = null,
-    Object? title = null,
-    Object? description = null,
-    Object? targetValue = null,
-    Object? unit = null,
-    Object? subject = null,
-    Object? reward = null,
-    Object? resetTime = null,
-    Object? enabled = null,
-    Object? appIds = null,
-  }) {
-    return _then(
-      _$DailyMissionImpl(
-        missionId: null == missionId
-            ? _value.missionId
-            : missionId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        title: null == title
-            ? _value.title
-            : title // ignore: cast_nullable_to_non_nullable
-                  as String,
-        description: null == description
-            ? _value.description
-            : description // ignore: cast_nullable_to_non_nullable
-                  as String,
-        targetValue: null == targetValue
-            ? _value.targetValue
-            : targetValue // ignore: cast_nullable_to_non_nullable
-                  as int,
-        unit: null == unit
-            ? _value.unit
-            : unit // ignore: cast_nullable_to_non_nullable
-                  as String,
-        subject: null == subject
-            ? _value.subject
-            : subject // ignore: cast_nullable_to_non_nullable
-                  as String,
-        reward: null == reward
-            ? _value.reward
-            : reward // ignore: cast_nullable_to_non_nullable
-                  as MissionReward,
-        resetTime: null == resetTime
-            ? _value.resetTime
-            : resetTime // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        enabled: null == enabled
-            ? _value.enabled
-            : enabled // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        appIds: null == appIds
-            ? _value._appIds
-            : appIds // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DailyMission].
+extension DailyMissionPatterns on DailyMission {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DailyMission value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DailyMission() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DailyMission value)  $default,){
+final _that = this;
+switch (_that) {
+case _DailyMission():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DailyMission value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DailyMission() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String missionId,  String title,  String description,  int targetValue,  String unit,  String subject,  MissionReward reward,  DateTime resetTime,  bool enabled,  List<String> appIds)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DailyMission() when $default != null:
+return $default(_that.missionId,_that.title,_that.description,_that.targetValue,_that.unit,_that.subject,_that.reward,_that.resetTime,_that.enabled,_that.appIds);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String missionId,  String title,  String description,  int targetValue,  String unit,  String subject,  MissionReward reward,  DateTime resetTime,  bool enabled,  List<String> appIds)  $default,) {final _that = this;
+switch (_that) {
+case _DailyMission():
+return $default(_that.missionId,_that.title,_that.description,_that.targetValue,_that.unit,_that.subject,_that.reward,_that.resetTime,_that.enabled,_that.appIds);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String missionId,  String title,  String description,  int targetValue,  String unit,  String subject,  MissionReward reward,  DateTime resetTime,  bool enabled,  List<String> appIds)?  $default,) {final _that = this;
+switch (_that) {
+case _DailyMission() when $default != null:
+return $default(_that.missionId,_that.title,_that.description,_that.targetValue,_that.unit,_that.subject,_that.reward,_that.resetTime,_that.enabled,_that.appIds);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DailyMissionImpl implements _DailyMission {
-  const _$DailyMissionImpl({
-    required this.missionId,
-    required this.title,
-    required this.description,
-    required this.targetValue,
-    required this.unit,
-    required this.subject,
-    required this.reward,
-    required this.resetTime,
-    this.enabled = true,
-    final List<String> appIds = const [],
-  }) : _appIds = appIds;
 
-  factory _$DailyMissionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DailyMissionImplFromJson(json);
+class _DailyMission implements DailyMission {
+  const _DailyMission({required this.missionId, required this.title, required this.description, required this.targetValue, required this.unit, required this.subject, required this.reward, required this.resetTime, this.enabled = true, final  List<String> appIds = const []}): _appIds = appIds;
+  factory _DailyMission.fromJson(Map<String, dynamic> json) => _$DailyMissionFromJson(json);
 
-  @override
-  final String missionId;
-  @override
-  final String title;
-  @override
-  final String description;
-  @override
-  final int targetValue;
-  @override
-  final String unit;
-  @override
-  final String subject;
-  // 'sansu', 'kokugo', 'eigo', 'rika', 'shakai', 'programming', 'doutoku'
-  @override
-  final MissionReward reward;
-  @override
-  final DateTime resetTime;
-  // Unix timestamp for daily reset (5:00 AM default)
-  @override
-  @JsonKey()
-  final bool enabled;
-  final List<String> _appIds;
-  @override
-  @JsonKey()
-  List<String> get appIds {
-    if (_appIds is EqualUnmodifiableListView) return _appIds;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_appIds);
-  }
-
-  @override
-  String toString() {
-    return 'DailyMission(missionId: $missionId, title: $title, description: $description, targetValue: $targetValue, unit: $unit, subject: $subject, reward: $reward, resetTime: $resetTime, enabled: $enabled, appIds: $appIds)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyMissionImpl &&
-            (identical(other.missionId, missionId) ||
-                other.missionId == missionId) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.targetValue, targetValue) ||
-                other.targetValue == targetValue) &&
-            (identical(other.unit, unit) || other.unit == unit) &&
-            (identical(other.subject, subject) || other.subject == subject) &&
-            (identical(other.reward, reward) || other.reward == reward) &&
-            (identical(other.resetTime, resetTime) ||
-                other.resetTime == resetTime) &&
-            (identical(other.enabled, enabled) || other.enabled == enabled) &&
-            const DeepCollectionEquality().equals(other._appIds, _appIds));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    missionId,
-    title,
-    description,
-    targetValue,
-    unit,
-    subject,
-    reward,
-    resetTime,
-    enabled,
-    const DeepCollectionEquality().hash(_appIds),
-  );
-
-  /// Create a copy of DailyMission
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DailyMissionImplCopyWith<_$DailyMissionImpl> get copyWith =>
-      __$$DailyMissionImplCopyWithImpl<_$DailyMissionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DailyMissionImplToJson(this);
-  }
+@override final  String missionId;
+@override final  String title;
+@override final  String description;
+@override final  int targetValue;
+@override final  String unit;
+@override final  String subject;
+// 'sansu', 'kokugo', 'eigo', 'rika', 'shakai', 'programming', 'doutoku'
+@override final  MissionReward reward;
+@override final  DateTime resetTime;
+// Unix timestamp for daily reset (5:00 AM default)
+@override@JsonKey() final  bool enabled;
+ final  List<String> _appIds;
+@override@JsonKey() List<String> get appIds {
+  if (_appIds is EqualUnmodifiableListView) return _appIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_appIds);
 }
 
-abstract class _DailyMission implements DailyMission {
-  const factory _DailyMission({
-    required final String missionId,
-    required final String title,
-    required final String description,
-    required final int targetValue,
-    required final String unit,
-    required final String subject,
-    required final MissionReward reward,
-    required final DateTime resetTime,
-    final bool enabled,
-    final List<String> appIds,
-  }) = _$DailyMissionImpl;
 
-  factory _DailyMission.fromJson(Map<String, dynamic> json) =
-      _$DailyMissionImpl.fromJson;
+/// Create a copy of DailyMission
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DailyMissionCopyWith<_DailyMission> get copyWith => __$DailyMissionCopyWithImpl<_DailyMission>(this, _$identity);
 
-  @override
-  String get missionId;
-  @override
-  String get title;
-  @override
-  String get description;
-  @override
-  int get targetValue;
-  @override
-  String get unit;
-  @override
-  String get subject; // 'sansu', 'kokugo', 'eigo', 'rika', 'shakai', 'programming', 'doutoku'
-  @override
-  MissionReward get reward;
-  @override
-  DateTime get resetTime; // Unix timestamp for daily reset (5:00 AM default)
-  @override
-  bool get enabled;
-  @override
-  List<String> get appIds;
-
-  /// Create a copy of DailyMission
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DailyMissionImplCopyWith<_$DailyMissionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$DailyMissionToJson(this, );
 }
 
-MissionReward _$MissionRewardFromJson(Map<String, dynamic> json) {
-  return _MissionReward.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyMission&&(identical(other.missionId, missionId) || other.missionId == missionId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.targetValue, targetValue) || other.targetValue == targetValue)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.subject, subject) || other.subject == subject)&&(identical(other.reward, reward) || other.reward == reward)&&(identical(other.resetTime, resetTime) || other.resetTime == resetTime)&&(identical(other.enabled, enabled) || other.enabled == enabled)&&const DeepCollectionEquality().equals(other._appIds, _appIds));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,missionId,title,description,targetValue,unit,subject,reward,resetTime,enabled,const DeepCollectionEquality().hash(_appIds));
+
+@override
+String toString() {
+  return 'DailyMission(missionId: $missionId, title: $title, description: $description, targetValue: $targetValue, unit: $unit, subject: $subject, reward: $reward, resetTime: $resetTime, enabled: $enabled, appIds: $appIds)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DailyMissionCopyWith<$Res> implements $DailyMissionCopyWith<$Res> {
+  factory _$DailyMissionCopyWith(_DailyMission value, $Res Function(_DailyMission) _then) = __$DailyMissionCopyWithImpl;
+@override @useResult
+$Res call({
+ String missionId, String title, String description, int targetValue, String unit, String subject, MissionReward reward, DateTime resetTime, bool enabled, List<String> appIds
+});
+
+
+@override $MissionRewardCopyWith<$Res> get reward;
+
+}
+/// @nodoc
+class __$DailyMissionCopyWithImpl<$Res>
+    implements _$DailyMissionCopyWith<$Res> {
+  __$DailyMissionCopyWithImpl(this._self, this._then);
+
+  final _DailyMission _self;
+  final $Res Function(_DailyMission) _then;
+
+/// Create a copy of DailyMission
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? missionId = null,Object? title = null,Object? description = null,Object? targetValue = null,Object? unit = null,Object? subject = null,Object? reward = null,Object? resetTime = null,Object? enabled = null,Object? appIds = null,}) {
+  return _then(_DailyMission(
+missionId: null == missionId ? _self.missionId : missionId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,targetValue: null == targetValue ? _self.targetValue : targetValue // ignore: cast_nullable_to_non_nullable
+as int,unit: null == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
+as String,subject: null == subject ? _self.subject : subject // ignore: cast_nullable_to_non_nullable
+as String,reward: null == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
+as MissionReward,resetTime: null == resetTime ? _self.resetTime : resetTime // ignore: cast_nullable_to_non_nullable
+as DateTime,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,appIds: null == appIds ? _self._appIds : appIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+/// Create a copy of DailyMission
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MissionRewardCopyWith<$Res> get reward {
+  
+  return $MissionRewardCopyWith<$Res>(_self.reward, (value) {
+    return _then(_self.copyWith(reward: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$MissionReward {
-  RewardType get type =>
-      throw _privateConstructorUsedError; // 'coins', 'badges', 'characterExp', 'items'
-  int get amount => throw _privateConstructorUsedError;
-  String? get itemId =>
-      throw _privateConstructorUsedError; // For badges or items
-  String? get badgeId => throw _privateConstructorUsedError;
+
+ RewardType get type;// 'coins', 'badges', 'characterExp', 'items'
+ int get amount; String? get itemId;// For badges or items
+ String? get badgeId;
+/// Create a copy of MissionReward
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MissionRewardCopyWith<MissionReward> get copyWith => _$MissionRewardCopyWithImpl<MissionReward>(this as MissionReward, _$identity);
 
   /// Serializes this MissionReward to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of MissionReward
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $MissionRewardCopyWith<MissionReward> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MissionReward&&(identical(other.type, type) || other.type == type)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.itemId, itemId) || other.itemId == itemId)&&(identical(other.badgeId, badgeId) || other.badgeId == badgeId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,type,amount,itemId,badgeId);
+
+@override
+String toString() {
+  return 'MissionReward(type: $type, amount: $amount, itemId: $itemId, badgeId: $badgeId)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $MissionRewardCopyWith<$Res> {
-  factory $MissionRewardCopyWith(
-    MissionReward value,
-    $Res Function(MissionReward) then,
-  ) = _$MissionRewardCopyWithImpl<$Res, MissionReward>;
-  @useResult
-  $Res call({RewardType type, int amount, String? itemId, String? badgeId});
-}
+abstract mixin class $MissionRewardCopyWith<$Res>  {
+  factory $MissionRewardCopyWith(MissionReward value, $Res Function(MissionReward) _then) = _$MissionRewardCopyWithImpl;
+@useResult
+$Res call({
+ RewardType type, int amount, String? itemId, String? badgeId
+});
 
+
+
+
+}
 /// @nodoc
-class _$MissionRewardCopyWithImpl<$Res, $Val extends MissionReward>
+class _$MissionRewardCopyWithImpl<$Res>
     implements $MissionRewardCopyWith<$Res> {
-  _$MissionRewardCopyWithImpl(this._value, this._then);
+  _$MissionRewardCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final MissionReward _self;
+  final $Res Function(MissionReward) _then;
 
-  /// Create a copy of MissionReward
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? type = null,
-    Object? amount = null,
-    Object? itemId = freezed,
-    Object? badgeId = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            type: null == type
-                ? _value.type
-                : type // ignore: cast_nullable_to_non_nullable
-                      as RewardType,
-            amount: null == amount
-                ? _value.amount
-                : amount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            itemId: freezed == itemId
-                ? _value.itemId
-                : itemId // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            badgeId: freezed == badgeId
-                ? _value.badgeId
-                : badgeId // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of MissionReward
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? amount = null,Object? itemId = freezed,Object? badgeId = freezed,}) {
+  return _then(_self.copyWith(
+type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as RewardType,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as int,itemId: freezed == itemId ? _self.itemId : itemId // ignore: cast_nullable_to_non_nullable
+as String?,badgeId: freezed == badgeId ? _self.badgeId : badgeId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$MissionRewardImplCopyWith<$Res>
-    implements $MissionRewardCopyWith<$Res> {
-  factory _$$MissionRewardImplCopyWith(
-    _$MissionRewardImpl value,
-    $Res Function(_$MissionRewardImpl) then,
-  ) = __$$MissionRewardImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({RewardType type, int amount, String? itemId, String? badgeId});
 }
 
-/// @nodoc
-class __$$MissionRewardImplCopyWithImpl<$Res>
-    extends _$MissionRewardCopyWithImpl<$Res, _$MissionRewardImpl>
-    implements _$$MissionRewardImplCopyWith<$Res> {
-  __$$MissionRewardImplCopyWithImpl(
-    _$MissionRewardImpl _value,
-    $Res Function(_$MissionRewardImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of MissionReward
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? type = null,
-    Object? amount = null,
-    Object? itemId = freezed,
-    Object? badgeId = freezed,
-  }) {
-    return _then(
-      _$MissionRewardImpl(
-        type: null == type
-            ? _value.type
-            : type // ignore: cast_nullable_to_non_nullable
-                  as RewardType,
-        amount: null == amount
-            ? _value.amount
-            : amount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        itemId: freezed == itemId
-            ? _value.itemId
-            : itemId // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        badgeId: freezed == badgeId
-            ? _value.badgeId
-            : badgeId // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [MissionReward].
+extension MissionRewardPatterns on MissionReward {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MissionReward value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _MissionReward() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MissionReward value)  $default,){
+final _that = this;
+switch (_that) {
+case _MissionReward():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MissionReward value)?  $default,){
+final _that = this;
+switch (_that) {
+case _MissionReward() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RewardType type,  int amount,  String? itemId,  String? badgeId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _MissionReward() when $default != null:
+return $default(_that.type,_that.amount,_that.itemId,_that.badgeId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RewardType type,  int amount,  String? itemId,  String? badgeId)  $default,) {final _that = this;
+switch (_that) {
+case _MissionReward():
+return $default(_that.type,_that.amount,_that.itemId,_that.badgeId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RewardType type,  int amount,  String? itemId,  String? badgeId)?  $default,) {final _that = this;
+switch (_that) {
+case _MissionReward() when $default != null:
+return $default(_that.type,_that.amount,_that.itemId,_that.badgeId);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$MissionRewardImpl implements _MissionReward {
-  const _$MissionRewardImpl({
-    required this.type,
-    required this.amount,
-    this.itemId,
-    this.badgeId,
-  });
 
-  factory _$MissionRewardImpl.fromJson(Map<String, dynamic> json) =>
-      _$$MissionRewardImplFromJson(json);
+class _MissionReward implements MissionReward {
+  const _MissionReward({required this.type, required this.amount, this.itemId, this.badgeId});
+  factory _MissionReward.fromJson(Map<String, dynamic> json) => _$MissionRewardFromJson(json);
 
-  @override
-  final RewardType type;
-  // 'coins', 'badges', 'characterExp', 'items'
-  @override
-  final int amount;
-  @override
-  final String? itemId;
-  // For badges or items
-  @override
-  final String? badgeId;
+@override final  RewardType type;
+// 'coins', 'badges', 'characterExp', 'items'
+@override final  int amount;
+@override final  String? itemId;
+// For badges or items
+@override final  String? badgeId;
 
-  @override
-  String toString() {
-    return 'MissionReward(type: $type, amount: $amount, itemId: $itemId, badgeId: $badgeId)';
-  }
+/// Create a copy of MissionReward
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MissionRewardCopyWith<_MissionReward> get copyWith => __$MissionRewardCopyWithImpl<_MissionReward>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$MissionRewardImpl &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.amount, amount) || other.amount == amount) &&
-            (identical(other.itemId, itemId) || other.itemId == itemId) &&
-            (identical(other.badgeId, badgeId) || other.badgeId == badgeId));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, type, amount, itemId, badgeId);
-
-  /// Create a copy of MissionReward
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$MissionRewardImplCopyWith<_$MissionRewardImpl> get copyWith =>
-      __$$MissionRewardImplCopyWithImpl<_$MissionRewardImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$MissionRewardImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$MissionRewardToJson(this, );
 }
 
-abstract class _MissionReward implements MissionReward {
-  const factory _MissionReward({
-    required final RewardType type,
-    required final int amount,
-    final String? itemId,
-    final String? badgeId,
-  }) = _$MissionRewardImpl;
-
-  factory _MissionReward.fromJson(Map<String, dynamic> json) =
-      _$MissionRewardImpl.fromJson;
-
-  @override
-  RewardType get type; // 'coins', 'badges', 'characterExp', 'items'
-  @override
-  int get amount;
-  @override
-  String? get itemId; // For badges or items
-  @override
-  String? get badgeId;
-
-  /// Create a copy of MissionReward
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MissionRewardImplCopyWith<_$MissionRewardImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MissionReward&&(identical(other.type, type) || other.type == type)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.itemId, itemId) || other.itemId == itemId)&&(identical(other.badgeId, badgeId) || other.badgeId == badgeId));
 }
 
-DailyMissionProgress _$DailyMissionProgressFromJson(Map<String, dynamic> json) {
-  return _DailyMissionProgress.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,type,amount,itemId,badgeId);
+
+@override
+String toString() {
+  return 'MissionReward(type: $type, amount: $amount, itemId: $itemId, badgeId: $badgeId)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MissionRewardCopyWith<$Res> implements $MissionRewardCopyWith<$Res> {
+  factory _$MissionRewardCopyWith(_MissionReward value, $Res Function(_MissionReward) _then) = __$MissionRewardCopyWithImpl;
+@override @useResult
+$Res call({
+ RewardType type, int amount, String? itemId, String? badgeId
+});
+
+
+
+
+}
+/// @nodoc
+class __$MissionRewardCopyWithImpl<$Res>
+    implements _$MissionRewardCopyWith<$Res> {
+  __$MissionRewardCopyWithImpl(this._self, this._then);
+
+  final _MissionReward _self;
+  final $Res Function(_MissionReward) _then;
+
+/// Create a copy of MissionReward
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? amount = null,Object? itemId = freezed,Object? badgeId = freezed,}) {
+  return _then(_MissionReward(
+type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as RewardType,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as int,itemId: freezed == itemId ? _self.itemId : itemId // ignore: cast_nullable_to_non_nullable
+as String?,badgeId: freezed == badgeId ? _self.badgeId : badgeId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$DailyMissionProgress {
-  String get userId => throw _privateConstructorUsedError;
-  String get missionId => throw _privateConstructorUsedError;
-  int get currentValue => throw _privateConstructorUsedError;
-  bool get completed => throw _privateConstructorUsedError;
-  DateTime get lastResetDate => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  DateTime? get completedAt => throw _privateConstructorUsedError;
+
+ String get userId; String get missionId; int get currentValue; bool get completed; DateTime get lastResetDate; DateTime get createdAt; DateTime? get completedAt;
+/// Create a copy of DailyMissionProgress
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DailyMissionProgressCopyWith<DailyMissionProgress> get copyWith => _$DailyMissionProgressCopyWithImpl<DailyMissionProgress>(this as DailyMissionProgress, _$identity);
 
   /// Serializes this DailyMissionProgress to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DailyMissionProgress
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DailyMissionProgressCopyWith<DailyMissionProgress> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyMissionProgress&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.missionId, missionId) || other.missionId == missionId)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.lastResetDate, lastResetDate) || other.lastResetDate == lastResetDate)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,userId,missionId,currentValue,completed,lastResetDate,createdAt,completedAt);
+
+@override
+String toString() {
+  return 'DailyMissionProgress(userId: $userId, missionId: $missionId, currentValue: $currentValue, completed: $completed, lastResetDate: $lastResetDate, createdAt: $createdAt, completedAt: $completedAt)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DailyMissionProgressCopyWith<$Res> {
-  factory $DailyMissionProgressCopyWith(
-    DailyMissionProgress value,
-    $Res Function(DailyMissionProgress) then,
-  ) = _$DailyMissionProgressCopyWithImpl<$Res, DailyMissionProgress>;
-  @useResult
-  $Res call({
-    String userId,
-    String missionId,
-    int currentValue,
-    bool completed,
-    DateTime lastResetDate,
-    DateTime createdAt,
-    DateTime? completedAt,
-  });
-}
+abstract mixin class $DailyMissionProgressCopyWith<$Res>  {
+  factory $DailyMissionProgressCopyWith(DailyMissionProgress value, $Res Function(DailyMissionProgress) _then) = _$DailyMissionProgressCopyWithImpl;
+@useResult
+$Res call({
+ String userId, String missionId, int currentValue, bool completed, DateTime lastResetDate, DateTime createdAt, DateTime? completedAt
+});
 
+
+
+
+}
 /// @nodoc
-class _$DailyMissionProgressCopyWithImpl<
-  $Res,
-  $Val extends DailyMissionProgress
->
+class _$DailyMissionProgressCopyWithImpl<$Res>
     implements $DailyMissionProgressCopyWith<$Res> {
-  _$DailyMissionProgressCopyWithImpl(this._value, this._then);
+  _$DailyMissionProgressCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DailyMissionProgress _self;
+  final $Res Function(DailyMissionProgress) _then;
 
-  /// Create a copy of DailyMissionProgress
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? missionId = null,
-    Object? currentValue = null,
-    Object? completed = null,
-    Object? lastResetDate = null,
-    Object? createdAt = null,
-    Object? completedAt = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            missionId: null == missionId
-                ? _value.missionId
-                : missionId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            currentValue: null == currentValue
-                ? _value.currentValue
-                : currentValue // ignore: cast_nullable_to_non_nullable
-                      as int,
-            completed: null == completed
-                ? _value.completed
-                : completed // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            lastResetDate: null == lastResetDate
-                ? _value.lastResetDate
-                : lastResetDate // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            createdAt: null == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            completedAt: freezed == completedAt
-                ? _value.completedAt
-                : completedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of DailyMissionProgress
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? missionId = null,Object? currentValue = null,Object? completed = null,Object? lastResetDate = null,Object? createdAt = null,Object? completedAt = freezed,}) {
+  return _then(_self.copyWith(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,missionId: null == missionId ? _self.missionId : missionId // ignore: cast_nullable_to_non_nullable
+as String,currentValue: null == currentValue ? _self.currentValue : currentValue // ignore: cast_nullable_to_non_nullable
+as int,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as bool,lastResetDate: null == lastResetDate ? _self.lastResetDate : lastResetDate // ignore: cast_nullable_to_non_nullable
+as DateTime,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$DailyMissionProgressImplCopyWith<$Res>
-    implements $DailyMissionProgressCopyWith<$Res> {
-  factory _$$DailyMissionProgressImplCopyWith(
-    _$DailyMissionProgressImpl value,
-    $Res Function(_$DailyMissionProgressImpl) then,
-  ) = __$$DailyMissionProgressImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String userId,
-    String missionId,
-    int currentValue,
-    bool completed,
-    DateTime lastResetDate,
-    DateTime createdAt,
-    DateTime? completedAt,
-  });
 }
 
-/// @nodoc
-class __$$DailyMissionProgressImplCopyWithImpl<$Res>
-    extends _$DailyMissionProgressCopyWithImpl<$Res, _$DailyMissionProgressImpl>
-    implements _$$DailyMissionProgressImplCopyWith<$Res> {
-  __$$DailyMissionProgressImplCopyWithImpl(
-    _$DailyMissionProgressImpl _value,
-    $Res Function(_$DailyMissionProgressImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DailyMissionProgress
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? missionId = null,
-    Object? currentValue = null,
-    Object? completed = null,
-    Object? lastResetDate = null,
-    Object? createdAt = null,
-    Object? completedAt = freezed,
-  }) {
-    return _then(
-      _$DailyMissionProgressImpl(
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        missionId: null == missionId
-            ? _value.missionId
-            : missionId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        currentValue: null == currentValue
-            ? _value.currentValue
-            : currentValue // ignore: cast_nullable_to_non_nullable
-                  as int,
-        completed: null == completed
-            ? _value.completed
-            : completed // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        lastResetDate: null == lastResetDate
-            ? _value.lastResetDate
-            : lastResetDate // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        createdAt: null == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        completedAt: freezed == completedAt
-            ? _value.completedAt
-            : completedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DailyMissionProgress].
+extension DailyMissionProgressPatterns on DailyMissionProgress {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DailyMissionProgress value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DailyMissionProgress() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DailyMissionProgress value)  $default,){
+final _that = this;
+switch (_that) {
+case _DailyMissionProgress():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DailyMissionProgress value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DailyMissionProgress() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String missionId,  int currentValue,  bool completed,  DateTime lastResetDate,  DateTime createdAt,  DateTime? completedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DailyMissionProgress() when $default != null:
+return $default(_that.userId,_that.missionId,_that.currentValue,_that.completed,_that.lastResetDate,_that.createdAt,_that.completedAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String missionId,  int currentValue,  bool completed,  DateTime lastResetDate,  DateTime createdAt,  DateTime? completedAt)  $default,) {final _that = this;
+switch (_that) {
+case _DailyMissionProgress():
+return $default(_that.userId,_that.missionId,_that.currentValue,_that.completed,_that.lastResetDate,_that.createdAt,_that.completedAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String missionId,  int currentValue,  bool completed,  DateTime lastResetDate,  DateTime createdAt,  DateTime? completedAt)?  $default,) {final _that = this;
+switch (_that) {
+case _DailyMissionProgress() when $default != null:
+return $default(_that.userId,_that.missionId,_that.currentValue,_that.completed,_that.lastResetDate,_that.createdAt,_that.completedAt);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DailyMissionProgressImpl implements _DailyMissionProgress {
-  const _$DailyMissionProgressImpl({
-    required this.userId,
-    required this.missionId,
-    required this.currentValue,
-    this.completed = false,
-    required this.lastResetDate,
-    required this.createdAt,
-    this.completedAt,
-  });
 
-  factory _$DailyMissionProgressImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DailyMissionProgressImplFromJson(json);
+class _DailyMissionProgress implements DailyMissionProgress {
+  const _DailyMissionProgress({required this.userId, required this.missionId, required this.currentValue, this.completed = false, required this.lastResetDate, required this.createdAt, this.completedAt});
+  factory _DailyMissionProgress.fromJson(Map<String, dynamic> json) => _$DailyMissionProgressFromJson(json);
 
-  @override
-  final String userId;
-  @override
-  final String missionId;
-  @override
-  final int currentValue;
-  @override
-  @JsonKey()
-  final bool completed;
-  @override
-  final DateTime lastResetDate;
-  @override
-  final DateTime createdAt;
-  @override
-  final DateTime? completedAt;
+@override final  String userId;
+@override final  String missionId;
+@override final  int currentValue;
+@override@JsonKey() final  bool completed;
+@override final  DateTime lastResetDate;
+@override final  DateTime createdAt;
+@override final  DateTime? completedAt;
 
-  @override
-  String toString() {
-    return 'DailyMissionProgress(userId: $userId, missionId: $missionId, currentValue: $currentValue, completed: $completed, lastResetDate: $lastResetDate, createdAt: $createdAt, completedAt: $completedAt)';
-  }
+/// Create a copy of DailyMissionProgress
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DailyMissionProgressCopyWith<_DailyMissionProgress> get copyWith => __$DailyMissionProgressCopyWithImpl<_DailyMissionProgress>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyMissionProgressImpl &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.missionId, missionId) ||
-                other.missionId == missionId) &&
-            (identical(other.currentValue, currentValue) ||
-                other.currentValue == currentValue) &&
-            (identical(other.completed, completed) ||
-                other.completed == completed) &&
-            (identical(other.lastResetDate, lastResetDate) ||
-                other.lastResetDate == lastResetDate) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    userId,
-    missionId,
-    currentValue,
-    completed,
-    lastResetDate,
-    createdAt,
-    completedAt,
-  );
-
-  /// Create a copy of DailyMissionProgress
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DailyMissionProgressImplCopyWith<_$DailyMissionProgressImpl>
-  get copyWith =>
-      __$$DailyMissionProgressImplCopyWithImpl<_$DailyMissionProgressImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DailyMissionProgressImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$DailyMissionProgressToJson(this, );
 }
 
-abstract class _DailyMissionProgress implements DailyMissionProgress {
-  const factory _DailyMissionProgress({
-    required final String userId,
-    required final String missionId,
-    required final int currentValue,
-    final bool completed,
-    required final DateTime lastResetDate,
-    required final DateTime createdAt,
-    final DateTime? completedAt,
-  }) = _$DailyMissionProgressImpl;
-
-  factory _DailyMissionProgress.fromJson(Map<String, dynamic> json) =
-      _$DailyMissionProgressImpl.fromJson;
-
-  @override
-  String get userId;
-  @override
-  String get missionId;
-  @override
-  int get currentValue;
-  @override
-  bool get completed;
-  @override
-  DateTime get lastResetDate;
-  @override
-  DateTime get createdAt;
-  @override
-  DateTime? get completedAt;
-
-  /// Create a copy of DailyMissionProgress
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DailyMissionProgressImplCopyWith<_$DailyMissionProgressImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyMissionProgress&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.missionId, missionId) || other.missionId == missionId)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.lastResetDate, lastResetDate) || other.lastResetDate == lastResetDate)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt));
 }
 
-DailyMissionListItem _$DailyMissionListItemFromJson(Map<String, dynamic> json) {
-  return _DailyMissionListItem.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,userId,missionId,currentValue,completed,lastResetDate,createdAt,completedAt);
+
+@override
+String toString() {
+  return 'DailyMissionProgress(userId: $userId, missionId: $missionId, currentValue: $currentValue, completed: $completed, lastResetDate: $lastResetDate, createdAt: $createdAt, completedAt: $completedAt)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DailyMissionProgressCopyWith<$Res> implements $DailyMissionProgressCopyWith<$Res> {
+  factory _$DailyMissionProgressCopyWith(_DailyMissionProgress value, $Res Function(_DailyMissionProgress) _then) = __$DailyMissionProgressCopyWithImpl;
+@override @useResult
+$Res call({
+ String userId, String missionId, int currentValue, bool completed, DateTime lastResetDate, DateTime createdAt, DateTime? completedAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$DailyMissionProgressCopyWithImpl<$Res>
+    implements _$DailyMissionProgressCopyWith<$Res> {
+  __$DailyMissionProgressCopyWithImpl(this._self, this._then);
+
+  final _DailyMissionProgress _self;
+  final $Res Function(_DailyMissionProgress) _then;
+
+/// Create a copy of DailyMissionProgress
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? missionId = null,Object? currentValue = null,Object? completed = null,Object? lastResetDate = null,Object? createdAt = null,Object? completedAt = freezed,}) {
+  return _then(_DailyMissionProgress(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,missionId: null == missionId ? _self.missionId : missionId // ignore: cast_nullable_to_non_nullable
+as String,currentValue: null == currentValue ? _self.currentValue : currentValue // ignore: cast_nullable_to_non_nullable
+as int,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as bool,lastResetDate: null == lastResetDate ? _self.lastResetDate : lastResetDate // ignore: cast_nullable_to_non_nullable
+as DateTime,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$DailyMissionListItem {
-  DailyMission get mission => throw _privateConstructorUsedError;
-  DailyMissionProgress get progress => throw _privateConstructorUsedError;
-  bool get isLocked => throw _privateConstructorUsedError;
-  int get progressPercentage => throw _privateConstructorUsedError;
+
+ DailyMission get mission; DailyMissionProgress get progress; bool get isLocked; int get progressPercentage;
+/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DailyMissionListItemCopyWith<DailyMissionListItem> get copyWith => _$DailyMissionListItemCopyWithImpl<DailyMissionListItem>(this as DailyMissionListItem, _$identity);
 
   /// Serializes this DailyMissionListItem to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DailyMissionListItemCopyWith<DailyMissionListItem> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyMissionListItem&&(identical(other.mission, mission) || other.mission == mission)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked)&&(identical(other.progressPercentage, progressPercentage) || other.progressPercentage == progressPercentage));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,mission,progress,isLocked,progressPercentage);
+
+@override
+String toString() {
+  return 'DailyMissionListItem(mission: $mission, progress: $progress, isLocked: $isLocked, progressPercentage: $progressPercentage)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DailyMissionListItemCopyWith<$Res> {
-  factory $DailyMissionListItemCopyWith(
-    DailyMissionListItem value,
-    $Res Function(DailyMissionListItem) then,
-  ) = _$DailyMissionListItemCopyWithImpl<$Res, DailyMissionListItem>;
-  @useResult
-  $Res call({
-    DailyMission mission,
-    DailyMissionProgress progress,
-    bool isLocked,
-    int progressPercentage,
-  });
+abstract mixin class $DailyMissionListItemCopyWith<$Res>  {
+  factory $DailyMissionListItemCopyWith(DailyMissionListItem value, $Res Function(DailyMissionListItem) _then) = _$DailyMissionListItemCopyWithImpl;
+@useResult
+$Res call({
+ DailyMission mission, DailyMissionProgress progress, bool isLocked, int progressPercentage
+});
 
-  $DailyMissionCopyWith<$Res> get mission;
-  $DailyMissionProgressCopyWith<$Res> get progress;
+
+$DailyMissionCopyWith<$Res> get mission;$DailyMissionProgressCopyWith<$Res> get progress;
+
 }
-
 /// @nodoc
-class _$DailyMissionListItemCopyWithImpl<
-  $Res,
-  $Val extends DailyMissionListItem
->
+class _$DailyMissionListItemCopyWithImpl<$Res>
     implements $DailyMissionListItemCopyWith<$Res> {
-  _$DailyMissionListItemCopyWithImpl(this._value, this._then);
+  _$DailyMissionListItemCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DailyMissionListItem _self;
+  final $Res Function(DailyMissionListItem) _then;
 
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? mission = null,
-    Object? progress = null,
-    Object? isLocked = null,
-    Object? progressPercentage = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            mission: null == mission
-                ? _value.mission
-                : mission // ignore: cast_nullable_to_non_nullable
-                      as DailyMission,
-            progress: null == progress
-                ? _value.progress
-                : progress // ignore: cast_nullable_to_non_nullable
-                      as DailyMissionProgress,
-            isLocked: null == isLocked
-                ? _value.isLocked
-                : isLocked // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            progressPercentage: null == progressPercentage
-                ? _value.progressPercentage
-                : progressPercentage // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $DailyMissionCopyWith<$Res> get mission {
-    return $DailyMissionCopyWith<$Res>(_value.mission, (value) {
-      return _then(_value.copyWith(mission: value) as $Val);
-    });
-  }
-
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $DailyMissionProgressCopyWith<$Res> get progress {
-    return $DailyMissionProgressCopyWith<$Res>(_value.progress, (value) {
-      return _then(_value.copyWith(progress: value) as $Val);
-    });
-  }
+/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? mission = null,Object? progress = null,Object? isLocked = null,Object? progressPercentage = null,}) {
+  return _then(_self.copyWith(
+mission: null == mission ? _self.mission : mission // ignore: cast_nullable_to_non_nullable
+as DailyMission,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as DailyMissionProgress,isLocked: null == isLocked ? _self.isLocked : isLocked // ignore: cast_nullable_to_non_nullable
+as bool,progressPercentage: null == progressPercentage ? _self.progressPercentage : progressPercentage // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
-
-/// @nodoc
-abstract class _$$DailyMissionListItemImplCopyWith<$Res>
-    implements $DailyMissionListItemCopyWith<$Res> {
-  factory _$$DailyMissionListItemImplCopyWith(
-    _$DailyMissionListItemImpl value,
-    $Res Function(_$DailyMissionListItemImpl) then,
-  ) = __$$DailyMissionListItemImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    DailyMission mission,
-    DailyMissionProgress progress,
-    bool isLocked,
-    int progressPercentage,
+/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DailyMissionCopyWith<$Res> get mission {
+  
+  return $DailyMissionCopyWith<$Res>(_self.mission, (value) {
+    return _then(_self.copyWith(mission: value));
   });
-
-  @override
-  $DailyMissionCopyWith<$Res> get mission;
-  @override
-  $DailyMissionProgressCopyWith<$Res> get progress;
+}/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DailyMissionProgressCopyWith<$Res> get progress {
+  
+  return $DailyMissionProgressCopyWith<$Res>(_self.progress, (value) {
+    return _then(_self.copyWith(progress: value));
+  });
+}
 }
 
-/// @nodoc
-class __$$DailyMissionListItemImplCopyWithImpl<$Res>
-    extends _$DailyMissionListItemCopyWithImpl<$Res, _$DailyMissionListItemImpl>
-    implements _$$DailyMissionListItemImplCopyWith<$Res> {
-  __$$DailyMissionListItemImplCopyWithImpl(
-    _$DailyMissionListItemImpl _value,
-    $Res Function(_$DailyMissionListItemImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? mission = null,
-    Object? progress = null,
-    Object? isLocked = null,
-    Object? progressPercentage = null,
-  }) {
-    return _then(
-      _$DailyMissionListItemImpl(
-        mission: null == mission
-            ? _value.mission
-            : mission // ignore: cast_nullable_to_non_nullable
-                  as DailyMission,
-        progress: null == progress
-            ? _value.progress
-            : progress // ignore: cast_nullable_to_non_nullable
-                  as DailyMissionProgress,
-        isLocked: null == isLocked
-            ? _value.isLocked
-            : isLocked // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        progressPercentage: null == progressPercentage
-            ? _value.progressPercentage
-            : progressPercentage // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [DailyMissionListItem].
+extension DailyMissionListItemPatterns on DailyMissionListItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DailyMissionListItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DailyMissionListItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DailyMissionListItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _DailyMissionListItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DailyMissionListItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DailyMissionListItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DailyMission mission,  DailyMissionProgress progress,  bool isLocked,  int progressPercentage)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DailyMissionListItem() when $default != null:
+return $default(_that.mission,_that.progress,_that.isLocked,_that.progressPercentage);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DailyMission mission,  DailyMissionProgress progress,  bool isLocked,  int progressPercentage)  $default,) {final _that = this;
+switch (_that) {
+case _DailyMissionListItem():
+return $default(_that.mission,_that.progress,_that.isLocked,_that.progressPercentage);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DailyMission mission,  DailyMissionProgress progress,  bool isLocked,  int progressPercentage)?  $default,) {final _that = this;
+switch (_that) {
+case _DailyMissionListItem() when $default != null:
+return $default(_that.mission,_that.progress,_that.isLocked,_that.progressPercentage);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DailyMissionListItemImpl implements _DailyMissionListItem {
-  const _$DailyMissionListItemImpl({
-    required this.mission,
-    required this.progress,
-    required this.isLocked,
-    required this.progressPercentage,
+
+class _DailyMissionListItem implements DailyMissionListItem {
+  const _DailyMissionListItem({required this.mission, required this.progress, required this.isLocked, required this.progressPercentage});
+  factory _DailyMissionListItem.fromJson(Map<String, dynamic> json) => _$DailyMissionListItemFromJson(json);
+
+@override final  DailyMission mission;
+@override final  DailyMissionProgress progress;
+@override final  bool isLocked;
+@override final  int progressPercentage;
+
+/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DailyMissionListItemCopyWith<_DailyMissionListItem> get copyWith => __$DailyMissionListItemCopyWithImpl<_DailyMissionListItem>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$DailyMissionListItemToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyMissionListItem&&(identical(other.mission, mission) || other.mission == mission)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked)&&(identical(other.progressPercentage, progressPercentage) || other.progressPercentage == progressPercentage));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,mission,progress,isLocked,progressPercentage);
+
+@override
+String toString() {
+  return 'DailyMissionListItem(mission: $mission, progress: $progress, isLocked: $isLocked, progressPercentage: $progressPercentage)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DailyMissionListItemCopyWith<$Res> implements $DailyMissionListItemCopyWith<$Res> {
+  factory _$DailyMissionListItemCopyWith(_DailyMissionListItem value, $Res Function(_DailyMissionListItem) _then) = __$DailyMissionListItemCopyWithImpl;
+@override @useResult
+$Res call({
+ DailyMission mission, DailyMissionProgress progress, bool isLocked, int progressPercentage
+});
+
+
+@override $DailyMissionCopyWith<$Res> get mission;@override $DailyMissionProgressCopyWith<$Res> get progress;
+
+}
+/// @nodoc
+class __$DailyMissionListItemCopyWithImpl<$Res>
+    implements _$DailyMissionListItemCopyWith<$Res> {
+  __$DailyMissionListItemCopyWithImpl(this._self, this._then);
+
+  final _DailyMissionListItem _self;
+  final $Res Function(_DailyMissionListItem) _then;
+
+/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? mission = null,Object? progress = null,Object? isLocked = null,Object? progressPercentage = null,}) {
+  return _then(_DailyMissionListItem(
+mission: null == mission ? _self.mission : mission // ignore: cast_nullable_to_non_nullable
+as DailyMission,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as DailyMissionProgress,isLocked: null == isLocked ? _self.isLocked : isLocked // ignore: cast_nullable_to_non_nullable
+as bool,progressPercentage: null == progressPercentage ? _self.progressPercentage : progressPercentage // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DailyMissionCopyWith<$Res> get mission {
+  
+  return $DailyMissionCopyWith<$Res>(_self.mission, (value) {
+    return _then(_self.copyWith(mission: value));
   });
-
-  factory _$DailyMissionListItemImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DailyMissionListItemImplFromJson(json);
-
-  @override
-  final DailyMission mission;
-  @override
-  final DailyMissionProgress progress;
-  @override
-  final bool isLocked;
-  @override
-  final int progressPercentage;
-
-  @override
-  String toString() {
-    return 'DailyMissionListItem(mission: $mission, progress: $progress, isLocked: $isLocked, progressPercentage: $progressPercentage)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DailyMissionListItemImpl &&
-            (identical(other.mission, mission) || other.mission == mission) &&
-            (identical(other.progress, progress) ||
-                other.progress == progress) &&
-            (identical(other.isLocked, isLocked) ||
-                other.isLocked == isLocked) &&
-            (identical(other.progressPercentage, progressPercentage) ||
-                other.progressPercentage == progressPercentage));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, mission, progress, isLocked, progressPercentage);
-
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DailyMissionListItemImplCopyWith<_$DailyMissionListItemImpl>
-  get copyWith =>
-      __$$DailyMissionListItemImplCopyWithImpl<_$DailyMissionListItemImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DailyMissionListItemImplToJson(this);
-  }
+}/// Create a copy of DailyMissionListItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DailyMissionProgressCopyWith<$Res> get progress {
+  
+  return $DailyMissionProgressCopyWith<$Res>(_self.progress, (value) {
+    return _then(_self.copyWith(progress: value));
+  });
+}
 }
 
-abstract class _DailyMissionListItem implements DailyMissionListItem {
-  const factory _DailyMissionListItem({
-    required final DailyMission mission,
-    required final DailyMissionProgress progress,
-    required final bool isLocked,
-    required final int progressPercentage,
-  }) = _$DailyMissionListItemImpl;
-
-  factory _DailyMissionListItem.fromJson(Map<String, dynamic> json) =
-      _$DailyMissionListItemImpl.fromJson;
-
-  @override
-  DailyMission get mission;
-  @override
-  DailyMissionProgress get progress;
-  @override
-  bool get isLocked;
-  @override
-  int get progressPercentage;
-
-  /// Create a copy of DailyMissionListItem
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DailyMissionListItemImplCopyWith<_$DailyMissionListItemImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-WeeklyBonus _$WeeklyBonusFromJson(Map<String, dynamic> json) {
-  return _WeeklyBonus.fromJson(json);
-}
 
 /// @nodoc
 mixin _$WeeklyBonus {
-  String get userId => throw _privateConstructorUsedError;
-  int get consecutiveDays => throw _privateConstructorUsedError; // 0-7
-  DateTime get lastCompletionDate => throw _privateConstructorUsedError;
-  DateTime get resetDate =>
-      throw _privateConstructorUsedError; // Reset every Sunday
-  List<int> get completionDaysOfWeek =>
-      throw _privateConstructorUsedError; // [0=Mon, 1=Tue, ... 6=Sun]
-  bool get bonusClaimedThisWeek =>
-      throw _privateConstructorUsedError; // Whether 7-day bonus already claimed
-  int get totalWeeklyBonus => throw _privateConstructorUsedError;
+
+ String get userId; int get consecutiveDays;// 0-7
+ DateTime get lastCompletionDate; DateTime get resetDate;// Reset every Sunday
+ List<int> get completionDaysOfWeek;// [0=Mon, 1=Tue, ... 6=Sun]
+ bool get bonusClaimedThisWeek;// Whether 7-day bonus already claimed
+ int get totalWeeklyBonus;
+/// Create a copy of WeeklyBonus
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WeeklyBonusCopyWith<WeeklyBonus> get copyWith => _$WeeklyBonusCopyWithImpl<WeeklyBonus>(this as WeeklyBonus, _$identity);
 
   /// Serializes this WeeklyBonus to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WeeklyBonus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WeeklyBonusCopyWith<WeeklyBonus> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeeklyBonus&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.consecutiveDays, consecutiveDays) || other.consecutiveDays == consecutiveDays)&&(identical(other.lastCompletionDate, lastCompletionDate) || other.lastCompletionDate == lastCompletionDate)&&(identical(other.resetDate, resetDate) || other.resetDate == resetDate)&&const DeepCollectionEquality().equals(other.completionDaysOfWeek, completionDaysOfWeek)&&(identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) || other.bonusClaimedThisWeek == bonusClaimedThisWeek)&&(identical(other.totalWeeklyBonus, totalWeeklyBonus) || other.totalWeeklyBonus == totalWeeklyBonus));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,userId,consecutiveDays,lastCompletionDate,resetDate,const DeepCollectionEquality().hash(completionDaysOfWeek),bonusClaimedThisWeek,totalWeeklyBonus);
+
+@override
+String toString() {
+  return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WeeklyBonusCopyWith<$Res> {
-  factory $WeeklyBonusCopyWith(
-    WeeklyBonus value,
-    $Res Function(WeeklyBonus) then,
-  ) = _$WeeklyBonusCopyWithImpl<$Res, WeeklyBonus>;
-  @useResult
-  $Res call({
-    String userId,
-    int consecutiveDays,
-    DateTime lastCompletionDate,
-    DateTime resetDate,
-    List<int> completionDaysOfWeek,
-    bool bonusClaimedThisWeek,
-    int totalWeeklyBonus,
-  });
-}
+abstract mixin class $WeeklyBonusCopyWith<$Res>  {
+  factory $WeeklyBonusCopyWith(WeeklyBonus value, $Res Function(WeeklyBonus) _then) = _$WeeklyBonusCopyWithImpl;
+@useResult
+$Res call({
+ String userId, int consecutiveDays, DateTime lastCompletionDate, DateTime resetDate, List<int> completionDaysOfWeek, bool bonusClaimedThisWeek, int totalWeeklyBonus
+});
 
+
+
+
+}
 /// @nodoc
-class _$WeeklyBonusCopyWithImpl<$Res, $Val extends WeeklyBonus>
+class _$WeeklyBonusCopyWithImpl<$Res>
     implements $WeeklyBonusCopyWith<$Res> {
-  _$WeeklyBonusCopyWithImpl(this._value, this._then);
+  _$WeeklyBonusCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WeeklyBonus _self;
+  final $Res Function(WeeklyBonus) _then;
 
-  /// Create a copy of WeeklyBonus
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? consecutiveDays = null,
-    Object? lastCompletionDate = null,
-    Object? resetDate = null,
-    Object? completionDaysOfWeek = null,
-    Object? bonusClaimedThisWeek = null,
-    Object? totalWeeklyBonus = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            consecutiveDays: null == consecutiveDays
-                ? _value.consecutiveDays
-                : consecutiveDays // ignore: cast_nullable_to_non_nullable
-                      as int,
-            lastCompletionDate: null == lastCompletionDate
-                ? _value.lastCompletionDate
-                : lastCompletionDate // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            resetDate: null == resetDate
-                ? _value.resetDate
-                : resetDate // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            completionDaysOfWeek: null == completionDaysOfWeek
-                ? _value.completionDaysOfWeek
-                : completionDaysOfWeek // ignore: cast_nullable_to_non_nullable
-                      as List<int>,
-            bonusClaimedThisWeek: null == bonusClaimedThisWeek
-                ? _value.bonusClaimedThisWeek
-                : bonusClaimedThisWeek // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            totalWeeklyBonus: null == totalWeeklyBonus
-                ? _value.totalWeeklyBonus
-                : totalWeeklyBonus // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of WeeklyBonus
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? consecutiveDays = null,Object? lastCompletionDate = null,Object? resetDate = null,Object? completionDaysOfWeek = null,Object? bonusClaimedThisWeek = null,Object? totalWeeklyBonus = null,}) {
+  return _then(_self.copyWith(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,consecutiveDays: null == consecutiveDays ? _self.consecutiveDays : consecutiveDays // ignore: cast_nullable_to_non_nullable
+as int,lastCompletionDate: null == lastCompletionDate ? _self.lastCompletionDate : lastCompletionDate // ignore: cast_nullable_to_non_nullable
+as DateTime,resetDate: null == resetDate ? _self.resetDate : resetDate // ignore: cast_nullable_to_non_nullable
+as DateTime,completionDaysOfWeek: null == completionDaysOfWeek ? _self.completionDaysOfWeek : completionDaysOfWeek // ignore: cast_nullable_to_non_nullable
+as List<int>,bonusClaimedThisWeek: null == bonusClaimedThisWeek ? _self.bonusClaimedThisWeek : bonusClaimedThisWeek // ignore: cast_nullable_to_non_nullable
+as bool,totalWeeklyBonus: null == totalWeeklyBonus ? _self.totalWeeklyBonus : totalWeeklyBonus // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WeeklyBonusImplCopyWith<$Res>
-    implements $WeeklyBonusCopyWith<$Res> {
-  factory _$$WeeklyBonusImplCopyWith(
-    _$WeeklyBonusImpl value,
-    $Res Function(_$WeeklyBonusImpl) then,
-  ) = __$$WeeklyBonusImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String userId,
-    int consecutiveDays,
-    DateTime lastCompletionDate,
-    DateTime resetDate,
-    List<int> completionDaysOfWeek,
-    bool bonusClaimedThisWeek,
-    int totalWeeklyBonus,
-  });
 }
 
-/// @nodoc
-class __$$WeeklyBonusImplCopyWithImpl<$Res>
-    extends _$WeeklyBonusCopyWithImpl<$Res, _$WeeklyBonusImpl>
-    implements _$$WeeklyBonusImplCopyWith<$Res> {
-  __$$WeeklyBonusImplCopyWithImpl(
-    _$WeeklyBonusImpl _value,
-    $Res Function(_$WeeklyBonusImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of WeeklyBonus
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? userId = null,
-    Object? consecutiveDays = null,
-    Object? lastCompletionDate = null,
-    Object? resetDate = null,
-    Object? completionDaysOfWeek = null,
-    Object? bonusClaimedThisWeek = null,
-    Object? totalWeeklyBonus = null,
-  }) {
-    return _then(
-      _$WeeklyBonusImpl(
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        consecutiveDays: null == consecutiveDays
-            ? _value.consecutiveDays
-            : consecutiveDays // ignore: cast_nullable_to_non_nullable
-                  as int,
-        lastCompletionDate: null == lastCompletionDate
-            ? _value.lastCompletionDate
-            : lastCompletionDate // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        resetDate: null == resetDate
-            ? _value.resetDate
-            : resetDate // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        completionDaysOfWeek: null == completionDaysOfWeek
-            ? _value._completionDaysOfWeek
-            : completionDaysOfWeek // ignore: cast_nullable_to_non_nullable
-                  as List<int>,
-        bonusClaimedThisWeek: null == bonusClaimedThisWeek
-            ? _value.bonusClaimedThisWeek
-            : bonusClaimedThisWeek // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        totalWeeklyBonus: null == totalWeeklyBonus
-            ? _value.totalWeeklyBonus
-            : totalWeeklyBonus // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [WeeklyBonus].
+extension WeeklyBonusPatterns on WeeklyBonus {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WeeklyBonus value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WeeklyBonus() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WeeklyBonus value)  $default,){
+final _that = this;
+switch (_that) {
+case _WeeklyBonus():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WeeklyBonus value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WeeklyBonus() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WeeklyBonus() when $default != null:
+return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus)  $default,) {final _that = this;
+switch (_that) {
+case _WeeklyBonus():
+return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus)?  $default,) {final _that = this;
+switch (_that) {
+case _WeeklyBonus() when $default != null:
+return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$WeeklyBonusImpl implements _WeeklyBonus {
-  const _$WeeklyBonusImpl({
-    required this.userId,
-    required this.consecutiveDays,
-    required this.lastCompletionDate,
-    required this.resetDate,
-    required final List<int> completionDaysOfWeek,
-    this.bonusClaimedThisWeek = false,
-    this.totalWeeklyBonus = 0,
-  }) : _completionDaysOfWeek = completionDaysOfWeek;
 
-  factory _$WeeklyBonusImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WeeklyBonusImplFromJson(json);
+class _WeeklyBonus implements WeeklyBonus {
+  const _WeeklyBonus({required this.userId, required this.consecutiveDays, required this.lastCompletionDate, required this.resetDate, required final  List<int> completionDaysOfWeek, this.bonusClaimedThisWeek = false, this.totalWeeklyBonus = 0}): _completionDaysOfWeek = completionDaysOfWeek;
+  factory _WeeklyBonus.fromJson(Map<String, dynamic> json) => _$WeeklyBonusFromJson(json);
 
-  @override
-  final String userId;
-  @override
-  final int consecutiveDays;
-  // 0-7
-  @override
-  final DateTime lastCompletionDate;
-  @override
-  final DateTime resetDate;
-  // Reset every Sunday
-  final List<int> _completionDaysOfWeek;
-  // Reset every Sunday
-  @override
-  List<int> get completionDaysOfWeek {
-    if (_completionDaysOfWeek is EqualUnmodifiableListView)
-      return _completionDaysOfWeek;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_completionDaysOfWeek);
-  }
-
-  // [0=Mon, 1=Tue, ... 6=Sun]
-  @override
-  @JsonKey()
-  final bool bonusClaimedThisWeek;
-  // Whether 7-day bonus already claimed
-  @override
-  @JsonKey()
-  final int totalWeeklyBonus;
-
-  @override
-  String toString() {
-    return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WeeklyBonusImpl &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.consecutiveDays, consecutiveDays) ||
-                other.consecutiveDays == consecutiveDays) &&
-            (identical(other.lastCompletionDate, lastCompletionDate) ||
-                other.lastCompletionDate == lastCompletionDate) &&
-            (identical(other.resetDate, resetDate) ||
-                other.resetDate == resetDate) &&
-            const DeepCollectionEquality().equals(
-              other._completionDaysOfWeek,
-              _completionDaysOfWeek,
-            ) &&
-            (identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) ||
-                other.bonusClaimedThisWeek == bonusClaimedThisWeek) &&
-            (identical(other.totalWeeklyBonus, totalWeeklyBonus) ||
-                other.totalWeeklyBonus == totalWeeklyBonus));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    userId,
-    consecutiveDays,
-    lastCompletionDate,
-    resetDate,
-    const DeepCollectionEquality().hash(_completionDaysOfWeek),
-    bonusClaimedThisWeek,
-    totalWeeklyBonus,
-  );
-
-  /// Create a copy of WeeklyBonus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WeeklyBonusImplCopyWith<_$WeeklyBonusImpl> get copyWith =>
-      __$$WeeklyBonusImplCopyWithImpl<_$WeeklyBonusImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WeeklyBonusImplToJson(this);
-  }
+@override final  String userId;
+@override final  int consecutiveDays;
+// 0-7
+@override final  DateTime lastCompletionDate;
+@override final  DateTime resetDate;
+// Reset every Sunday
+ final  List<int> _completionDaysOfWeek;
+// Reset every Sunday
+@override List<int> get completionDaysOfWeek {
+  if (_completionDaysOfWeek is EqualUnmodifiableListView) return _completionDaysOfWeek;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_completionDaysOfWeek);
 }
 
-abstract class _WeeklyBonus implements WeeklyBonus {
-  const factory _WeeklyBonus({
-    required final String userId,
-    required final int consecutiveDays,
-    required final DateTime lastCompletionDate,
-    required final DateTime resetDate,
-    required final List<int> completionDaysOfWeek,
-    final bool bonusClaimedThisWeek,
-    final int totalWeeklyBonus,
-  }) = _$WeeklyBonusImpl;
+// [0=Mon, 1=Tue, ... 6=Sun]
+@override@JsonKey() final  bool bonusClaimedThisWeek;
+// Whether 7-day bonus already claimed
+@override@JsonKey() final  int totalWeeklyBonus;
 
-  factory _WeeklyBonus.fromJson(Map<String, dynamic> json) =
-      _$WeeklyBonusImpl.fromJson;
+/// Create a copy of WeeklyBonus
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WeeklyBonusCopyWith<_WeeklyBonus> get copyWith => __$WeeklyBonusCopyWithImpl<_WeeklyBonus>(this, _$identity);
 
-  @override
-  String get userId;
-  @override
-  int get consecutiveDays; // 0-7
-  @override
-  DateTime get lastCompletionDate;
-  @override
-  DateTime get resetDate; // Reset every Sunday
-  @override
-  List<int> get completionDaysOfWeek; // [0=Mon, 1=Tue, ... 6=Sun]
-  @override
-  bool get bonusClaimedThisWeek; // Whether 7-day bonus already claimed
-  @override
-  int get totalWeeklyBonus;
-
-  /// Create a copy of WeeklyBonus
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WeeklyBonusImplCopyWith<_$WeeklyBonusImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$WeeklyBonusToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeeklyBonus&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.consecutiveDays, consecutiveDays) || other.consecutiveDays == consecutiveDays)&&(identical(other.lastCompletionDate, lastCompletionDate) || other.lastCompletionDate == lastCompletionDate)&&(identical(other.resetDate, resetDate) || other.resetDate == resetDate)&&const DeepCollectionEquality().equals(other._completionDaysOfWeek, _completionDaysOfWeek)&&(identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) || other.bonusClaimedThisWeek == bonusClaimedThisWeek)&&(identical(other.totalWeeklyBonus, totalWeeklyBonus) || other.totalWeeklyBonus == totalWeeklyBonus));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,userId,consecutiveDays,lastCompletionDate,resetDate,const DeepCollectionEquality().hash(_completionDaysOfWeek),bonusClaimedThisWeek,totalWeeklyBonus);
+
+@override
+String toString() {
+  return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WeeklyBonusCopyWith<$Res> implements $WeeklyBonusCopyWith<$Res> {
+  factory _$WeeklyBonusCopyWith(_WeeklyBonus value, $Res Function(_WeeklyBonus) _then) = __$WeeklyBonusCopyWithImpl;
+@override @useResult
+$Res call({
+ String userId, int consecutiveDays, DateTime lastCompletionDate, DateTime resetDate, List<int> completionDaysOfWeek, bool bonusClaimedThisWeek, int totalWeeklyBonus
+});
+
+
+
+
+}
+/// @nodoc
+class __$WeeklyBonusCopyWithImpl<$Res>
+    implements _$WeeklyBonusCopyWith<$Res> {
+  __$WeeklyBonusCopyWithImpl(this._self, this._then);
+
+  final _WeeklyBonus _self;
+  final $Res Function(_WeeklyBonus) _then;
+
+/// Create a copy of WeeklyBonus
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? consecutiveDays = null,Object? lastCompletionDate = null,Object? resetDate = null,Object? completionDaysOfWeek = null,Object? bonusClaimedThisWeek = null,Object? totalWeeklyBonus = null,}) {
+  return _then(_WeeklyBonus(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,consecutiveDays: null == consecutiveDays ? _self.consecutiveDays : consecutiveDays // ignore: cast_nullable_to_non_nullable
+as int,lastCompletionDate: null == lastCompletionDate ? _self.lastCompletionDate : lastCompletionDate // ignore: cast_nullable_to_non_nullable
+as DateTime,resetDate: null == resetDate ? _self.resetDate : resetDate // ignore: cast_nullable_to_non_nullable
+as DateTime,completionDaysOfWeek: null == completionDaysOfWeek ? _self._completionDaysOfWeek : completionDaysOfWeek // ignore: cast_nullable_to_non_nullable
+as List<int>,bonusClaimedThisWeek: null == bonusClaimedThisWeek ? _self.bonusClaimedThisWeek : bonusClaimedThisWeek // ignore: cast_nullable_to_non_nullable
+as bool,totalWeeklyBonus: null == totalWeeklyBonus ? _self.totalWeeklyBonus : totalWeeklyBonus // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+// dart format on

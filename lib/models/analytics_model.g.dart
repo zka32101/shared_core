@@ -6,8 +6,8 @@ part of 'analytics_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$LearningMetricImpl _$$LearningMetricImplFromJson(Map<String, dynamic> json) =>
-    _$LearningMetricImpl(
+_LearningMetric _$LearningMetricFromJson(Map<String, dynamic> json) =>
+    _LearningMetric(
       userId: json['userId'] as String,
       type: $enumDecode(_$LearningMetricTypeEnumMap, json['type']),
       value: (json['value'] as num).toInt(),
@@ -16,16 +16,15 @@ _$LearningMetricImpl _$$LearningMetricImplFromJson(Map<String, dynamic> json) =>
       customData: json['customData'] as Map<String, dynamic>?,
     );
 
-Map<String, dynamic> _$$LearningMetricImplToJson(
-  _$LearningMetricImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'type': _$LearningMetricTypeEnumMap[instance.type]!,
-  'value': instance.value,
-  'recordedAt': instance.recordedAt.toIso8601String(),
-  'appId': instance.appId,
-  'customData': instance.customData,
-};
+Map<String, dynamic> _$LearningMetricToJson(_LearningMetric instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'type': _$LearningMetricTypeEnumMap[instance.type]!,
+      'value': instance.value,
+      'recordedAt': instance.recordedAt.toIso8601String(),
+      'appId': instance.appId,
+      'customData': instance.customData,
+    };
 
 const _$LearningMetricTypeEnumMap = {
   LearningMetricType.quizCompleted: 'quizCompleted',
@@ -40,9 +39,9 @@ const _$LearningMetricTypeEnumMap = {
   LearningMetricType.achievementUnlocked: 'achievementUnlocked',
 };
 
-_$UserSegmentAnalyticsImpl _$$UserSegmentAnalyticsImplFromJson(
+_UserSegmentAnalytics _$UserSegmentAnalyticsFromJson(
   Map<String, dynamic> json,
-) => _$UserSegmentAnalyticsImpl(
+) => _UserSegmentAnalytics(
   userId: json['userId'] as String,
   segmentId: json['segmentId'] as String,
   engagementScore: (json['engagementScore'] as num).toInt(),
@@ -57,8 +56,8 @@ _$UserSegmentAnalyticsImpl _$$UserSegmentAnalyticsImplFromJson(
   retentionTrend: (json['retentionTrend'] as num?)?.toInt(),
 );
 
-Map<String, dynamic> _$$UserSegmentAnalyticsImplToJson(
-  _$UserSegmentAnalyticsImpl instance,
+Map<String, dynamic> _$UserSegmentAnalyticsToJson(
+  _UserSegmentAnalytics instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'segmentId': instance.segmentId,
@@ -74,8 +73,8 @@ Map<String, dynamic> _$$UserSegmentAnalyticsImplToJson(
   'retentionTrend': instance.retentionTrend,
 };
 
-_$WeeklyReportImpl _$$WeeklyReportImplFromJson(Map<String, dynamic> json) =>
-    _$WeeklyReportImpl(
+_WeeklyReport _$WeeklyReportFromJson(Map<String, dynamic> json) =>
+    _WeeklyReport(
       userId: json['userId'] as String,
       weekStartDate: DateTime.parse(json['weekStartDate'] as String),
       totalMinutes: (json['totalMinutes'] as num).toInt(),
@@ -93,7 +92,7 @@ _$WeeklyReportImpl _$$WeeklyReportImplFromJson(Map<String, dynamic> json) =>
           ?.map((k, e) => MapEntry(k, (e as num).toInt())),
     );
 
-Map<String, dynamic> _$$WeeklyReportImplToJson(_$WeeklyReportImpl instance) =>
+Map<String, dynamic> _$WeeklyReportToJson(_WeeklyReport instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'weekStartDate': instance.weekStartDate.toIso8601String(),
@@ -109,8 +108,8 @@ Map<String, dynamic> _$$WeeklyReportImplToJson(_$WeeklyReportImpl instance) =>
       'subjectBreakdown': instance.subjectBreakdown,
     };
 
-_$MonthlyReportImpl _$$MonthlyReportImplFromJson(Map<String, dynamic> json) =>
-    _$MonthlyReportImpl(
+_MonthlyReport _$MonthlyReportFromJson(Map<String, dynamic> json) =>
+    _MonthlyReport(
       userId: json['userId'] as String,
       month: (json['month'] as num).toInt(),
       year: (json['year'] as num).toInt(),
@@ -131,7 +130,7 @@ _$MonthlyReportImpl _$$MonthlyReportImplFromJson(Map<String, dynamic> json) =>
       recommendation: json['recommendation'] as String?,
     );
 
-Map<String, dynamic> _$$MonthlyReportImplToJson(_$MonthlyReportImpl instance) =>
+Map<String, dynamic> _$MonthlyReportToJson(_MonthlyReport instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'month': instance.month,
@@ -151,8 +150,8 @@ Map<String, dynamic> _$$MonthlyReportImplToJson(_$MonthlyReportImpl instance) =>
       'recommendation': instance.recommendation,
     };
 
-_$LearningGoalImpl _$$LearningGoalImplFromJson(Map<String, dynamic> json) =>
-    _$LearningGoalImpl(
+_LearningGoal _$LearningGoalFromJson(Map<String, dynamic> json) =>
+    _LearningGoal(
       userId: json['userId'] as String,
       goalId: json['goalId'] as String,
       goalType: json['goalType'] as String,
@@ -172,7 +171,7 @@ _$LearningGoalImpl _$$LearningGoalImplFromJson(Map<String, dynamic> json) =>
       difficulty: (json['difficulty'] as num?)?.toDouble(),
     );
 
-Map<String, dynamic> _$$LearningGoalImplToJson(_$LearningGoalImpl instance) =>
+Map<String, dynamic> _$LearningGoalToJson(_LearningGoal instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'goalId': instance.goalId,
@@ -196,134 +195,128 @@ const _$GoalStatusEnumMap = {
   GoalStatus.abandoned: 'abandoned',
 };
 
-_$AnalyticsConfigImpl _$$AnalyticsConfigImplFromJson(
-  Map<String, dynamic> json,
-) => _$AnalyticsConfigImpl(
-  enableMetricsTracking: json['enableMetricsTracking'] as bool,
-  enableReportGeneration: json['enableReportGeneration'] as bool,
-  enabledMetrics: (json['enabledMetrics'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  reportGenerationIntervalDays: (json['reportGenerationIntervalDays'] as num)
-      .toInt(),
-  goalsConfig: Map<String, int>.from(json['goalsConfig'] as Map),
-  enableSegmentation: json['enableSegmentation'] as bool?,
-  enableAIPredictions: json['enableAIPredictions'] as bool?,
-  segmentThresholds: json['segmentThresholds'] as Map<String, dynamic>?,
-);
+_AnalyticsConfig _$AnalyticsConfigFromJson(Map<String, dynamic> json) =>
+    _AnalyticsConfig(
+      enableMetricsTracking: json['enableMetricsTracking'] as bool,
+      enableReportGeneration: json['enableReportGeneration'] as bool,
+      enabledMetrics: (json['enabledMetrics'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      reportGenerationIntervalDays:
+          (json['reportGenerationIntervalDays'] as num).toInt(),
+      goalsConfig: Map<String, int>.from(json['goalsConfig'] as Map),
+      enableSegmentation: json['enableSegmentation'] as bool?,
+      enableAIPredictions: json['enableAIPredictions'] as bool?,
+      segmentThresholds: json['segmentThresholds'] as Map<String, dynamic>?,
+    );
 
-Map<String, dynamic> _$$AnalyticsConfigImplToJson(
-  _$AnalyticsConfigImpl instance,
-) => <String, dynamic>{
-  'enableMetricsTracking': instance.enableMetricsTracking,
-  'enableReportGeneration': instance.enableReportGeneration,
-  'enabledMetrics': instance.enabledMetrics,
-  'reportGenerationIntervalDays': instance.reportGenerationIntervalDays,
-  'goalsConfig': instance.goalsConfig,
-  'enableSegmentation': instance.enableSegmentation,
-  'enableAIPredictions': instance.enableAIPredictions,
-  'segmentThresholds': instance.segmentThresholds,
-};
+Map<String, dynamic> _$AnalyticsConfigToJson(_AnalyticsConfig instance) =>
+    <String, dynamic>{
+      'enableMetricsTracking': instance.enableMetricsTracking,
+      'enableReportGeneration': instance.enableReportGeneration,
+      'enabledMetrics': instance.enabledMetrics,
+      'reportGenerationIntervalDays': instance.reportGenerationIntervalDays,
+      'goalsConfig': instance.goalsConfig,
+      'enableSegmentation': instance.enableSegmentation,
+      'enableAIPredictions': instance.enableAIPredictions,
+      'segmentThresholds': instance.segmentThresholds,
+    };
 
-_$BehaviorAnalyticsImpl _$$BehaviorAnalyticsImplFromJson(
-  Map<String, dynamic> json,
-) => _$BehaviorAnalyticsImpl(
-  userId: json['userId'] as String,
-  analyzedDate: DateTime.parse(json['analyzedDate'] as String),
-  sessionCounts: Map<String, int>.from(json['sessionCounts'] as Map),
-  preferredTopics: Map<String, int>.from(json['preferredTopics'] as Map),
-  averageSessionDurationMinutes: (json['averageSessionDurationMinutes'] as num)
-      .toInt(),
-  weekdayVsWeekendRatio: (json['weekdayVsWeekendRatio'] as num).toDouble(),
-  peakActivityHour: (json['peakActivityHour'] as num).toInt(),
-  learningPattern: json['learningPattern'] as String?,
-  predictedNextActivationDays: (json['predictedNextActivationDays'] as num?)
-      ?.toInt(),
-);
+_BehaviorAnalytics _$BehaviorAnalyticsFromJson(Map<String, dynamic> json) =>
+    _BehaviorAnalytics(
+      userId: json['userId'] as String,
+      analyzedDate: DateTime.parse(json['analyzedDate'] as String),
+      sessionCounts: Map<String, int>.from(json['sessionCounts'] as Map),
+      preferredTopics: Map<String, int>.from(json['preferredTopics'] as Map),
+      averageSessionDurationMinutes:
+          (json['averageSessionDurationMinutes'] as num).toInt(),
+      weekdayVsWeekendRatio: (json['weekdayVsWeekendRatio'] as num).toDouble(),
+      peakActivityHour: (json['peakActivityHour'] as num).toInt(),
+      learningPattern: json['learningPattern'] as String?,
+      predictedNextActivationDays: (json['predictedNextActivationDays'] as num?)
+          ?.toInt(),
+    );
 
-Map<String, dynamic> _$$BehaviorAnalyticsImplToJson(
-  _$BehaviorAnalyticsImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'analyzedDate': instance.analyzedDate.toIso8601String(),
-  'sessionCounts': instance.sessionCounts,
-  'preferredTopics': instance.preferredTopics,
-  'averageSessionDurationMinutes': instance.averageSessionDurationMinutes,
-  'weekdayVsWeekendRatio': instance.weekdayVsWeekendRatio,
-  'peakActivityHour': instance.peakActivityHour,
-  'learningPattern': instance.learningPattern,
-  'predictedNextActivationDays': instance.predictedNextActivationDays,
-};
+Map<String, dynamic> _$BehaviorAnalyticsToJson(_BehaviorAnalytics instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'analyzedDate': instance.analyzedDate.toIso8601String(),
+      'sessionCounts': instance.sessionCounts,
+      'preferredTopics': instance.preferredTopics,
+      'averageSessionDurationMinutes': instance.averageSessionDurationMinutes,
+      'weekdayVsWeekendRatio': instance.weekdayVsWeekendRatio,
+      'peakActivityHour': instance.peakActivityHour,
+      'learningPattern': instance.learningPattern,
+      'predictedNextActivationDays': instance.predictedNextActivationDays,
+    };
 
-_$PopulationStatsImpl _$$PopulationStatsImplFromJson(
-  Map<String, dynamic> json,
-) => _$PopulationStatsImpl(
-  totalUsers: (json['totalUsers'] as num).toInt(),
-  activeUsersLast7Days: (json['activeUsersLast7Days'] as num).toInt(),
-  activeUsersLast30Days: (json['activeUsersLast30Days'] as num).toInt(),
-  churnedUsersLast30Days: (json['churnedUsersLast30Days'] as num).toInt(),
-  churnRate: (json['churnRate'] as num).toDouble(),
-  sampledAt: DateTime.parse(json['sampledAt'] as String),
-  segmentDistribution: Map<String, int>.from(
-    json['segmentDistribution'] as Map,
-  ),
-  retentionByDay: (json['retentionByDay'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, (e as num).toDouble()),
-  ),
-  ageGroupDistribution: (json['ageGroupDistribution'] as Map<String, dynamic>?)
-      ?.map((k, e) => MapEntry(k, (e as num).toInt())),
-  mau: (json['mau'] as num?)?.toDouble(),
-  dau: (json['dau'] as num?)?.toDouble(),
-);
+_PopulationStats _$PopulationStatsFromJson(Map<String, dynamic> json) =>
+    _PopulationStats(
+      totalUsers: (json['totalUsers'] as num).toInt(),
+      activeUsersLast7Days: (json['activeUsersLast7Days'] as num).toInt(),
+      activeUsersLast30Days: (json['activeUsersLast30Days'] as num).toInt(),
+      churnedUsersLast30Days: (json['churnedUsersLast30Days'] as num).toInt(),
+      churnRate: (json['churnRate'] as num).toDouble(),
+      sampledAt: DateTime.parse(json['sampledAt'] as String),
+      segmentDistribution: Map<String, int>.from(
+        json['segmentDistribution'] as Map,
+      ),
+      retentionByDay: (json['retentionByDay'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, (e as num).toDouble()),
+      ),
+      ageGroupDistribution:
+          (json['ageGroupDistribution'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, (e as num).toInt()),
+          ),
+      mau: (json['mau'] as num?)?.toDouble(),
+      dau: (json['dau'] as num?)?.toDouble(),
+    );
 
-Map<String, dynamic> _$$PopulationStatsImplToJson(
-  _$PopulationStatsImpl instance,
-) => <String, dynamic>{
-  'totalUsers': instance.totalUsers,
-  'activeUsersLast7Days': instance.activeUsersLast7Days,
-  'activeUsersLast30Days': instance.activeUsersLast30Days,
-  'churnedUsersLast30Days': instance.churnedUsersLast30Days,
-  'churnRate': instance.churnRate,
-  'sampledAt': instance.sampledAt.toIso8601String(),
-  'segmentDistribution': instance.segmentDistribution,
-  'retentionByDay': instance.retentionByDay,
-  'ageGroupDistribution': instance.ageGroupDistribution,
-  'mau': instance.mau,
-  'dau': instance.dau,
-};
+Map<String, dynamic> _$PopulationStatsToJson(_PopulationStats instance) =>
+    <String, dynamic>{
+      'totalUsers': instance.totalUsers,
+      'activeUsersLast7Days': instance.activeUsersLast7Days,
+      'activeUsersLast30Days': instance.activeUsersLast30Days,
+      'churnedUsersLast30Days': instance.churnedUsersLast30Days,
+      'churnRate': instance.churnRate,
+      'sampledAt': instance.sampledAt.toIso8601String(),
+      'segmentDistribution': instance.segmentDistribution,
+      'retentionByDay': instance.retentionByDay,
+      'ageGroupDistribution': instance.ageGroupDistribution,
+      'mau': instance.mau,
+      'dau': instance.dau,
+    };
 
-_$CohortAnalyticsImpl _$$CohortAnalyticsImplFromJson(
-  Map<String, dynamic> json,
-) => _$CohortAnalyticsImpl(
-  cohortId: json['cohortId'] as String,
-  cohortSize: (json['cohortSize'] as num).toInt(),
-  retentionByWeek: (json['retentionByWeek'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), (e as num).toDouble()),
-  ),
-  engagementByWeek: (json['engagementByWeek'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(int.parse(k), (e as num).toDouble()),
-  ),
-  lifetimeValue: (json['lifetimeValue'] as num).toDouble(),
-  createdAt: DateTime.parse(json['createdAt'] as String),
-);
+_CohortAnalytics _$CohortAnalyticsFromJson(Map<String, dynamic> json) =>
+    _CohortAnalytics(
+      cohortId: json['cohortId'] as String,
+      cohortSize: (json['cohortSize'] as num).toInt(),
+      retentionByWeek: (json['retentionByWeek'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(int.parse(k), (e as num).toDouble()),
+      ),
+      engagementByWeek: (json['engagementByWeek'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(int.parse(k), (e as num).toDouble()),
+      ),
+      lifetimeValue: (json['lifetimeValue'] as num).toDouble(),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
 
-Map<String, dynamic> _$$CohortAnalyticsImplToJson(
-  _$CohortAnalyticsImpl instance,
-) => <String, dynamic>{
-  'cohortId': instance.cohortId,
-  'cohortSize': instance.cohortSize,
-  'retentionByWeek': instance.retentionByWeek.map(
-    (k, e) => MapEntry(k.toString(), e),
-  ),
-  'engagementByWeek': instance.engagementByWeek.map(
-    (k, e) => MapEntry(k.toString(), e),
-  ),
-  'lifetimeValue': instance.lifetimeValue,
-  'createdAt': instance.createdAt.toIso8601String(),
-};
+Map<String, dynamic> _$CohortAnalyticsToJson(_CohortAnalytics instance) =>
+    <String, dynamic>{
+      'cohortId': instance.cohortId,
+      'cohortSize': instance.cohortSize,
+      'retentionByWeek': instance.retentionByWeek.map(
+        (k, e) => MapEntry(k.toString(), e),
+      ),
+      'engagementByWeek': instance.engagementByWeek.map(
+        (k, e) => MapEntry(k.toString(), e),
+      ),
+      'lifetimeValue': instance.lifetimeValue,
+      'createdAt': instance.createdAt.toIso8601String(),
+    };
 
-_$ABTestMetricsImpl _$$ABTestMetricsImplFromJson(Map<String, dynamic> json) =>
-    _$ABTestMetricsImpl(
+_ABTestMetrics _$ABTestMetricsFromJson(Map<String, dynamic> json) =>
+    _ABTestMetrics(
       testId: json['testId'] as String,
       variant: json['variant'] as String,
       impressions: (json['impressions'] as num).toInt(),
@@ -336,7 +329,7 @@ _$ABTestMetricsImpl _$$ABTestMetricsImplFromJson(Map<String, dynamic> json) =>
       winner: json['winner'] as String?,
     );
 
-Map<String, dynamic> _$$ABTestMetricsImplToJson(_$ABTestMetricsImpl instance) =>
+Map<String, dynamic> _$ABTestMetricsToJson(_ABTestMetrics instance) =>
     <String, dynamic>{
       'testId': instance.testId,
       'variant': instance.variant,

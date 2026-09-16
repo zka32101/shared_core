@@ -6,25 +6,24 @@ part of 'cloud_functions_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CloudFunctionConfigImpl _$$CloudFunctionConfigImplFromJson(
-  Map<String, dynamic> json,
-) => _$CloudFunctionConfigImpl(
-  enableAutoReportGeneration: json['enableAutoReportGeneration'] as bool,
-  enableSegmentationUpdates: json['enableSegmentationUpdates'] as bool,
-  enableCohortAnalysis: json['enableCohortAnalysis'] as bool,
-  enableNotifications: json['enableNotifications'] as bool,
-  reportGenerationIntervalDays: (json['reportGenerationIntervalDays'] as num)
-      .toInt(),
-  segmentationUpdateIntervalHours:
-      (json['segmentationUpdateIntervalHours'] as num).toInt(),
-  cohortAnalysisIntervalDays: (json['cohortAnalysisIntervalDays'] as num)
-      .toInt(),
-  notificationConfig: json['notificationConfig'] as Map<String, dynamic>,
-  enableChurnPrediction: json['enableChurnPrediction'] as bool,
-);
+_CloudFunctionConfig _$CloudFunctionConfigFromJson(Map<String, dynamic> json) =>
+    _CloudFunctionConfig(
+      enableAutoReportGeneration: json['enableAutoReportGeneration'] as bool,
+      enableSegmentationUpdates: json['enableSegmentationUpdates'] as bool,
+      enableCohortAnalysis: json['enableCohortAnalysis'] as bool,
+      enableNotifications: json['enableNotifications'] as bool,
+      reportGenerationIntervalDays:
+          (json['reportGenerationIntervalDays'] as num).toInt(),
+      segmentationUpdateIntervalHours:
+          (json['segmentationUpdateIntervalHours'] as num).toInt(),
+      cohortAnalysisIntervalDays: (json['cohortAnalysisIntervalDays'] as num)
+          .toInt(),
+      notificationConfig: json['notificationConfig'] as Map<String, dynamic>,
+      enableChurnPrediction: json['enableChurnPrediction'] as bool,
+    );
 
-Map<String, dynamic> _$$CloudFunctionConfigImplToJson(
-  _$CloudFunctionConfigImpl instance,
+Map<String, dynamic> _$CloudFunctionConfigToJson(
+  _CloudFunctionConfig instance,
 ) => <String, dynamic>{
   'enableAutoReportGeneration': instance.enableAutoReportGeneration,
   'enableSegmentationUpdates': instance.enableSegmentationUpdates,
@@ -37,33 +36,31 @@ Map<String, dynamic> _$$CloudFunctionConfigImplToJson(
   'enableChurnPrediction': instance.enableChurnPrediction,
 };
 
-_$SegmentationResultImpl _$$SegmentationResultImplFromJson(
-  Map<String, dynamic> json,
-) => _$SegmentationResultImpl(
-  userId: json['userId'] as String,
-  previousSegment: json['previousSegment'] as String,
-  newSegment: json['newSegment'] as String,
-  engagementScore: (json['engagementScore'] as num).toInt(),
-  retentionScore: (json['retentionScore'] as num).toInt(),
-  churnRiskScore: (json['churnRiskScore'] as num).toDouble(),
-  analyzedAt: DateTime.parse(json['analyzedAt'] as String),
-);
+_SegmentationResult _$SegmentationResultFromJson(Map<String, dynamic> json) =>
+    _SegmentationResult(
+      userId: json['userId'] as String,
+      previousSegment: json['previousSegment'] as String,
+      newSegment: json['newSegment'] as String,
+      engagementScore: (json['engagementScore'] as num).toInt(),
+      retentionScore: (json['retentionScore'] as num).toInt(),
+      churnRiskScore: (json['churnRiskScore'] as num).toDouble(),
+      analyzedAt: DateTime.parse(json['analyzedAt'] as String),
+    );
 
-Map<String, dynamic> _$$SegmentationResultImplToJson(
-  _$SegmentationResultImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'previousSegment': instance.previousSegment,
-  'newSegment': instance.newSegment,
-  'engagementScore': instance.engagementScore,
-  'retentionScore': instance.retentionScore,
-  'churnRiskScore': instance.churnRiskScore,
-  'analyzedAt': instance.analyzedAt.toIso8601String(),
-};
+Map<String, dynamic> _$SegmentationResultToJson(_SegmentationResult instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'previousSegment': instance.previousSegment,
+      'newSegment': instance.newSegment,
+      'engagementScore': instance.engagementScore,
+      'retentionScore': instance.retentionScore,
+      'churnRiskScore': instance.churnRiskScore,
+      'analyzedAt': instance.analyzedAt.toIso8601String(),
+    };
 
-_$CohortAnalysisResultImpl _$$CohortAnalysisResultImplFromJson(
+_CohortAnalysisResult _$CohortAnalysisResultFromJson(
   Map<String, dynamic> json,
-) => _$CohortAnalysisResultImpl(
+) => _CohortAnalysisResult(
   cohortId: json['cohortId'] as String,
   cohortStartDate: DateTime.parse(json['cohortStartDate'] as String),
   totalUsersInCohort: (json['totalUsersInCohort'] as num).toInt(),
@@ -81,8 +78,8 @@ _$CohortAnalysisResultImpl _$$CohortAnalysisResultImplFromJson(
   analyzedAt: DateTime.parse(json['analyzedAt'] as String),
 );
 
-Map<String, dynamic> _$$CohortAnalysisResultImplToJson(
-  _$CohortAnalysisResultImpl instance,
+Map<String, dynamic> _$CohortAnalysisResultToJson(
+  _CohortAnalysisResult instance,
 ) => <String, dynamic>{
   'cohortId': instance.cohortId,
   'cohortStartDate': instance.cohortStartDate.toIso8601String(),
@@ -99,20 +96,19 @@ Map<String, dynamic> _$$CohortAnalysisResultImplToJson(
   'analyzedAt': instance.analyzedAt.toIso8601String(),
 };
 
-_$NotificationPayloadImpl _$$NotificationPayloadImplFromJson(
-  Map<String, dynamic> json,
-) => _$NotificationPayloadImpl(
-  userId: json['userId'] as String,
-  notificationType: json['notificationType'] as String,
-  title: json['title'] as String,
-  body: json['body'] as String,
-  data: json['data'] as Map<String, dynamic>,
-  scheduledAt: DateTime.parse(json['scheduledAt'] as String),
-  isScheduled: json['isScheduled'] as bool,
-);
+_NotificationPayload _$NotificationPayloadFromJson(Map<String, dynamic> json) =>
+    _NotificationPayload(
+      userId: json['userId'] as String,
+      notificationType: json['notificationType'] as String,
+      title: json['title'] as String,
+      body: json['body'] as String,
+      data: json['data'] as Map<String, dynamic>,
+      scheduledAt: DateTime.parse(json['scheduledAt'] as String),
+      isScheduled: json['isScheduled'] as bool,
+    );
 
-Map<String, dynamic> _$$NotificationPayloadImplToJson(
-  _$NotificationPayloadImpl instance,
+Map<String, dynamic> _$NotificationPayloadToJson(
+  _NotificationPayload instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'notificationType': instance.notificationType,
@@ -123,9 +119,9 @@ Map<String, dynamic> _$$NotificationPayloadImplToJson(
   'isScheduled': instance.isScheduled,
 };
 
-_$FunctionExecutionLogImpl _$$FunctionExecutionLogImplFromJson(
+_FunctionExecutionLog _$FunctionExecutionLogFromJson(
   Map<String, dynamic> json,
-) => _$FunctionExecutionLogImpl(
+) => _FunctionExecutionLog(
   functionId: json['functionId'] as String,
   functionType: $enumDecode(_$FunctionTypeEnumMap, json['functionType']),
   executedAt: DateTime.parse(json['executedAt'] as String),
@@ -136,8 +132,8 @@ _$FunctionExecutionLogImpl _$$FunctionExecutionLogImplFromJson(
   errorMessage: json['errorMessage'] as String?,
 );
 
-Map<String, dynamic> _$$FunctionExecutionLogImplToJson(
-  _$FunctionExecutionLogImpl instance,
+Map<String, dynamic> _$FunctionExecutionLogToJson(
+  _FunctionExecutionLog instance,
 ) => <String, dynamic>{
   'functionId': instance.functionId,
   'functionType': _$FunctionTypeEnumMap[instance.functionType]!,
@@ -160,30 +156,28 @@ const _$FunctionTypeEnumMap = {
   FunctionType.identifyChurnRiskUsers: 'identifyChurnRiskUsers',
 };
 
-_$ChurnPredictionImpl _$$ChurnPredictionImplFromJson(
-  Map<String, dynamic> json,
-) => _$ChurnPredictionImpl(
-  userId: json['userId'] as String,
-  churnRiskScore: (json['churnRiskScore'] as num).toDouble(),
-  riskLevel: json['riskLevel'] as String,
-  riskIndicators: (json['riskIndicators'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  predictedChurnDate: DateTime.parse(json['predictedChurnDate'] as String),
-  recommendedActions: (json['recommendedActions'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  analyzedAt: DateTime.parse(json['analyzedAt'] as String),
-);
+_ChurnPrediction _$ChurnPredictionFromJson(Map<String, dynamic> json) =>
+    _ChurnPrediction(
+      userId: json['userId'] as String,
+      churnRiskScore: (json['churnRiskScore'] as num).toDouble(),
+      riskLevel: json['riskLevel'] as String,
+      riskIndicators: (json['riskIndicators'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      predictedChurnDate: DateTime.parse(json['predictedChurnDate'] as String),
+      recommendedActions: (json['recommendedActions'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      analyzedAt: DateTime.parse(json['analyzedAt'] as String),
+    );
 
-Map<String, dynamic> _$$ChurnPredictionImplToJson(
-  _$ChurnPredictionImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'churnRiskScore': instance.churnRiskScore,
-  'riskLevel': instance.riskLevel,
-  'riskIndicators': instance.riskIndicators,
-  'predictedChurnDate': instance.predictedChurnDate.toIso8601String(),
-  'recommendedActions': instance.recommendedActions,
-  'analyzedAt': instance.analyzedAt.toIso8601String(),
-};
+Map<String, dynamic> _$ChurnPredictionToJson(_ChurnPrediction instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'churnRiskScore': instance.churnRiskScore,
+      'riskLevel': instance.riskLevel,
+      'riskIndicators': instance.riskIndicators,
+      'predictedChurnDate': instance.predictedChurnDate.toIso8601String(),
+      'recommendedActions': instance.recommendedActions,
+      'analyzedAt': instance.analyzedAt.toIso8601String(),
+    };

@@ -40,7 +40,7 @@ class FriendRequest with _$FriendRequest {
 
   factory FriendRequest.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return FriendRequest(
+    return _FriendRequest(
       id: doc.id,
       senderId: data['senderId'] as String,
       senderName: data['senderName'] as String,

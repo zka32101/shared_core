@@ -6,33 +6,31 @@ part of 'adaptive_difficulty_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AdaptiveMetricsImpl _$$AdaptiveMetricsImplFromJson(
-  Map<String, dynamic> json,
-) => _$AdaptiveMetricsImpl(
-  accuracy: (json['accuracy'] as num).toDouble(),
-  completionRate: (json['completionRate'] as num).toDouble(),
-  averageTimePerQuestion: (json['averageTimePerQuestion'] as num).toInt(),
-  totalQuestionsAnswered: (json['totalQuestionsAnswered'] as num).toInt(),
-  correctAnswers: (json['correctAnswers'] as num).toInt(),
-  wrongAnswers: (json['wrongAnswers'] as num).toInt(),
-  lastUpdatedAt: DateTime.parse(json['lastUpdatedAt'] as String),
-);
+_AdaptiveMetrics _$AdaptiveMetricsFromJson(Map<String, dynamic> json) =>
+    _AdaptiveMetrics(
+      accuracy: (json['accuracy'] as num).toDouble(),
+      completionRate: (json['completionRate'] as num).toDouble(),
+      averageTimePerQuestion: (json['averageTimePerQuestion'] as num).toInt(),
+      totalQuestionsAnswered: (json['totalQuestionsAnswered'] as num).toInt(),
+      correctAnswers: (json['correctAnswers'] as num).toInt(),
+      wrongAnswers: (json['wrongAnswers'] as num).toInt(),
+      lastUpdatedAt: DateTime.parse(json['lastUpdatedAt'] as String),
+    );
 
-Map<String, dynamic> _$$AdaptiveMetricsImplToJson(
-  _$AdaptiveMetricsImpl instance,
-) => <String, dynamic>{
-  'accuracy': instance.accuracy,
-  'completionRate': instance.completionRate,
-  'averageTimePerQuestion': instance.averageTimePerQuestion,
-  'totalQuestionsAnswered': instance.totalQuestionsAnswered,
-  'correctAnswers': instance.correctAnswers,
-  'wrongAnswers': instance.wrongAnswers,
-  'lastUpdatedAt': instance.lastUpdatedAt.toIso8601String(),
-};
+Map<String, dynamic> _$AdaptiveMetricsToJson(_AdaptiveMetrics instance) =>
+    <String, dynamic>{
+      'accuracy': instance.accuracy,
+      'completionRate': instance.completionRate,
+      'averageTimePerQuestion': instance.averageTimePerQuestion,
+      'totalQuestionsAnswered': instance.totalQuestionsAnswered,
+      'correctAnswers': instance.correctAnswers,
+      'wrongAnswers': instance.wrongAnswers,
+      'lastUpdatedAt': instance.lastUpdatedAt.toIso8601String(),
+    };
 
-_$UserAdaptiveDifficultyImpl _$$UserAdaptiveDifficultyImplFromJson(
+_UserAdaptiveDifficulty _$UserAdaptiveDifficultyFromJson(
   Map<String, dynamic> json,
-) => _$UserAdaptiveDifficultyImpl(
+) => _UserAdaptiveDifficulty(
   userId: json['userId'] as String,
   appId: json['appId'] as String,
   currentLevel: $enumDecode(_$DifficultyLevelEnumMap, json['currentLevel']),
@@ -49,8 +47,8 @@ _$UserAdaptiveDifficultyImpl _$$UserAdaptiveDifficultyImplFromJson(
   confidenceScore: (json['confidenceScore'] as num).toDouble(),
 );
 
-Map<String, dynamic> _$$UserAdaptiveDifficultyImplToJson(
-  _$UserAdaptiveDifficultyImpl instance,
+Map<String, dynamic> _$UserAdaptiveDifficultyToJson(
+  _UserAdaptiveDifficulty instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'appId': instance.appId,
@@ -71,9 +69,9 @@ const _$DifficultyLevelEnumMap = {
   DifficultyLevel.veryHard: 'veryHard',
 };
 
-_$DifficultyAdjustmentHistoryImpl _$$DifficultyAdjustmentHistoryImplFromJson(
+_DifficultyAdjustmentHistory _$DifficultyAdjustmentHistoryFromJson(
   Map<String, dynamic> json,
-) => _$DifficultyAdjustmentHistoryImpl(
+) => _DifficultyAdjustmentHistory(
   userId: json['userId'] as String,
   appId: json['appId'] as String,
   previousLevel: $enumDecode(_$DifficultyLevelEnumMap, json['previousLevel']),
@@ -83,8 +81,8 @@ _$DifficultyAdjustmentHistoryImpl _$$DifficultyAdjustmentHistoryImplFromJson(
   metricsSnapshot: (json['metricsSnapshot'] as num).toDouble(),
 );
 
-Map<String, dynamic> _$$DifficultyAdjustmentHistoryImplToJson(
-  _$DifficultyAdjustmentHistoryImpl instance,
+Map<String, dynamic> _$DifficultyAdjustmentHistoryToJson(
+  _DifficultyAdjustmentHistory instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'appId': instance.appId,
@@ -95,9 +93,9 @@ Map<String, dynamic> _$$DifficultyAdjustmentHistoryImplToJson(
   'metricsSnapshot': instance.metricsSnapshot,
 };
 
-_$AdaptiveDifficultyConfigImpl _$$AdaptiveDifficultyConfigImplFromJson(
+_AdaptiveDifficultyConfig _$AdaptiveDifficultyConfigFromJson(
   Map<String, dynamic> json,
-) => _$AdaptiveDifficultyConfigImpl(
+) => _AdaptiveDifficultyConfig(
   enableAutoAdjust: json['enableAutoAdjust'] as bool,
   adjustmentIntervalDays: (json['adjustmentIntervalDays'] as num).toInt(),
   highAccuracyThreshold: (json['highAccuracyThreshold'] as num).toDouble(),
@@ -108,8 +106,8 @@ _$AdaptiveDifficultyConfigImpl _$$AdaptiveDifficultyConfigImplFromJson(
       .map((k, e) => MapEntry(k, (e as num).toDouble())),
 );
 
-Map<String, dynamic> _$$AdaptiveDifficultyConfigImplToJson(
-  _$AdaptiveDifficultyConfigImpl instance,
+Map<String, dynamic> _$AdaptiveDifficultyConfigToJson(
+  _AdaptiveDifficultyConfig instance,
 ) => <String, dynamic>{
   'enableAutoAdjust': instance.enableAutoAdjust,
   'adjustmentIntervalDays': instance.adjustmentIntervalDays,
@@ -120,9 +118,9 @@ Map<String, dynamic> _$$AdaptiveDifficultyConfigImplToJson(
   'difficultyMultipliers': instance.difficultyMultipliers,
 };
 
-_$DifficultyRecommendationImpl _$$DifficultyRecommendationImplFromJson(
+_DifficultyRecommendation _$DifficultyRecommendationFromJson(
   Map<String, dynamic> json,
-) => _$DifficultyRecommendationImpl(
+) => _DifficultyRecommendation(
   recommendedLevel: $enumDecode(
     _$DifficultyLevelEnumMap,
     json['recommendedLevel'],
@@ -135,8 +133,8 @@ _$DifficultyRecommendationImpl _$$DifficultyRecommendationImplFromJson(
   calculatedAt: DateTime.parse(json['calculatedAt'] as String),
 );
 
-Map<String, dynamic> _$$DifficultyRecommendationImplToJson(
-  _$DifficultyRecommendationImpl instance,
+Map<String, dynamic> _$DifficultyRecommendationToJson(
+  _DifficultyRecommendation instance,
 ) => <String, dynamic>{
   'recommendedLevel': _$DifficultyLevelEnumMap[instance.recommendedLevel]!,
   'confidence': instance.confidence,
@@ -145,9 +143,9 @@ Map<String, dynamic> _$$DifficultyRecommendationImplToJson(
   'calculatedAt': instance.calculatedAt.toIso8601String(),
 };
 
-_$DifficultyPerformanceStatsImpl _$$DifficultyPerformanceStatsImplFromJson(
+_DifficultyPerformanceStats _$DifficultyPerformanceStatsFromJson(
   Map<String, dynamic> json,
-) => _$DifficultyPerformanceStatsImpl(
+) => _DifficultyPerformanceStats(
   level: $enumDecode(_$DifficultyLevelEnumMap, json['level']),
   avgAccuracy: (json['avgAccuracy'] as num).toDouble(),
   avgCompletionTime: (json['avgCompletionTime'] as num).toDouble(),
@@ -158,8 +156,8 @@ _$DifficultyPerformanceStatsImpl _$$DifficultyPerformanceStatsImplFromJson(
       : DateTime.parse(json['lastUsedAt'] as String),
 );
 
-Map<String, dynamic> _$$DifficultyPerformanceStatsImplToJson(
-  _$DifficultyPerformanceStatsImpl instance,
+Map<String, dynamic> _$DifficultyPerformanceStatsToJson(
+  _DifficultyPerformanceStats instance,
 ) => <String, dynamic>{
   'level': _$DifficultyLevelEnumMap[instance.level]!,
   'avgAccuracy': instance.avgAccuracy,
@@ -169,31 +167,31 @@ Map<String, dynamic> _$$DifficultyPerformanceStatsImplToJson(
   'lastUsedAt': instance.lastUsedAt?.toIso8601String(),
 };
 
-_$UserLearningPatternImpl _$$UserLearningPatternImplFromJson(
-  Map<String, dynamic> json,
-) => _$UserLearningPatternImpl(
-  userId: json['userId'] as String,
-  appId: json['appId'] as String,
-  performanceByLevel: (json['performanceByLevel'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(
-      k,
-      DifficultyPerformanceStats.fromJson(e as Map<String, dynamic>),
-    ),
-  ),
-  mostCommonLevel: $enumDecode(
-    _$DifficultyLevelEnumMap,
-    json['mostCommonLevel'],
-  ),
-  mostSuccessfulLevel: $enumDecode(
-    _$DifficultyLevelEnumMap,
-    json['mostSuccessfulLevel'],
-  ),
-  learningVelocity: (json['learningVelocity'] as num).toDouble(),
-  analyzedAt: DateTime.parse(json['analyzedAt'] as String),
-);
+_UserLearningPattern _$UserLearningPatternFromJson(Map<String, dynamic> json) =>
+    _UserLearningPattern(
+      userId: json['userId'] as String,
+      appId: json['appId'] as String,
+      performanceByLevel: (json['performanceByLevel'] as Map<String, dynamic>)
+          .map(
+            (k, e) => MapEntry(
+              k,
+              DifficultyPerformanceStats.fromJson(e as Map<String, dynamic>),
+            ),
+          ),
+      mostCommonLevel: $enumDecode(
+        _$DifficultyLevelEnumMap,
+        json['mostCommonLevel'],
+      ),
+      mostSuccessfulLevel: $enumDecode(
+        _$DifficultyLevelEnumMap,
+        json['mostSuccessfulLevel'],
+      ),
+      learningVelocity: (json['learningVelocity'] as num).toDouble(),
+      analyzedAt: DateTime.parse(json['analyzedAt'] as String),
+    );
 
-Map<String, dynamic> _$$UserLearningPatternImplToJson(
-  _$UserLearningPatternImpl instance,
+Map<String, dynamic> _$UserLearningPatternToJson(
+  _UserLearningPattern instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'appId': instance.appId,

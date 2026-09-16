@@ -6,21 +6,20 @@ part of 'pricing_strategy.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PricingTierImpl _$$PricingTierImplFromJson(Map<String, dynamic> json) =>
-    _$PricingTierImpl(
-      segment: $enumDecode(_$UserSegmentEnumMap, json['segment']),
-      basePrice: (json['basePrice'] as num).toInt(),
-      discountPercent: (json['discountPercent'] as num).toDouble(),
-      label: json['label'] as String,
-      description: json['description'] as String?,
-      bonusFeatures:
-          (json['bonusFeatures'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-    );
+_PricingTier _$PricingTierFromJson(Map<String, dynamic> json) => _PricingTier(
+  segment: $enumDecode(_$UserSegmentEnumMap, json['segment']),
+  basePrice: (json['basePrice'] as num).toInt(),
+  discountPercent: (json['discountPercent'] as num).toDouble(),
+  label: json['label'] as String,
+  description: json['description'] as String?,
+  bonusFeatures:
+      (json['bonusFeatures'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+);
 
-Map<String, dynamic> _$$PricingTierImplToJson(_$PricingTierImpl instance) =>
+Map<String, dynamic> _$PricingTierToJson(_PricingTier instance) =>
     <String, dynamic>{
       'segment': _$UserSegmentEnumMap[instance.segment]!,
       'basePrice': instance.basePrice,
@@ -38,8 +37,8 @@ const _$UserSegmentEnumMap = {
   UserSegment.churnRisk: 'churnRisk',
 };
 
-_$DynamicPriceImpl _$$DynamicPriceImplFromJson(Map<String, dynamic> json) =>
-    _$DynamicPriceImpl(
+_DynamicPrice _$DynamicPriceFromJson(Map<String, dynamic> json) =>
+    _DynamicPrice(
       userId: json['userId'] as String,
       detectedSegment: $enumDecode(
         _$UserSegmentEnumMap,
@@ -53,7 +52,7 @@ _$DynamicPriceImpl _$$DynamicPriceImplFromJson(Map<String, dynamic> json) =>
       isLimited: json['isLimited'] as bool,
     );
 
-Map<String, dynamic> _$$DynamicPriceImplToJson(_$DynamicPriceImpl instance) =>
+Map<String, dynamic> _$DynamicPriceToJson(_DynamicPrice instance) =>
     <String, dynamic>{
       'userId': instance.userId,
       'detectedSegment': _$UserSegmentEnumMap[instance.detectedSegment]!,
@@ -65,8 +64,8 @@ Map<String, dynamic> _$$DynamicPriceImplToJson(_$DynamicPriceImpl instance) =>
       'isLimited': instance.isLimited,
     };
 
-_$SeasonalOfferImpl _$$SeasonalOfferImplFromJson(Map<String, dynamic> json) =>
-    _$SeasonalOfferImpl(
+_SeasonalOffer _$SeasonalOfferFromJson(Map<String, dynamic> json) =>
+    _SeasonalOffer(
       name: json['name'] as String,
       startDate: DateTime.parse(json['startDate'] as String),
       endDate: DateTime.parse(json['endDate'] as String),
@@ -75,7 +74,7 @@ _$SeasonalOfferImpl _$$SeasonalOfferImplFromJson(Map<String, dynamic> json) =>
       isActive: json['isActive'] as bool,
     );
 
-Map<String, dynamic> _$$SeasonalOfferImplToJson(_$SeasonalOfferImpl instance) =>
+Map<String, dynamic> _$SeasonalOfferToJson(_SeasonalOffer instance) =>
     <String, dynamic>{
       'name': instance.name,
       'startDate': instance.startDate.toIso8601String(),
@@ -85,9 +84,9 @@ Map<String, dynamic> _$$SeasonalOfferImplToJson(_$SeasonalOfferImpl instance) =>
       'isActive': instance.isActive,
     };
 
-_$PricingConfigImpl _$$PricingConfigImplFromJson(
+_PricingConfig _$PricingConfigFromJson(
   Map<String, dynamic> json,
-) => _$PricingConfigImpl(
+) => _PricingConfig(
   basePrice: (json['basePrice'] as num).toInt(),
   segmentPrices: (json['segmentPrices'] as Map<String, dynamic>).map(
     (k, e) =>
@@ -104,7 +103,7 @@ _$PricingConfigImpl _$$PricingConfigImplFromJson(
       (json['churnRiskThresholdDays'] as num?)?.toInt() ?? 30,
 );
 
-Map<String, dynamic> _$$PricingConfigImplToJson(_$PricingConfigImpl instance) =>
+Map<String, dynamic> _$PricingConfigToJson(_PricingConfig instance) =>
     <String, dynamic>{
       'basePrice': instance.basePrice,
       'segmentPrices': instance.segmentPrices.map(
@@ -116,9 +115,9 @@ Map<String, dynamic> _$$PricingConfigImplToJson(_$PricingConfigImpl instance) =>
       'churnRiskThresholdDays': instance.churnRiskThresholdDays,
     };
 
-_$PricingAnalyticsEventImpl _$$PricingAnalyticsEventImplFromJson(
+_PricingAnalyticsEvent _$PricingAnalyticsEventFromJson(
   Map<String, dynamic> json,
-) => _$PricingAnalyticsEventImpl(
+) => _PricingAnalyticsEvent(
   userId: json['userId'] as String,
   eventType: json['eventType'] as String,
   segment: $enumDecode(_$UserSegmentEnumMap, json['segment']),
@@ -127,8 +126,8 @@ _$PricingAnalyticsEventImpl _$$PricingAnalyticsEventImplFromJson(
   timestamp: DateTime.parse(json['timestamp'] as String),
 );
 
-Map<String, dynamic> _$$PricingAnalyticsEventImplToJson(
-  _$PricingAnalyticsEventImpl instance,
+Map<String, dynamic> _$PricingAnalyticsEventToJson(
+  _PricingAnalyticsEvent instance,
 ) => <String, dynamic>{
   'userId': instance.userId,
   'eventType': instance.eventType,
