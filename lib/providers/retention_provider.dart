@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod/riverpod.dart';
 import '../models/notification_model.dart';
 
-class RetentionNotifier extends StateNotifier<RetentionMetrics?> {
+class RetentionMetricsNotifier extends StateNotifier<RetentionMetrics?> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  RetentionNotifier() : super(null);
+  RetentionMetricsNotifier() : super(null);
 
   /// ユーザーのリテンション分析を更新
   Future<void> updateRetentionMetrics({
@@ -222,7 +222,7 @@ class RetentionNotifier extends StateNotifier<RetentionMetrics?> {
 }
 
 // リテンション管理プロバイダー
-final retentionNotifierProvider =
-    StateNotifierProvider<RetentionNotifier, RetentionMetrics?>((ref) {
-  return RetentionNotifier();
+final retentionMetricsNotifierProvider =
+    StateNotifierProvider<RetentionMetricsNotifier, RetentionMetrics?>((ref) {
+  return RetentionMetricsNotifier();
 });

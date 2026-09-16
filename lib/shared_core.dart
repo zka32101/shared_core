@@ -163,7 +163,7 @@ export 'widgets/cloud_functions_dashboard.dart';            // CloudFunctionsDas
 export 'models/notification_model.dart';                    // PushNotificationConfig, UserNotificationPreference, PushNotificationEvent, NotificationCampaign, RetentionMetrics, CampaignPerformance, RetentionAction（Phase 4.18）
 export 'providers/notification_provider.dart';              // notificationConfigProvider, userNotificationPreferenceProvider, userRetentionMetricsProvider, activeCampaignsProvider, campaignPerformanceProvider, userRetentionActionsProvider, populationRetentionStatsProvider, recentNotificationEventsProvider（Phase 4.18）
 export 'providers/notification_notifier.dart';              // NotificationNotifier, notificationNotifierProvider（Phase 4.18）
-export 'providers/retention_provider.dart';                 // RetentionNotifier, retentionNotifierProvider（Phase 4.18）
+export 'providers/retention_provider.dart';                 // RetentionMetricsNotifier, retentionMetricsNotifierProvider（Phase 4.18. 旧 RetentionNotifier/retentionNotifierProvider は Phase 4.13 版と名前衝突していたためリネーム）
 export 'services/push_notification_service.dart';           // PushNotificationService（FCM 実行ロジック Phase 4.18）
 export 'widgets/notification_settings_page.dart';           // NotificationSettingsPage（通知設定ページ Phase 4.18）
 export 'widgets/retention_dashboard.dart';                  // RetentionDashboard（リテンションダッシュボード Phase 4.18）

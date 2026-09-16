@@ -5,7 +5,7 @@ import '../models/coaching_model.dart';
 import '../providers/coaching_provider.dart';
 
 class CoachingDashboard extends ConsumerWidget {
-  final String userId,
+  final String userId;
   final Color? primaryColor;
   
   const CoachingDashboard({

@@ -449,7 +449,7 @@ class MatchResult {
     this.metadata = const {},
   });
 
-  bool isWinnerDraw => winnerScore == loserScore;
+  bool get isWinnerDraw => winnerScore == loserScore;
 
   MatchResult copyWith({
     String? matchId,
