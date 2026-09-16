@@ -4,7 +4,7 @@ part 'coaching_model.freezed.dart';
 part 'coaching_model.g.dart';
 
 @freezed
-class CoachingSession with _$CoachingSession {
+abstract class CoachingSession with _$CoachingSession {
   const factory CoachingSession({
     required String userId,
     required DateTime createdAt,
@@ -24,7 +24,7 @@ class CoachingSession with _$CoachingSession {
 }
 
 @freezed
-class CoachingAdvice with _$CoachingAdvice {
+abstract class CoachingAdvice with _$CoachingAdvice {
   const factory CoachingAdvice({
     required String adviceId,
     required String category, // 'weakness', 'strength', 'motivation', 'strategy'
@@ -44,7 +44,7 @@ class CoachingAdvice with _$CoachingAdvice {
 }
 
 @freezed
-class LearningInsight with _$LearningInsight {
+abstract class LearningInsight with _$LearningInsight {
   const factory LearningInsight({
     required String userId,
     required DateTime analyzedAt,
@@ -65,7 +65,7 @@ class LearningInsight with _$LearningInsight {
 }
 
 @freezed
-class SubjectInsight with _$SubjectInsight {
+abstract class SubjectInsight with _$SubjectInsight {
   const factory SubjectInsight({
     required String appId,
     required String appName,
@@ -85,7 +85,7 @@ class SubjectInsight with _$SubjectInsight {
 }
 
 @freezed
-class TopicStrength with _$TopicStrength {
+abstract class TopicStrength with _$TopicStrength {
   const factory TopicStrength({
     required String topicId,
     required String topicName,
@@ -100,7 +100,7 @@ class TopicStrength with _$TopicStrength {
 }
 
 @freezed
-class CoachingGoal with _$CoachingGoal {
+abstract class CoachingGoal with _$CoachingGoal {
   const factory CoachingGoal({
     required String goalId,
     required String userId,
@@ -120,7 +120,7 @@ class CoachingGoal with _$CoachingGoal {
 }
 
 @freezed
-class CoachingFeedback with _$CoachingFeedback {
+abstract class CoachingFeedback with _$CoachingFeedback {
   const factory CoachingFeedback({
     required String feedbackId,
     required String userId,
@@ -137,7 +137,7 @@ class CoachingFeedback with _$CoachingFeedback {
 }
 
 @freezed
-class AICoachPrompt with _$AICoachPrompt {
+abstract class AICoachPrompt with _$AICoachPrompt {
   const factory AICoachPrompt({
     required String userId,
     required List<String> subjectIds,
@@ -152,7 +152,7 @@ class AICoachPrompt with _$AICoachPrompt {
 }
 
 @freezed
-class CoachingAnalyticsEvent with _$CoachingAnalyticsEvent {
+abstract class CoachingAnalyticsEvent with _$CoachingAnalyticsEvent {
   const factory CoachingAnalyticsEvent({
     required String userId,
     required String sessionId,

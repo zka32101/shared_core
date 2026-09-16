@@ -11,7 +11,7 @@ enum MissionDifficulty { easy, normal, hard, veryhard }
 
 /// Individual daily mission definition
 @freezed
-class DailyMission with _$DailyMission {
+abstract class DailyMission with _$DailyMission {
   const factory DailyMission({
     required String missionId,
     required String title,
@@ -31,7 +31,7 @@ class DailyMission with _$DailyMission {
 
 /// Mission reward definition
 @freezed
-class MissionReward with _$MissionReward {
+abstract class MissionReward with _$MissionReward {
   const factory MissionReward({
     required RewardType type, // 'coins', 'badges', 'characterExp', 'items'
     required int amount,
@@ -45,7 +45,7 @@ class MissionReward with _$MissionReward {
 
 /// User's progress toward a daily mission
 @freezed
-class DailyMissionProgress with _$DailyMissionProgress {
+abstract class DailyMissionProgress with _$DailyMissionProgress {
   const factory DailyMissionProgress({
     required String userId,
     required String missionId,
@@ -62,7 +62,7 @@ class DailyMissionProgress with _$DailyMissionProgress {
 
 /// Daily mission state for UI display
 @freezed
-class DailyMissionListItem with _$DailyMissionListItem {
+abstract class DailyMissionListItem with _$DailyMissionListItem {
   const factory DailyMissionListItem({
     required DailyMission mission,
     required DailyMissionProgress progress,
@@ -76,7 +76,7 @@ class DailyMissionListItem with _$DailyMissionListItem {
 
 /// Weekly bonus tracking for consecutive daily completions
 @freezed
-class WeeklyBonus with _$WeeklyBonus {
+abstract class WeeklyBonus with _$WeeklyBonus {
   const factory WeeklyBonus({
     required String userId,
     required int consecutiveDays, // 0-7

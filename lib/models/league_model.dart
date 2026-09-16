@@ -22,7 +22,7 @@ enum LeagueRank {
 }
 
 @freezed
-class UserLeague with _$UserLeague {
+abstract class UserLeague with _$UserLeague {
   const factory UserLeague({
     required String userId,
     required LeagueTier tier,
@@ -46,7 +46,7 @@ class UserLeague with _$UserLeague {
 }
 
 @freezed
-class LeagueMatch with _$LeagueMatch {
+abstract class LeagueMatch with _$LeagueMatch {
   const factory LeagueMatch({
     required String matchId,
     required String player1Id,
@@ -64,7 +64,7 @@ class LeagueMatch with _$LeagueMatch {
 }
 
 @freezed
-class LeagueRanking with _$LeagueRanking {
+abstract class LeagueRanking with _$LeagueRanking {
   const factory LeagueRanking({
     required LeagueTier tier,
     required List<LeagueRankingEntry> rankings, // 上位100
@@ -76,7 +76,7 @@ class LeagueRanking with _$LeagueRanking {
 }
 
 @freezed
-class LeagueRankingEntry with _$LeagueRankingEntry {
+abstract class LeagueRankingEntry with _$LeagueRankingEntry {
   const factory LeagueRankingEntry({
     required int position,
     required String userId,
@@ -93,7 +93,7 @@ class LeagueRankingEntry with _$LeagueRankingEntry {
 }
 
 @freezed
-class TierRequirements with _$TierRequirements {
+abstract class TierRequirements with _$TierRequirements {
   const factory TierRequirements({
     required LeagueTier tier,
     required int minRankPoints,
@@ -107,7 +107,7 @@ class TierRequirements with _$TierRequirements {
 }
 
 @freezed
-class SeasonStats with _$SeasonStats {
+abstract class SeasonStats with _$SeasonStats {
   const factory SeasonStats({
     required String userId,
     required int seasonNumber,
@@ -125,7 +125,7 @@ class SeasonStats with _$SeasonStats {
 }
 
 @freezed
-class MatchmakingRequest with _$MatchmakingRequest {
+abstract class MatchmakingRequest with _$MatchmakingRequest {
   const factory MatchmakingRequest({
     required String userId,
     required LeagueTier tier,

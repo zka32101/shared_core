@@ -4,7 +4,7 @@ part 'cross_app_report_model.freezed.dart';
 part 'cross_app_report_model.g.dart';
 
 @freezed
-class CrossAppReport with _$CrossAppReport {
+abstract class CrossAppReport with _$CrossAppReport {
   const factory CrossAppReport({
     required String userId,
     required Map<String, AppReportSummary> appReports,
@@ -18,7 +18,7 @@ class CrossAppReport with _$CrossAppReport {
 }
 
 @freezed
-class AppReportSummary with _$AppReportSummary {
+abstract class AppReportSummary with _$AppReportSummary {
   const factory AppReportSummary({
     required String appId, // 'kokugo', 'sansu', 'eigo', etc.
     required String appName,
@@ -36,7 +36,7 @@ class AppReportSummary with _$AppReportSummary {
 }
 
 @freezed
-class CrossAppStats with _$CrossAppStats {
+abstract class CrossAppStats with _$CrossAppStats {
   const factory CrossAppStats({
     required int totalLearningMinutes,
     required int totalQuizzesCompleted,
@@ -55,7 +55,7 @@ class CrossAppStats with _$CrossAppStats {
 }
 
 @freezed
-class WeeklyReportComparison with _$WeeklyReportComparison {
+abstract class WeeklyReportComparison with _$WeeklyReportComparison {
   const factory WeeklyReportComparison({
     required DateTime startDate,
     required DateTime endDate,
@@ -69,7 +69,7 @@ class WeeklyReportComparison with _$WeeklyReportComparison {
 }
 
 @freezed
-class DailyAppStats with _$DailyAppStats {
+abstract class DailyAppStats with _$DailyAppStats {
   const factory DailyAppStats({
     required DateTime date,
     required Map<String, int> appLearningMinutes, // appId -> minutes
@@ -81,7 +81,7 @@ class DailyAppStats with _$DailyAppStats {
 }
 
 @freezed
-class MonthlyReportComparison with _$MonthlyReportComparison {
+abstract class MonthlyReportComparison with _$MonthlyReportComparison {
   const factory MonthlyReportComparison({
     required int month,
     required int year,
@@ -95,7 +95,7 @@ class MonthlyReportComparison with _$MonthlyReportComparison {
 }
 
 @freezed
-class AppMonthlyStats with _$AppMonthlyStats {
+abstract class AppMonthlyStats with _$AppMonthlyStats {
   const factory AppMonthlyStats({
     required String appId,
     required int totalLearningMinutes,

@@ -14,7 +14,7 @@ enum DifficultyLevel {
 
 /// 適応学習の指標
 @freezed
-class AdaptiveMetrics with _$AdaptiveMetrics {
+abstract class AdaptiveMetrics with _$AdaptiveMetrics {
   const factory AdaptiveMetrics({
     required double accuracy,           // 正答率（0.0-1.0）
     required double completionRate,     // 完了率（0.0-1.0）
@@ -31,7 +31,7 @@ class AdaptiveMetrics with _$AdaptiveMetrics {
 
 /// ユーザーの適応難易度設定
 @freezed
-class UserAdaptiveDifficulty with _$UserAdaptiveDifficulty {
+abstract class UserAdaptiveDifficulty with _$UserAdaptiveDifficulty {
   const factory UserAdaptiveDifficulty({
     required String userId,
     required String appId,              // アプリID（kokugo, sansu等）
@@ -50,7 +50,7 @@ class UserAdaptiveDifficulty with _$UserAdaptiveDifficulty {
 
 /// 難易度調整履歴
 @freezed
-class DifficultyAdjustmentHistory with _$DifficultyAdjustmentHistory {
+abstract class DifficultyAdjustmentHistory with _$DifficultyAdjustmentHistory {
   const factory DifficultyAdjustmentHistory({
     required String userId,
     required String appId,
@@ -67,7 +67,7 @@ class DifficultyAdjustmentHistory with _$DifficultyAdjustmentHistory {
 
 /// 適応難易度設定（RemoteConfig から取得）
 @freezed
-class AdaptiveDifficultyConfig with _$AdaptiveDifficultyConfig {
+abstract class AdaptiveDifficultyConfig with _$AdaptiveDifficultyConfig {
   const factory AdaptiveDifficultyConfig({
     required bool enableAutoAdjust,     // 自動調整を有効
     required int adjustmentIntervalDays, // 調整間隔（日数）
@@ -84,7 +84,7 @@ class AdaptiveDifficultyConfig with _$AdaptiveDifficultyConfig {
 
 /// 推奨難易度結果
 @freezed
-class DifficultyRecommendation with _$DifficultyRecommendation {
+abstract class DifficultyRecommendation with _$DifficultyRecommendation {
   const factory DifficultyRecommendation({
     required DifficultyLevel recommendedLevel,
     required double confidence,         // 推奨の確信度（0.0-1.0）
@@ -99,7 +99,7 @@ class DifficultyRecommendation with _$DifficultyRecommendation {
 
 /// 難易度パフォーマンス統計
 @freezed
-class DifficultyPerformanceStats with _$DifficultyPerformanceStats {
+abstract class DifficultyPerformanceStats with _$DifficultyPerformanceStats {
   const factory DifficultyPerformanceStats({
     required DifficultyLevel level,
     required double avgAccuracy,        // 平均正答率
@@ -115,7 +115,7 @@ class DifficultyPerformanceStats with _$DifficultyPerformanceStats {
 
 /// ユーザーの学習パターン（難易度選択傾向）
 @freezed
-class UserLearningPattern with _$UserLearningPattern {
+abstract class UserLearningPattern with _$UserLearningPattern {
   const factory UserLearningPattern({
     required String userId,
     required String appId,

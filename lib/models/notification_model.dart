@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'notification_model.freezed.dart';
 
 @freezed
-class AppNotification with _$AppNotification {
+abstract class AppNotification with _$AppNotification {
   const factory AppNotification({
     required String id,
     required String title,
@@ -21,7 +21,7 @@ class AppNotification with _$AppNotification {
 }
 
 @freezed
-class ReminderConfig with _$ReminderConfig {
+abstract class ReminderConfig with _$ReminderConfig {
   const factory ReminderConfig({
     required bool enableDailyReminder,
     required bool enableAchievementNotification,
@@ -31,12 +31,10 @@ class ReminderConfig with _$ReminderConfig {
     required TimeOfDay dailyReminderTime,
     required int weeklyReportDayOfWeek, // 0 = Sunday, 6 = Saturday
   }) = _ReminderConfig;
-
-  const ReminderConfig._();
 }
 
 @freezed
-class TimeOfDay with _$TimeOfDay {
+abstract class TimeOfDay with _$TimeOfDay {
   const factory TimeOfDay({
     required int hour,
     required int minute,
@@ -53,7 +51,7 @@ class TimeOfDay with _$TimeOfDay {
 }
 
 @freezed
-class NotificationStats with _$NotificationStats {
+abstract class NotificationStats with _$NotificationStats {
   const factory NotificationStats({
     required int totalNotifications,
     required int unreadCount,
@@ -61,6 +59,4 @@ class NotificationStats with _$NotificationStats {
     required int friendRequestCount,
     required DateTime lastCheckAt,
   }) = _NotificationStats;
-
-  const NotificationStats._();
 }

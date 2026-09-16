@@ -17,7 +17,7 @@ enum UserSegment {
 
 // ─── ティアモデル ──────────────────────────────────────────────────────
 @freezed
-class PricingTier with _$PricingTier {
+abstract class PricingTier with _$PricingTier {
   const factory PricingTier({
     required UserSegment segment,
     required int basePrice,           // 基本価格（¥）
@@ -33,7 +33,7 @@ class PricingTier with _$PricingTier {
 
 // ─── ダイナミック価格モデル ────────────────────────────────────────────
 @freezed
-class DynamicPrice with _$DynamicPrice {
+abstract class DynamicPrice with _$DynamicPrice {
   const factory DynamicPrice({
     required String userId,
     required UserSegment detectedSegment,
@@ -51,7 +51,7 @@ class DynamicPrice with _$DynamicPrice {
 
 // ─── セッション期間による価格設定 ──────────────────────────────────────
 @freezed
-class SeasonalOffer with _$SeasonalOffer {
+abstract class SeasonalOffer with _$SeasonalOffer {
   const factory SeasonalOffer({
     required String name,
     required DateTime startDate,
@@ -67,7 +67,7 @@ class SeasonalOffer with _$SeasonalOffer {
 
 // ─── 価格設定ルール全体 ────────────────────────────────────────────────
 @freezed
-class PricingConfig with _$PricingConfig {
+abstract class PricingConfig with _$PricingConfig {
   const factory PricingConfig({
     required int basePrice,                    // ¥120
     required Map<UserSegment, int> segmentPrices,
@@ -83,7 +83,7 @@ class PricingConfig with _$PricingConfig {
 
 // ─── インプレッション・コンバージョントラッキング ───────────────────────
 @freezed
-class PricingAnalyticsEvent with _$PricingAnalyticsEvent {
+abstract class PricingAnalyticsEvent with _$PricingAnalyticsEvent {
   const factory PricingAnalyticsEvent({
     required String userId,
     required String eventType,        // 'impression' or 'conversion'

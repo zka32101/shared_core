@@ -14,7 +14,7 @@ enum MissionType {
 
 /// デイリーミッション（今日のミッション）
 @freezed
-class DailyMission with _$DailyMission {
+abstract class DailyMission with _$DailyMission {
   const factory DailyMission({
     required String id,              // 'daily_mission_YYYYMMDD'
     required MissionType type,
@@ -36,7 +36,7 @@ class DailyMission with _$DailyMission {
 
 /// ストリークデータ
 @freezed
-class StreakData with _$StreakData {
+abstract class StreakData with _$StreakData {
   const factory StreakData({
     required String userId,
     required int currentStreak,      // 現在のストリーク日数
@@ -52,7 +52,7 @@ class StreakData with _$StreakData {
 
 /// 週間ボーナス定義
 @freezed
-class WeeklyBonus with _$WeeklyBonus {
+abstract class WeeklyBonus with _$WeeklyBonus {
   const factory WeeklyBonus({
     required int dayNumber,          // 1-7
     required int requiredMissions,   // その日に必要なミッション完了数
@@ -67,7 +67,7 @@ class WeeklyBonus with _$WeeklyBonus {
 
 /// 週間ボーナス進捗
 @freezed
-class WeeklyBonusProgress with _$WeeklyBonusProgress {
+abstract class WeeklyBonusProgress with _$WeeklyBonusProgress {
   const factory WeeklyBonusProgress({
     required String userId,
     required int weekNumber,         // 年間週番号
@@ -83,7 +83,7 @@ class WeeklyBonusProgress with _$WeeklyBonusProgress {
 
 /// リテンション設定（RemoteConfig から取得）
 @freezed
-class RetentionConfig with _$RetentionConfig {
+abstract class RetentionConfig with _$RetentionConfig {
   const factory RetentionConfig({
     required int dailyMissionCount,           // 1日のミッション数（デフォルト3）
     required int streakCoinMultiplier,        // ストリーク1日あたりのコイン（デフォルト10）

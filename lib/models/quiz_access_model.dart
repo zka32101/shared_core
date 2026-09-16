@@ -4,7 +4,7 @@ part 'quiz_access_model.freezed.dart';
 
 /// クイズアクセス制御モデル
 @freezed
-class QuizAccessControl with _$QuizAccessControl {
+abstract class QuizAccessControl with _$QuizAccessControl {
   const factory QuizAccessControl({
     /// ユーザー登録日
     required DateTime registeredAt,
@@ -19,7 +19,7 @@ class QuizAccessControl with _$QuizAccessControl {
 
 /// クイズアクセス状態
 @freezed
-class QuizAccessState with _$QuizAccessState {
+abstract class QuizAccessState with _$QuizAccessState {
   const factory QuizAccessState({
     /// 全問題へのアクセス可否
     required bool canAccessAllQuizzes,

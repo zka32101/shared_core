@@ -508,8 +508,8 @@ return $default(_that.enableDailyReminder,_that.enableAchievementNotification,_t
 /// @nodoc
 
 
-class _ReminderConfig extends ReminderConfig {
-  const _ReminderConfig({required this.enableDailyReminder, required this.enableAchievementNotification, required this.enableFriendNotification, required this.enableWeeklyReport, required this.enableEngagementReminder, required this.dailyReminderTime, required this.weeklyReportDayOfWeek}): super._();
+class _ReminderConfig implements ReminderConfig {
+  const _ReminderConfig({required this.enableDailyReminder, required this.enableAchievementNotification, required this.enableFriendNotification, required this.enableWeeklyReport, required this.enableEngagementReminder, required this.dailyReminderTime, required this.weeklyReportDayOfWeek});
   
 
 @override final  bool enableDailyReminder;
@@ -1050,8 +1050,8 @@ return $default(_that.totalNotifications,_that.unreadCount,_that.achievementCoun
 /// @nodoc
 
 
-class _NotificationStats extends NotificationStats {
-  const _NotificationStats({required this.totalNotifications, required this.unreadCount, required this.achievementCount, required this.friendRequestCount, required this.lastCheckAt}): super._();
+class _NotificationStats implements NotificationStats {
+  const _NotificationStats({required this.totalNotifications, required this.unreadCount, required this.achievementCount, required this.friendRequestCount, required this.lastCheckAt});
   
 
 @override final  int totalNotifications;

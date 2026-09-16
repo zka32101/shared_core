@@ -46,7 +46,7 @@ enum GoalStatus {
 
 /// 学習メトリクス（単一イベント記録）
 @freezed
-class LearningMetric with _$LearningMetric {
+abstract class LearningMetric with _$LearningMetric {
   const factory LearningMetric({
     required String userId,
     required LearningMetricType type,
@@ -62,7 +62,7 @@ class LearningMetric with _$LearningMetric {
 
 /// ユーザーセグメント分析
 @freezed
-class UserSegmentAnalytics with _$UserSegmentAnalytics {
+abstract class UserSegmentAnalytics with _$UserSegmentAnalytics {
   const factory UserSegmentAnalytics({
     required String userId,
     required String segmentId,   // newUser, inactive, active, vip, churnRisk
@@ -84,7 +84,7 @@ class UserSegmentAnalytics with _$UserSegmentAnalytics {
 
 /// 週次レポート
 @freezed
-class WeeklyReport with _$WeeklyReport {
+abstract class WeeklyReport with _$WeeklyReport {
   const factory WeeklyReport({
     required String userId,
     required DateTime weekStartDate,
@@ -106,7 +106,7 @@ class WeeklyReport with _$WeeklyReport {
 
 /// 月次レポート
 @freezed
-class MonthlyReport with _$MonthlyReport {
+abstract class MonthlyReport with _$MonthlyReport {
   const factory MonthlyReport({
     required String userId,
     required int month,               // 1-12
@@ -132,7 +132,7 @@ class MonthlyReport with _$MonthlyReport {
 
 /// 学習ゴール・チャレンジ
 @freezed
-class LearningGoal with _$LearningGoal {
+abstract class LearningGoal with _$LearningGoal {
   const factory LearningGoal({
     required String userId,
     required String goalId,
@@ -155,7 +155,7 @@ class LearningGoal with _$LearningGoal {
 
 /// 分析設定（RemoteConfig から読み込む）
 @freezed
-class AnalyticsConfig with _$AnalyticsConfig {
+abstract class AnalyticsConfig with _$AnalyticsConfig {
   const factory AnalyticsConfig({
     required bool enableMetricsTracking,
     required bool enableReportGeneration,
@@ -173,7 +173,7 @@ class AnalyticsConfig with _$AnalyticsConfig {
 
 /// ユーザーの行動パターン分析
 @freezed
-class BehaviorAnalytics with _$BehaviorAnalytics {
+abstract class BehaviorAnalytics with _$BehaviorAnalytics {
   const factory BehaviorAnalytics({
     required String userId,
     required DateTime analyzedDate,
@@ -192,7 +192,7 @@ class BehaviorAnalytics with _$BehaviorAnalytics {
 
 /// グローバル人口統計
 @freezed
-class PopulationStats with _$PopulationStats {
+abstract class PopulationStats with _$PopulationStats {
   const factory PopulationStats({
     required int totalUsers,
     required int activeUsersLast7Days,
@@ -213,7 +213,7 @@ class PopulationStats with _$PopulationStats {
 
 /// コホート分析（同じ時期に登録したユーザーグループ）
 @freezed
-class CohortAnalytics with _$CohortAnalytics {
+abstract class CohortAnalytics with _$CohortAnalytics {
   const factory CohortAnalytics({
     required String cohortId, // 登録月（例: '2026-09'）
     required int cohortSize,
@@ -229,7 +229,7 @@ class CohortAnalytics with _$CohortAnalytics {
 
 /// A/B テスト結果集計（analytics の一部）
 @freezed
-class ABTestMetrics with _$ABTestMetrics {
+abstract class ABTestMetrics with _$ABTestMetrics {
   const factory ABTestMetrics({
     required String testId,
     required String variant,

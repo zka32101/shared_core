@@ -15,7 +15,7 @@ enum FunctionType {
 }
 
 @freezed
-class CloudFunctionConfig with _$CloudFunctionConfig {
+abstract class CloudFunctionConfig with _$CloudFunctionConfig {
   const factory CloudFunctionConfig({
     required bool enableAutoReportGeneration,
     required bool enableSegmentationUpdates,
@@ -33,7 +33,7 @@ class CloudFunctionConfig with _$CloudFunctionConfig {
 }
 
 @freezed
-class SegmentationResult with _$SegmentationResult {
+abstract class SegmentationResult with _$SegmentationResult {
   const factory SegmentationResult({
     required String userId,
     required String previousSegment,
@@ -49,7 +49,7 @@ class SegmentationResult with _$SegmentationResult {
 }
 
 @freezed
-class CohortAnalysisResult with _$CohortAnalysisResult {
+abstract class CohortAnalysisResult with _$CohortAnalysisResult {
   const factory CohortAnalysisResult({
     required String cohortId,
     required DateTime cohortStartDate,
@@ -67,7 +67,7 @@ class CohortAnalysisResult with _$CohortAnalysisResult {
 }
 
 @freezed
-class NotificationPayload with _$NotificationPayload {
+abstract class NotificationPayload with _$NotificationPayload {
   const factory NotificationPayload({
     required String userId,
     required String notificationType,
@@ -83,7 +83,7 @@ class NotificationPayload with _$NotificationPayload {
 }
 
 @freezed
-class FunctionExecutionLog with _$FunctionExecutionLog {
+abstract class FunctionExecutionLog with _$FunctionExecutionLog {
   const factory FunctionExecutionLog({
     required String functionId,
     required FunctionType functionType,
@@ -100,7 +100,7 @@ class FunctionExecutionLog with _$FunctionExecutionLog {
 }
 
 @freezed
-class ChurnPrediction with _$ChurnPrediction {
+abstract class ChurnPrediction with _$ChurnPrediction {
   const factory ChurnPrediction({
     required String userId,
     required double churnRiskScore,

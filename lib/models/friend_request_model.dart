@@ -21,7 +21,7 @@ enum FriendshipStatus {
 
 /// フレンドリクエストモデル
 @freezed
-class FriendRequest with _$FriendRequest {
+abstract class FriendRequest with _$FriendRequest {
   const factory FriendRequest({
     required String id,                    // リクエストID
     required String senderId,              // 送信者ID
@@ -75,7 +75,7 @@ extension FriendRequestFirestore on FriendRequest {
 
 /// ユーザープロフィール（フレンド検索用）
 @freezed
-class FriendSearchProfile with _$FriendSearchProfile {
+abstract class FriendSearchProfile with _$FriendSearchProfile {
   const factory FriendSearchProfile({
     required String userId,
     required String name,

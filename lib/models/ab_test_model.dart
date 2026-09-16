@@ -18,7 +18,7 @@ enum TestMetric {
 }
 
 @freezed
-class ABTestConfig with _$ABTestConfig {
+abstract class ABTestConfig with _$ABTestConfig {
   const factory ABTestConfig({
     required String testId,           // 'ab_test_paywall_v1'
     required String testName,
@@ -36,7 +36,7 @@ class ABTestConfig with _$ABTestConfig {
 }
 
 @freezed
-class ABTestAssignment with _$ABTestAssignment {
+abstract class ABTestAssignment with _$ABTestAssignment {
   const factory ABTestAssignment({
     required String userId,
     required String testId,
@@ -50,7 +50,7 @@ class ABTestAssignment with _$ABTestAssignment {
 }
 
 @freezed
-class ABTestEvent with _$ABTestEvent {
+abstract class ABTestEvent with _$ABTestEvent {
   const factory ABTestEvent({
     required String userId,
     required String testId,
@@ -66,7 +66,7 @@ class ABTestEvent with _$ABTestEvent {
 }
 
 @freezed
-class ABTestResult with _$ABTestResult {
+abstract class ABTestResult with _$ABTestResult {
   const factory ABTestResult({
     required String testId,
     required TestVariant variant,
@@ -83,7 +83,7 @@ class ABTestResult with _$ABTestResult {
 }
 
 @freezed
-class PopulationStats with _$PopulationStats {
+abstract class PopulationStats with _$PopulationStats {
   const factory PopulationStats({
     required int totalUsers,
     required int activeUsers,
@@ -98,7 +98,7 @@ class PopulationStats with _$PopulationStats {
 }
 
 @freezed
-class ABTestState with _$ABTestState {
+abstract class ABTestState with _$ABTestState {
   const factory ABTestState({
     @Default({}) Map<String, ABTestResult> results,
     @Default({}) Map<String, TestVariant> userAssignments,

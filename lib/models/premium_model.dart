@@ -5,7 +5,7 @@ part 'premium_model.g.dart';
 
 /// サブスクリプション状態を表すモデル
 @freezed
-class PremiumState with _$PremiumState {
+abstract class PremiumState with _$PremiumState {
   const factory PremiumState({
     /// ユーザーがアクティブなサブスクリプションを持っているか
     required bool isSubscribed,
@@ -32,7 +32,7 @@ class PremiumState with _$PremiumState {
 
 /// サブスクリプション確認用リクエストモデル
 @freezed
-class SubscriptionCheckRequest with _$SubscriptionCheckRequest {
+abstract class SubscriptionCheckRequest with _$SubscriptionCheckRequest {
   const factory SubscriptionCheckRequest({
     required String userId,
     required String platform, // 'android' or 'ios'

@@ -21,7 +21,7 @@ enum RewardType {
 
 /// ミッション定義（マスターデータ）
 @freezed
-class Mission with _$Mission {
+abstract class Mission with _$Mission {
   const factory Mission({
     required String missionId,         // 'beginner_stage_5', 'streak_7days' など
     required String title,             // 'ビギナーステージ 5問達成！'
@@ -42,7 +42,7 @@ class Mission with _$Mission {
 
 /// ミッション報酬
 @freezed
-class MissionReward with _$MissionReward {
+abstract class MissionReward with _$MissionReward {
   const factory MissionReward({
     required RewardType type,
     required int amount,
@@ -55,7 +55,7 @@ class MissionReward with _$MissionReward {
 
 /// ユーザーミッション進捗
 @freezed
-class UserMissionProgress with _$UserMissionProgress {
+abstract class UserMissionProgress with _$UserMissionProgress {
   const factory UserMissionProgress({
     required String userId,
     required String missionId,
@@ -72,7 +72,7 @@ class UserMissionProgress with _$UserMissionProgress {
 
 /// ミッション一覧表示用データ
 @freezed
-class MissionListItem with _$MissionListItem {
+abstract class MissionListItem with _$MissionListItem {
   const factory MissionListItem({
     required Mission mission,
     required UserMissionProgress? progress, // null = 開始されていない
