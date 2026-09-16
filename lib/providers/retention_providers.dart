@@ -146,7 +146,7 @@ final weeklyBonusProgressProvider =
     final userId = auth.currentUser?.uid ?? '';
     if (userId.isEmpty) {
       return WeeklyBonusProgress(
-        userId: \'\',
+        userId: '',
         weekNumber: 0,
         bonuses: [],
         completedDays: 0,
@@ -174,7 +174,7 @@ final weeklyBonusProgressProvider =
     }
 
     return WeeklyBonusProgress(
-      userId: \'\',
+      userId: '',
       weekNumber: 0,
       bonuses: [],
       completedDays: 0,
@@ -184,7 +184,7 @@ final weeklyBonusProgressProvider =
   } catch (e) {
     debugPrint('Error fetching weekly bonus progress: $e');
     return WeeklyBonusProgress(
-      userId: \'\',
+      userId: '',
       weekNumber: 0,
       bonuses: [],
       completedDays: 0,

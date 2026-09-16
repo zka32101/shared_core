@@ -14,9 +14,9 @@ export 'models/friend_request_model.dart'; // FriendRequest, UserProfile, Friend
 export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, PlayerRating（マルチプレイ対戦の共通基盤）
 export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
 export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRankingEntry, UserRankingStats（Phase 4.3）
-export 'models/mission_model.dart'; // Mission, MissionReward, UserMissionProgress, MissionListItem（Phase 4.5）
+export 'models/mission_model.dart' hide MissionReward; // Mission, UserMissionProgress, MissionListItem（Phase 4.5）— MissionReward は daily_mission_model.dart 側を優先
 export 'models/daily_mission_model.dart'; // DailyMission, MissionReward, DailyMissionProgress, DailyMissionListItem（Phase 4.20）
-export 'models/retention_model.dart'; // DailyMission, StreakData, WeeklyBonus, RetentionConfig（Phase 4.13）
+export 'models/retention_model.dart' hide DailyMission, WeeklyBonus; // StreakData, RetentionConfig（Phase 4.13）— DailyMission/WeeklyBonus は daily_mission_model.dart 側を優先
 export 'models/learning_metrics.dart'; // LearningMetrics, WeeklyMetrics, MonthlyMetrics（Phase 4.10）
 export 'models/adaptive_difficulty_model.dart'; // DifficultyLevel, AdaptiveMetrics, UserAdaptiveDifficulty, DifficultyAdjustmentHistory, AdaptiveDifficultyConfig, DifficultyRecommendation, DifficultyPerformanceStats, UserLearningPattern（Phase 4.19）
 
@@ -95,7 +95,7 @@ export 'services/rating_calculator.dart'; // RatingCalculator（Elo & Glicko-2 �
 export 'services/revenue_cat_service.dart'; // RevenueCatService（統一サブスク管理 - Phase 4.7）
 
 // Providers (Phase 4.14)
-export 'providers/battle_session_provider.dart'; // BattleSessionHandlers, activeBattleSessionProvider, userRatingProvider, leaderboard providers
+export 'providers/battle_session_provider.dart' hide GetUserRatingHandler, userMatchHistoryProvider; // BattleSessionHandlers, activeBattleSessionProvider, userRatingProvider, leaderboard providers — 重複シンボルは matchmaking_provider.dart / match_provider.dart 側を優先
 
 // Widgets (Phase 4.14)
 export 'widgets/multiplayer/matchmaking_screen.dart'; // MatchmakingScreen（マッチメイキング画面 Phase 4.14）
@@ -147,8 +147,8 @@ export 'providers/ab_test_notifier.dart';                   // ABTestNotifier, a
 export 'widgets/ab_test_dashboard.dart';                    // ABTestDashboard, ABTestEventRecorder（A/B テスト分析ダッシュボード Phase 4.15）
 
 // Analytics & Reporting (Phase 4.16)
-export 'models/analytics_model.dart';                       // LearningMetric, UserSegmentAnalytics, WeeklyReport, MonthlyReport, LearningGoal, AnalyticsConfig, BehaviorAnalytics, PopulationStats, CohortAnalytics, ABTestMetrics（Phase 4.16）
-export 'providers/analytics_provider.dart';                 // analyticsConfigProvider, userSegmentAnalyticsProvider, weeklyReportProvider, monthlyReportProvider, userLearningGoalsProvider, recentLearningMetricsProvider, behaviorAnalyticsProvider, populationStatsProvider, cohortAnalyticsProvider, abTestMetricsProvider（Phase 4.16）
+export 'models/analytics_model.dart' hide PopulationStats;  // LearningMetric, UserSegmentAnalytics, WeeklyReport, MonthlyReport, LearningGoal, AnalyticsConfig, BehaviorAnalytics, CohortAnalytics, ABTestMetrics（Phase 4.16）— PopulationStats は ab_test_model.dart 側を優先
+export 'providers/analytics_provider.dart' hide populationStatsProvider, abTestResultsProvider; // analyticsConfigProvider, userSegmentAnalyticsProvider, weeklyReportProvider, monthlyReportProvider, userLearningGoalsProvider, recentLearningMetricsProvider, behaviorAnalyticsProvider, cohortAnalyticsProvider, abTestMetricsProvider（Phase 4.16）— 重複 provider は ab_test_providers.dart 側を優先
 export 'providers/analytics_notifier.dart';                 // AnalyticsNotifier, analyticsNotifierProvider（Phase 4.16）
 export 'widgets/analytics_dashboard.dart';                  // AnalyticsDashboard（分析ダッシュボード Phase 4.16）
 
