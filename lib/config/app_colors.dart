@@ -47,7 +47,7 @@ class SubjectColors {
       'social' => social,
       'programming' => programming,
       'morality' => morality,
-      _ => blue,
+      _ => AppColors.blue,
     };
   }
 
@@ -61,7 +61,7 @@ class SubjectColors {
       'social' => socialLight,
       'programming' => programmingLight,
       'morality' => moralityLight,
-      _ => blueLight,
+      _ => AppColors.blueLight,
     };
   }
 
@@ -75,7 +75,7 @@ class SubjectColors {
       'social' => socialDark,
       'programming' => programmingDark,
       'morality' => moralityDark,
-      _ => blueDark,
+      _ => AppColors.blueDark,
     };
   }
 }

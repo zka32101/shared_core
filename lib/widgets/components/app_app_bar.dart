@@ -47,12 +47,6 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       title: _buildTitle(),
-      subtitle: subtitle != null
-          ? Text(
-              subtitle!,
-              style: AppTypography.bodySmall(),
-            )
-          : null,
       centerTitle: centerTitle,
       backgroundColor: backgroundColor ?? _getBackgroundColor(context),
       foregroundColor: foregroundColor ?? _getForegroundColor(context),
@@ -66,10 +60,28 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget _buildTitle() {
-    return Text(
-      title,
-      style: AppTypography.headingSmall(),
-      overflow: TextOverflow.ellipsis,
+    if (subtitle == null) {
+      return Text(
+        title,
+        style: AppTypography.headingSmall(),
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: AppTypography.headingSmall(),
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text(
+          subtitle!,
+          style: AppTypography.bodySmall(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 
@@ -176,17 +188,28 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       child: AppBar(
-        title: Text(
-          title,
-          style: AppTypography.headingSmall(color: Colors.white),
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: subtitle != null
+        title: subtitle == null
             ? Text(
-                subtitle!,
-                style: AppTypography.bodySmall(color: Colors.white70),
+                title,
+                style: AppTypography.headingSmall(color: Colors.white),
+                overflow: TextOverflow.ellipsis,
               )
-            : null,
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTypography.headingSmall(color: Colors.white),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    subtitle!,
+                    style: AppTypography.bodySmall(color: Colors.white70),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
         centerTitle: centerTitle,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,

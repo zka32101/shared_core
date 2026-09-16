@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_core/models/push_notification_model.dart';
 
 class PushNotificationService {
@@ -258,7 +259,7 @@ class PushNotificationService {
         title.hashCode,
         title,
         body,
-        scheduledTime,
+        tz.TZDateTime.from(scheduledTime, tz.local),
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
