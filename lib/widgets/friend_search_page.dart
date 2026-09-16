@@ -186,11 +186,11 @@ class _SearchResultTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: Colors.blue.shade300,
           child: Text(
-            (friend.friendName.isNotEmpty ? friend.friendName[0] : '?').toUpperCase(),
+            (friend.displayName.isNotEmpty ? friend.displayName[0] : '?').toUpperCase(),
             style: const TextStyle(color: Colors.white),
           ),
         ),
-        title: Text(friend.friendName),
+        title: Text(friend.displayName),
         subtitle: Text('ID: ${friend.friendUserId}'),
         trailing: alreadyFriend
             ? Container(

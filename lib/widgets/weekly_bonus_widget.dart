@@ -31,7 +31,7 @@ class WeeklyBonusWidget extends ConsumerWidget {
     final bonus = weeklyBonusState.currentBonus!;
     final consecutive = bonus.consecutiveDays;
     final targetDays = WeeklyBonusNotifier.CONSECUTIVE_DAYS_TARGET;
-    final color = primaryColor ?? AppColors.primaryBlue;
+    final color = primaryColor ?? AppColors.primary;
 
     return Card(
       elevation: 2,
@@ -91,7 +91,7 @@ class WeeklyBonusWidget extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Text(
                       dayNames[index],
-                      style: Theme.of(context).textTheme.caption?.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontSize: 10,
                           ),
                     ),
@@ -221,7 +221,7 @@ class CompactWeeklyBonusWidget extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final color = primaryColor ?? AppColors.primaryBlue;
+    final color = primaryColor ?? AppColors.primary;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

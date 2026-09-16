@@ -28,7 +28,7 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
       await ref.read(friendProvider.notifier).addFriend(friend.friendUserId);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${friend.friendName}をフレンドに追加しました')),
+          SnackBar(content: Text('${friend.displayName}をフレンドに追加しました')),
         );
       }
     } catch (e) {
@@ -112,7 +112,7 @@ class _RequestTile extends StatelessWidget {
             CircleAvatar(
               backgroundColor: Colors.green.shade300,
               child: Text(
-                (friend.friendName.isNotEmpty ? friend.friendName[0] : '?').toUpperCase(),
+                (friend.displayName.isNotEmpty ? friend.displayName[0] : '?').toUpperCase(),
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -122,7 +122,7 @@ class _RequestTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    friend.friendName,
+                    friend.displayName,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   Text(

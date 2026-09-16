@@ -151,12 +151,12 @@ class ParentalDashboard extends ConsumerWidget {
                   const SizedBox(height: 12),
                   _StatRow(
                     label: '合計利用時間',
-                    value: '${weekData.fold<int>(0, (sum, d) => sum + d['minutes'])} 分',
+                    value: '${weekData.fold<int>(0, (sum, d) => sum + (d['minutes'] as int))} 分',
                   ),
                   _StatRow(
                     label: '1日あたりの平均',
                     value:
-                        '${(weekData.fold<int>(0, (sum, d) => sum + d['minutes']) / weekData.length).toStringAsFixed(1)} 分',
+                        '${(weekData.fold<int>(0, (sum, d) => sum + (d['minutes'] as int)) / weekData.length).toStringAsFixed(1)} 分',
                   ),
                   _StatRow(
                     label: '最高利用時間',
