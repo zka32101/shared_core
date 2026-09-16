@@ -6,21 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_core/models/push_notification_model.dart';
 import 'package:shared_core/providers/push_notification_provider.dart';
 
-class NotificationSettingsPage extends ConsumerStatefulWidget {
+class PushNotificationSettingsPage extends ConsumerStatefulWidget {
   final String userId;
 
-  const NotificationSettingsPage({
+  const PushNotificationSettingsPage({
     Key? key,
     required this.userId,
   }) : super(key: key);
 
   @override
-  ConsumerState<NotificationSettingsPage> createState() =>
-      _NotificationSettingsPageState();
+  ConsumerState<PushNotificationSettingsPage> createState() =>
+      _PushNotificationSettingsPageState();
 }
 
-class _NotificationSettingsPageState
-    extends ConsumerState<NotificationSettingsPage> {
+class _PushNotificationSettingsPageState
+    extends ConsumerState<PushNotificationSettingsPage> {
   @override
   void initState() {
     super.initState();

@@ -160,14 +160,20 @@ export 'services/cloud_functions_service.dart';             // CloudFunctionsSer
 export 'widgets/cloud_functions_dashboard.dart';            // CloudFunctionsDashboard（Cloud Functions 管理ダッシュボード Phase 4.17）
 
 // Push Notifications & Retention (Phase 4.18)
-export 'models/notification_model.dart';                    // PushNotificationConfig, UserNotificationPreference, PushNotificationEvent, NotificationCampaign, RetentionMetrics, CampaignPerformance, RetentionAction（Phase 4.18）
-export 'providers/notification_provider.dart';              // notificationConfigProvider, userNotificationPreferenceProvider, userRetentionMetricsProvider, activeCampaignsProvider, campaignPerformanceProvider, userRetentionActionsProvider, populationRetentionStatsProvider, recentNotificationEventsProvider（Phase 4.18）
-export 'providers/notification_notifier.dart';              // NotificationNotifier, notificationNotifierProvider（Phase 4.18）
+// 注: models/notification_model.dart・providers/notification_provider.dart は
+// Phase 4.23 で全面書き換えされ、下の Phase 4.23 ブロックで改めて export
+// されている（PushNotificationConfig 等の旧クラスは削除済み）。
+// Phase 4.18 当時これらのファイルが提供していた型
+// （RetentionMetrics, UserNotificationPreference, PushNotificationConfig 等）は
+// models/push_notification_model.dart・providers/push_notification_provider.dart
+// に存在するが、そちらは NotificationNotifier / unreadNotificationCountProvider
+// 等が Phase 4.23 版と名前衝突するためバレルからは export しない
+// （widgets/notification_settings_page.dart・widgets/retention_dashboard.dart は
+// package: 絶対importでこれらを直接参照しており、export 有無に関わらず動作する）。
 export 'providers/retention_provider.dart';                 // RetentionMetricsNotifier, retentionMetricsNotifierProvider（Phase 4.18. 旧 RetentionNotifier/retentionNotifierProvider は Phase 4.13 版と名前衝突していたためリネーム）
 export 'services/push_notification_service.dart';           // PushNotificationService（FCM 実行ロジック Phase 4.18）
-export 'widgets/notification_settings_page.dart';           // NotificationSettingsPage（通知設定ページ Phase 4.18）
+export 'widgets/notification_settings_page.dart';           // PushNotificationSettingsPage（通知設定ページ Phase 4.18. 旧 NotificationSettingsPage は Phase 4.23 版と名前衝突していたためリネーム）
 export 'widgets/retention_dashboard.dart';                  // RetentionDashboard（リテンションダッシュボード Phase 4.18）
-export 'widgets/notification_settings_widget.dart';         // NotificationSettingsScreen, RetentionAnalyticsDashboard（通知・リテンション設定ダッシュボード Phase 4.18）
 
 // Local Notifications & Reminders (Phase 4.23)
 export 'models/notification_model.dart';                    // AppNotification, ReminderConfig, TimeOfDay, NotificationStats（統一通知&リマインダーシステム Phase 4.23）
