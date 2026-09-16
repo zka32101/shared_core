@@ -85,6 +85,9 @@ class WeeklyBonus with _$WeeklyBonus {
     required List<int> completionDaysOfWeek, // [0=Mon, 1=Tue, ... 6=Sun]
     @Default(false) bool bonusClaimedThisWeek, // Whether 7-day bonus already claimed
     @Default(0) int totalWeeklyBonus, // Total bonus coins/rewards this week
+    DateTime? lastClaimedDate, // When the bonus was last claimed
+    DateTime? weeklyResetDate, // Weekly reset date (sync field)
+    @Default(0) int totalCoinsEarned, // Total coins earned from bonuses
   }) = _WeeklyBonus;
 
   factory WeeklyBonus.fromJson(Map<String, dynamic> json) =>

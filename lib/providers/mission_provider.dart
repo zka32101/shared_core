@@ -40,6 +40,16 @@ class MissionNotifier extends Notifier<MissionState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late SharedPreferences _prefs;
 
+  /// ハンドラーの型定義
+  typedef FetchMissionsHandler = Future<List<Mission>> Function(String userId, String subject);
+  typedef UpdateProgressHandler = Future<void> Function(String userId, String missionId, int increment);
+  typedef CompleteMissionHandler = Future<Map<String, int>> Function(String userId, String missionId);
+
+  /// 外部ハンドラー（必要に応じてオーバーライド可能）
+  FetchMissionsHandler? _fetchHandler;
+  UpdateProgressHandler? _progressHandler;
+  CompleteMissionHandler? _completeHandler;
+
   /// ローカルキャッシュキー
   String _getCacheKey(String userId) => 'missions_cache_$userId';
   String _getLastResetKey(String userId) => 'missions_last_reset_$userId';
@@ -47,7 +57,71 @@ class MissionNotifier extends Notifier<MissionState> {
   @override
   MissionState build() => MissionState.empty;
 
-  /// ミッションを初期化・読み込み
+  /// ハンドラー設定メソッド
+  void setFetchHandler(FetchMissionsHandler handler) {
+    _fetchHandler = handler;
+  }
+
+  void setProgressHandler(UpdateProgressHandler handler) {
+    _progressHandler = handler;
+  }
+
+  void setCompleteHandler(CompleteMissionHandler handler) {
+    _completeHandler = handler;
+  }
+
+  /// デイリーミッション初期化（教科指定版）
+  Future<void> initializeDailyMissions(String userId, String subject) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      _prefs = await SharedPreferences.getInstance();
+
+      // ローカルキャッシュから取得
+      await _loadFromCache(userId);
+
+      // ハンドラーがあれば使用、なければ Firestore から直接読み込み
+      if (_fetchHandler != null) {
+        final missions = await _fetchHandler!(userId, subject);
+        final missionItems = <MissionListItem>[];
+        for (final mission in missions) {
+          final progress = await _getProgress(userId, mission.missionId);
+          final isLocked = _isLocked(mission);
+          final progressPercentage = progress != null
+              ? (progress.currentValue / mission.targetValue * 100).clamp(0, 100)
+              : 0.0;
+
+          missionItems.add(
+            MissionListItem(
+              mission: mission,
+              progress: progress,
+              isLocked: isLocked,
+              progressPercentage: progressPercentage,
+            ),
+          );
+        }
+
+        int totalCoins = 0;
+        for (final item in missionItems) {
+          if (!item.isLocked && !item.mission.enabled) continue;
+          for (final reward in item.mission.rewards) {
+            if (reward.type == RewardType.coins) {
+              totalCoins += reward.amount;
+            }
+          }
+        }
+
+        state = state.copyWith(missions: missionItems, totalCoinsToday: totalCoins, isLoading: false);
+      } else {
+        // Firestore から同期
+        await _loadFromFirestore(userId);
+        state = state.copyWith(isLoading: false);
+      }
+    } catch (e) {
+      state = state.copyWith(error: e.toString(), isLoading: false);
+    }
+  }
+
+  /// ミッションを初期化・読み込み（互換性のために維持）
   Future<void> initializeMissions(String userId) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -274,6 +348,11 @@ class MissionNotifier extends Notifier<MissionState> {
     required String missionId,
   }) async {
     try {
+      // ハンドラーがあれば使用
+      if (_completeHandler != null) {
+        return await _completeHandler!(userId, missionId);
+      }
+
       final mission = ALL_MISSIONS.firstWhere(
         (m) => m.missionId == missionId,
         orElse: () => throw Exception('Mission not found'),

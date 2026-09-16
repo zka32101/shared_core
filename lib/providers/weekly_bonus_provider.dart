@@ -134,9 +134,12 @@ class WeeklyBonusNotifier extends StateNotifier<WeeklyBonusState> {
         return 0; // Already claimed
       }
 
+      final now = DateTime.now();
       final updated = current.copyWith(
         bonusClaimedThisWeek: true,
         totalWeeklyBonus: WEEKLY_BONUS_COINS,
+        lastClaimedDate: now,
+        totalCoinsEarned: (current.totalCoinsEarned ?? 0) + WEEKLY_BONUS_COINS,
       );
 
       state = state.copyWith(currentBonus: updated);
@@ -219,6 +222,9 @@ class WeeklyBonusNotifier extends StateNotifier<WeeklyBonusState> {
       completionDaysOfWeek: List.filled(7, 0),
       bonusClaimedThisWeek: false,
       totalWeeklyBonus: 0,
+      lastClaimedDate: null,
+      weeklyResetDate: _getNextSunday(now),
+      totalCoinsEarned: 0,
     );
   }
 
@@ -235,6 +241,7 @@ class WeeklyBonusNotifier extends StateNotifier<WeeklyBonusState> {
       bonusClaimedThisWeek: false,
       totalWeeklyBonus: 0,
       lastCompletionDate: DateTime(1970),
+      weeklyResetDate: _getNextSunday(now),
     );
   }
 
