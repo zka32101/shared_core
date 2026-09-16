@@ -1202,7 +1202,10 @@ mixin _$WeeklyBonus {
  DateTime get lastCompletionDate; DateTime get resetDate;// Reset every Sunday
  List<int> get completionDaysOfWeek;// [0=Mon, 1=Tue, ... 6=Sun]
  bool get bonusClaimedThisWeek;// Whether 7-day bonus already claimed
- int get totalWeeklyBonus;
+ int get totalWeeklyBonus;// Total bonus coins/rewards this week
+ DateTime? get lastClaimedDate;// When the bonus was last claimed
+ DateTime? get weeklyResetDate;// Weekly reset date (sync field)
+ int get totalCoinsEarned;
 /// Create a copy of WeeklyBonus
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1215,16 +1218,16 @@ $WeeklyBonusCopyWith<WeeklyBonus> get copyWith => _$WeeklyBonusCopyWithImpl<Week
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeeklyBonus&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.consecutiveDays, consecutiveDays) || other.consecutiveDays == consecutiveDays)&&(identical(other.lastCompletionDate, lastCompletionDate) || other.lastCompletionDate == lastCompletionDate)&&(identical(other.resetDate, resetDate) || other.resetDate == resetDate)&&const DeepCollectionEquality().equals(other.completionDaysOfWeek, completionDaysOfWeek)&&(identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) || other.bonusClaimedThisWeek == bonusClaimedThisWeek)&&(identical(other.totalWeeklyBonus, totalWeeklyBonus) || other.totalWeeklyBonus == totalWeeklyBonus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeeklyBonus&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.consecutiveDays, consecutiveDays) || other.consecutiveDays == consecutiveDays)&&(identical(other.lastCompletionDate, lastCompletionDate) || other.lastCompletionDate == lastCompletionDate)&&(identical(other.resetDate, resetDate) || other.resetDate == resetDate)&&const DeepCollectionEquality().equals(other.completionDaysOfWeek, completionDaysOfWeek)&&(identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) || other.bonusClaimedThisWeek == bonusClaimedThisWeek)&&(identical(other.totalWeeklyBonus, totalWeeklyBonus) || other.totalWeeklyBonus == totalWeeklyBonus)&&(identical(other.lastClaimedDate, lastClaimedDate) || other.lastClaimedDate == lastClaimedDate)&&(identical(other.weeklyResetDate, weeklyResetDate) || other.weeklyResetDate == weeklyResetDate)&&(identical(other.totalCoinsEarned, totalCoinsEarned) || other.totalCoinsEarned == totalCoinsEarned));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,consecutiveDays,lastCompletionDate,resetDate,const DeepCollectionEquality().hash(completionDaysOfWeek),bonusClaimedThisWeek,totalWeeklyBonus);
+int get hashCode => Object.hash(runtimeType,userId,consecutiveDays,lastCompletionDate,resetDate,const DeepCollectionEquality().hash(completionDaysOfWeek),bonusClaimedThisWeek,totalWeeklyBonus,lastClaimedDate,weeklyResetDate,totalCoinsEarned);
 
 @override
 String toString() {
-  return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus)';
+  return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus, lastClaimedDate: $lastClaimedDate, weeklyResetDate: $weeklyResetDate, totalCoinsEarned: $totalCoinsEarned)';
 }
 
 
@@ -1235,7 +1238,7 @@ abstract mixin class $WeeklyBonusCopyWith<$Res>  {
   factory $WeeklyBonusCopyWith(WeeklyBonus value, $Res Function(WeeklyBonus) _then) = _$WeeklyBonusCopyWithImpl;
 @useResult
 $Res call({
- String userId, int consecutiveDays, DateTime lastCompletionDate, DateTime resetDate, List<int> completionDaysOfWeek, bool bonusClaimedThisWeek, int totalWeeklyBonus
+ String userId, int consecutiveDays, DateTime lastCompletionDate, DateTime resetDate, List<int> completionDaysOfWeek, bool bonusClaimedThisWeek, int totalWeeklyBonus, DateTime? lastClaimedDate, DateTime? weeklyResetDate, int totalCoinsEarned
 });
 
 
@@ -1252,7 +1255,7 @@ class _$WeeklyBonusCopyWithImpl<$Res>
 
 /// Create a copy of WeeklyBonus
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? consecutiveDays = null,Object? lastCompletionDate = null,Object? resetDate = null,Object? completionDaysOfWeek = null,Object? bonusClaimedThisWeek = null,Object? totalWeeklyBonus = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? consecutiveDays = null,Object? lastCompletionDate = null,Object? resetDate = null,Object? completionDaysOfWeek = null,Object? bonusClaimedThisWeek = null,Object? totalWeeklyBonus = null,Object? lastClaimedDate = freezed,Object? weeklyResetDate = freezed,Object? totalCoinsEarned = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,consecutiveDays: null == consecutiveDays ? _self.consecutiveDays : consecutiveDays // ignore: cast_nullable_to_non_nullable
@@ -1261,6 +1264,9 @@ as DateTime,resetDate: null == resetDate ? _self.resetDate : resetDate // ignore
 as DateTime,completionDaysOfWeek: null == completionDaysOfWeek ? _self.completionDaysOfWeek : completionDaysOfWeek // ignore: cast_nullable_to_non_nullable
 as List<int>,bonusClaimedThisWeek: null == bonusClaimedThisWeek ? _self.bonusClaimedThisWeek : bonusClaimedThisWeek // ignore: cast_nullable_to_non_nullable
 as bool,totalWeeklyBonus: null == totalWeeklyBonus ? _self.totalWeeklyBonus : totalWeeklyBonus // ignore: cast_nullable_to_non_nullable
+as int,lastClaimedDate: freezed == lastClaimedDate ? _self.lastClaimedDate : lastClaimedDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,weeklyResetDate: freezed == weeklyResetDate ? _self.weeklyResetDate : weeklyResetDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,totalCoinsEarned: null == totalCoinsEarned ? _self.totalCoinsEarned : totalCoinsEarned // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -1346,10 +1352,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus,  DateTime? lastClaimedDate,  DateTime? weeklyResetDate,  int totalCoinsEarned)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WeeklyBonus() when $default != null:
-return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus);case _:
+return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus,_that.lastClaimedDate,_that.weeklyResetDate,_that.totalCoinsEarned);case _:
   return orElse();
 
 }
@@ -1367,10 +1373,10 @@ return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus,  DateTime? lastClaimedDate,  DateTime? weeklyResetDate,  int totalCoinsEarned)  $default,) {final _that = this;
 switch (_that) {
 case _WeeklyBonus():
-return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus);case _:
+return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus,_that.lastClaimedDate,_that.weeklyResetDate,_that.totalCoinsEarned);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1387,10 +1393,10 @@ return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  int consecutiveDays,  DateTime lastCompletionDate,  DateTime resetDate,  List<int> completionDaysOfWeek,  bool bonusClaimedThisWeek,  int totalWeeklyBonus,  DateTime? lastClaimedDate,  DateTime? weeklyResetDate,  int totalCoinsEarned)?  $default,) {final _that = this;
 switch (_that) {
 case _WeeklyBonus() when $default != null:
-return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus);case _:
+return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_that.resetDate,_that.completionDaysOfWeek,_that.bonusClaimedThisWeek,_that.totalWeeklyBonus,_that.lastClaimedDate,_that.weeklyResetDate,_that.totalCoinsEarned);case _:
   return null;
 
 }
@@ -1402,7 +1408,7 @@ return $default(_that.userId,_that.consecutiveDays,_that.lastCompletionDate,_tha
 @JsonSerializable()
 
 class _WeeklyBonus implements WeeklyBonus {
-  const _WeeklyBonus({required this.userId, required this.consecutiveDays, required this.lastCompletionDate, required this.resetDate, required final  List<int> completionDaysOfWeek, this.bonusClaimedThisWeek = false, this.totalWeeklyBonus = 0}): _completionDaysOfWeek = completionDaysOfWeek;
+  const _WeeklyBonus({required this.userId, required this.consecutiveDays, required this.lastCompletionDate, required this.resetDate, required final  List<int> completionDaysOfWeek, this.bonusClaimedThisWeek = false, this.totalWeeklyBonus = 0, this.lastClaimedDate, this.weeklyResetDate, this.totalCoinsEarned = 0}): _completionDaysOfWeek = completionDaysOfWeek;
   factory _WeeklyBonus.fromJson(Map<String, dynamic> json) => _$WeeklyBonusFromJson(json);
 
 @override final  String userId;
@@ -1423,6 +1429,12 @@ class _WeeklyBonus implements WeeklyBonus {
 @override@JsonKey() final  bool bonusClaimedThisWeek;
 // Whether 7-day bonus already claimed
 @override@JsonKey() final  int totalWeeklyBonus;
+// Total bonus coins/rewards this week
+@override final  DateTime? lastClaimedDate;
+// When the bonus was last claimed
+@override final  DateTime? weeklyResetDate;
+// Weekly reset date (sync field)
+@override@JsonKey() final  int totalCoinsEarned;
 
 /// Create a copy of WeeklyBonus
 /// with the given fields replaced by the non-null parameter values.
@@ -1437,16 +1449,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeeklyBonus&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.consecutiveDays, consecutiveDays) || other.consecutiveDays == consecutiveDays)&&(identical(other.lastCompletionDate, lastCompletionDate) || other.lastCompletionDate == lastCompletionDate)&&(identical(other.resetDate, resetDate) || other.resetDate == resetDate)&&const DeepCollectionEquality().equals(other._completionDaysOfWeek, _completionDaysOfWeek)&&(identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) || other.bonusClaimedThisWeek == bonusClaimedThisWeek)&&(identical(other.totalWeeklyBonus, totalWeeklyBonus) || other.totalWeeklyBonus == totalWeeklyBonus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeeklyBonus&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.consecutiveDays, consecutiveDays) || other.consecutiveDays == consecutiveDays)&&(identical(other.lastCompletionDate, lastCompletionDate) || other.lastCompletionDate == lastCompletionDate)&&(identical(other.resetDate, resetDate) || other.resetDate == resetDate)&&const DeepCollectionEquality().equals(other._completionDaysOfWeek, _completionDaysOfWeek)&&(identical(other.bonusClaimedThisWeek, bonusClaimedThisWeek) || other.bonusClaimedThisWeek == bonusClaimedThisWeek)&&(identical(other.totalWeeklyBonus, totalWeeklyBonus) || other.totalWeeklyBonus == totalWeeklyBonus)&&(identical(other.lastClaimedDate, lastClaimedDate) || other.lastClaimedDate == lastClaimedDate)&&(identical(other.weeklyResetDate, weeklyResetDate) || other.weeklyResetDate == weeklyResetDate)&&(identical(other.totalCoinsEarned, totalCoinsEarned) || other.totalCoinsEarned == totalCoinsEarned));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,consecutiveDays,lastCompletionDate,resetDate,const DeepCollectionEquality().hash(_completionDaysOfWeek),bonusClaimedThisWeek,totalWeeklyBonus);
+int get hashCode => Object.hash(runtimeType,userId,consecutiveDays,lastCompletionDate,resetDate,const DeepCollectionEquality().hash(_completionDaysOfWeek),bonusClaimedThisWeek,totalWeeklyBonus,lastClaimedDate,weeklyResetDate,totalCoinsEarned);
 
 @override
 String toString() {
-  return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus)';
+  return 'WeeklyBonus(userId: $userId, consecutiveDays: $consecutiveDays, lastCompletionDate: $lastCompletionDate, resetDate: $resetDate, completionDaysOfWeek: $completionDaysOfWeek, bonusClaimedThisWeek: $bonusClaimedThisWeek, totalWeeklyBonus: $totalWeeklyBonus, lastClaimedDate: $lastClaimedDate, weeklyResetDate: $weeklyResetDate, totalCoinsEarned: $totalCoinsEarned)';
 }
 
 
@@ -1457,7 +1469,7 @@ abstract mixin class _$WeeklyBonusCopyWith<$Res> implements $WeeklyBonusCopyWith
   factory _$WeeklyBonusCopyWith(_WeeklyBonus value, $Res Function(_WeeklyBonus) _then) = __$WeeklyBonusCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, int consecutiveDays, DateTime lastCompletionDate, DateTime resetDate, List<int> completionDaysOfWeek, bool bonusClaimedThisWeek, int totalWeeklyBonus
+ String userId, int consecutiveDays, DateTime lastCompletionDate, DateTime resetDate, List<int> completionDaysOfWeek, bool bonusClaimedThisWeek, int totalWeeklyBonus, DateTime? lastClaimedDate, DateTime? weeklyResetDate, int totalCoinsEarned
 });
 
 
@@ -1474,7 +1486,7 @@ class __$WeeklyBonusCopyWithImpl<$Res>
 
 /// Create a copy of WeeklyBonus
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? consecutiveDays = null,Object? lastCompletionDate = null,Object? resetDate = null,Object? completionDaysOfWeek = null,Object? bonusClaimedThisWeek = null,Object? totalWeeklyBonus = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? consecutiveDays = null,Object? lastCompletionDate = null,Object? resetDate = null,Object? completionDaysOfWeek = null,Object? bonusClaimedThisWeek = null,Object? totalWeeklyBonus = null,Object? lastClaimedDate = freezed,Object? weeklyResetDate = freezed,Object? totalCoinsEarned = null,}) {
   return _then(_WeeklyBonus(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,consecutiveDays: null == consecutiveDays ? _self.consecutiveDays : consecutiveDays // ignore: cast_nullable_to_non_nullable
@@ -1483,6 +1495,9 @@ as DateTime,resetDate: null == resetDate ? _self.resetDate : resetDate // ignore
 as DateTime,completionDaysOfWeek: null == completionDaysOfWeek ? _self._completionDaysOfWeek : completionDaysOfWeek // ignore: cast_nullable_to_non_nullable
 as List<int>,bonusClaimedThisWeek: null == bonusClaimedThisWeek ? _self.bonusClaimedThisWeek : bonusClaimedThisWeek // ignore: cast_nullable_to_non_nullable
 as bool,totalWeeklyBonus: null == totalWeeklyBonus ? _self.totalWeeklyBonus : totalWeeklyBonus // ignore: cast_nullable_to_non_nullable
+as int,lastClaimedDate: freezed == lastClaimedDate ? _self.lastClaimedDate : lastClaimedDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,weeklyResetDate: freezed == weeklyResetDate ? _self.weeklyResetDate : weeklyResetDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,totalCoinsEarned: null == totalCoinsEarned ? _self.totalCoinsEarned : totalCoinsEarned // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

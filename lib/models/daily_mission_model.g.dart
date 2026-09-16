@@ -117,6 +117,13 @@ _WeeklyBonus _$WeeklyBonusFromJson(Map<String, dynamic> json) => _WeeklyBonus(
       .toList(),
   bonusClaimedThisWeek: json['bonusClaimedThisWeek'] as bool? ?? false,
   totalWeeklyBonus: (json['totalWeeklyBonus'] as num?)?.toInt() ?? 0,
+  lastClaimedDate: json['lastClaimedDate'] == null
+      ? null
+      : DateTime.parse(json['lastClaimedDate'] as String),
+  weeklyResetDate: json['weeklyResetDate'] == null
+      ? null
+      : DateTime.parse(json['weeklyResetDate'] as String),
+  totalCoinsEarned: (json['totalCoinsEarned'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$WeeklyBonusToJson(_WeeklyBonus instance) =>
@@ -128,4 +135,7 @@ Map<String, dynamic> _$WeeklyBonusToJson(_WeeklyBonus instance) =>
       'completionDaysOfWeek': instance.completionDaysOfWeek,
       'bonusClaimedThisWeek': instance.bonusClaimedThisWeek,
       'totalWeeklyBonus': instance.totalWeeklyBonus,
+      'lastClaimedDate': instance.lastClaimedDate?.toIso8601String(),
+      'weeklyResetDate': instance.weeklyResetDate?.toIso8601String(),
+      'totalCoinsEarned': instance.totalCoinsEarned,
     };

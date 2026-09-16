@@ -4,6 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/mission_model.dart';
 
+/// ハンドラーの型定義
+typedef FetchMissionsHandler = Future<List<Mission>> Function(String userId, String subject);
+typedef UpdateProgressHandler = Future<void> Function(String userId, String missionId, int increment);
+typedef CompleteMissionHandler = Future<Map<String, int>> Function(String userId, String missionId);
+
 /// ミッション進捗状態
 class MissionState {
   final List<MissionListItem> missions;
@@ -39,11 +44,6 @@ class MissionState {
 class MissionNotifier extends Notifier<MissionState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late SharedPreferences _prefs;
-
-  /// ハンドラーの型定義
-  typedef FetchMissionsHandler = Future<List<Mission>> Function(String userId, String subject);
-  typedef UpdateProgressHandler = Future<void> Function(String userId, String missionId, int increment);
-  typedef CompleteMissionHandler = Future<Map<String, int>> Function(String userId, String missionId);
 
   /// 外部ハンドラー（必要に応じてオーバーライド可能）
   FetchMissionsHandler? _fetchHandler;
@@ -87,7 +87,7 @@ class MissionNotifier extends Notifier<MissionState> {
           final progress = await _getProgress(userId, mission.missionId);
           final isLocked = _isLocked(mission);
           final progressPercentage = progress != null
-              ? (progress.currentValue / mission.targetValue * 100).clamp(0, 100)
+              ? (progress.currentValue / mission.targetValue * 100).clamp(0.0, 100.0)
               : 0.0;
 
           missionItems.add(
