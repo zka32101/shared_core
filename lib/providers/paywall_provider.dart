@@ -56,7 +56,7 @@ final userPaywallVariantProvider = FutureProvider.autoDispose
 
     if (doc.exists) {
       final config = PaywallABConfig.fromJson(doc.data() ?? {});
-      final variants = await ref.watch(paywallConfigProvider.future);
+      final variants = await ref.watch(paywallConfigProvider(null).future);
 
       final assigned = variants.firstWhere(
         (v) => v.variantId == config.assignedVariant,
@@ -66,7 +66,7 @@ final userPaywallVariantProvider = FutureProvider.autoDispose
       return assigned;
     } else {
       // 新規ユーザー: ランダムに A, B, C を割り当て
-      final variants = await ref.watch(paywallConfigProvider.future);
+      final variants = await ref.watch(paywallConfigProvider(null).future);
       final assigned = variants[Random().nextInt(variants.length)];
 
       // Firestore に保存
@@ -233,9 +233,9 @@ final paywallAnalyticsProvider = FutureProvider.autoDispose
 
     return PaywallAnalyticsSummary(
       variantId: variantId,
-      totalImpressions: impressions.count,
-      totalInteractions: interactions.count,
-      totalConversions: conversions.count,
+      totalImpressions: impressions.count ?? 0,
+      totalInteractions: interactions.count ?? 0,
+      totalConversions: conversions.count ?? 0,
     );
   } catch (e) {
     return PaywallAnalyticsSummary(

@@ -131,8 +131,8 @@ final pricingConversionRateProvider = FutureProvider.autoDispose
         .count()
         .get();
 
-    final impressions = impressionSnapshot.count;
-    final conversions = conversionSnapshot.count;
+    final impressions = impressionSnapshot.count ?? 0;
+    final conversions = conversionSnapshot.count ?? 0;
 
     if (impressions == 0) {
       return 0.0;
