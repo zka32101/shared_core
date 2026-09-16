@@ -113,7 +113,7 @@ class MissionNotifier extends Notifier<MissionState> {
         final progress = await _getProgress(userId, mission.missionId);
         final isLocked = _isLocked(mission);
         final progressPercentage = progress != null
-            ? (progress.currentValue / mission.targetValue * 100).clamp(0, 100)
+            ? (progress.currentValue / mission.targetValue * 100).clamp(0.0, 100.0)
             : 0.0;
 
         missions.add(

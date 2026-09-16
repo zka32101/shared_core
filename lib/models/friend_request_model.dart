@@ -48,7 +48,7 @@ class FriendRequest with _$FriendRequest {
       recipientId: data['recipientId'] as String,
       sentAt: (data['sentAt'] as Timestamp).toDate(),
       status: FriendRequestStatus.values.firstWhere(
-        (e) => e.name == data['status'] as String? ?? 'pending',
+        (e) => e.name == (data['status'] as String? ?? 'pending'),
         orElse: () => FriendRequestStatus.pending,
       ),
       respondedAt: data['respondedAt'] != null
@@ -99,7 +99,7 @@ class UserProfile with _$UserProfile {
           ? (data['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
       friendshipStatus: FriendshipStatus.values.firstWhere(
-        (e) => e.name == data['friendshipStatus'] as String? ?? 'none',
+        (e) => e.name == (data['friendshipStatus'] as String? ?? 'none'),
         orElse: () => FriendshipStatus.none,
       ),
     );

@@ -404,7 +404,7 @@ class _GoalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress = (goal.currentProgress / goal.targetValue * 100).clamp(0, 100);
+    final progress = (goal.currentProgress / goal.targetValue * 100).clamp(0.0, 100.0);
     final color = primaryColor ?? Theme.of(context).primaryColor;
 
     return Padding(

@@ -71,7 +71,7 @@ class MissionCardWidget extends ConsumerWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
-                        value: (progressPercentage / 100).clamp(0, 1),
+                        value: (progressPercentage / 100).clamp(0.0, 1.0),
                         minHeight: 8,
                         backgroundColor: Colors.grey[200],
                         valueColor: AlwaysStoppedAnimation<Color>(
