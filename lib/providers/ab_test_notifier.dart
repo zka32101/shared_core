@@ -148,7 +148,9 @@ class ABTestNotifier extends StateNotifier<ABTestState> {
           .count()
           .get();
 
-      final churned = allUsers.count - activeUsers.count;
+      final allUsersCount = allUsers.count ?? 0;
+      final activeUsersCount = activeUsers.count ?? 0;
+      final churned = allUsersCount - activeUsersCount;
 
       // セグメント分布計算
       final segments = {
@@ -160,10 +162,10 @@ class ABTestNotifier extends StateNotifier<ABTestState> {
       };
 
       final stats = PopulationStats(
-        totalUsers: allUsers.count,
-        activeUsers: activeUsers.count,
+        totalUsers: allUsersCount,
+        activeUsers: activeUsersCount,
         churned: churned,
-        churnRate: allUsers.count > 0 ? churned / allUsers.count : 0.0,
+        churnRate: allUsersCount > 0 ? churned / allUsersCount : 0.0,
         segmentDistribution: segments,
         sampledAt: DateTime.now(),
       );
@@ -186,7 +188,7 @@ class ABTestNotifier extends StateNotifier<ABTestState> {
       // 本来は shared_core の UserSegmentNotifier と統合
       final query = _firestore.collection('users').where('segment', isEqualTo: segment);
       final result = await query.count().get();
-      return result.count;
+      return result.count ?? 0;
     } catch (e) {
       debugPrint('Error counting segment users: $e');
       return 0;

@@ -260,7 +260,9 @@ class PushNotificationService {
         body,
         scheduledTime,
         notificationDetails,
-        androidScheduleMode: AndroidScheduleMode.exactAndAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
         payload: customData != null ? customData.toString() : null,
       );
 

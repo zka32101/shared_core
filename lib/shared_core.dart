@@ -170,7 +170,11 @@ export 'widgets/cloud_functions_dashboard.dart';            // CloudFunctionsDas
 // 等が Phase 4.23 版と名前衝突するためバレルからは export しない
 // （widgets/notification_settings_page.dart・widgets/retention_dashboard.dart は
 // package: 絶対importでこれらを直接参照しており、export 有無に関わらず動作する）。
-export 'providers/retention_provider.dart';                 // RetentionMetricsNotifier, retentionMetricsNotifierProvider（Phase 4.18. 旧 RetentionNotifier/retentionNotifierProvider は Phase 4.13 版と名前衝突していたためリネーム）
+// 注: providers/retention_provider.dart は RetentionAction（未定義）や
+// push_notification_model.dart と形の異なる RetentionMetrics を参照しており
+// コンパイル不能だったため削除。同等機能は widgets/retention_dashboard.dart と
+// providers/push_notification_provider.dart（RetentionMetricsNotifier,
+// userRetentionMetricsProvider）が提供する。
 export 'services/push_notification_service.dart';           // PushNotificationService（FCM 実行ロジック Phase 4.18）
 export 'widgets/notification_settings_page.dart';           // PushNotificationSettingsPage（通知設定ページ Phase 4.18. 旧 NotificationSettingsPage は Phase 4.23 版と名前衝突していたためリネーム）
 export 'widgets/retention_dashboard.dart';                  // RetentionDashboard（リテンションダッシュボード Phase 4.18）

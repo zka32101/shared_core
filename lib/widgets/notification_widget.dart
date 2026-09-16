@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/notification_model.dart';
+// TimeOfDay は flutter/material.dart（showTimePicker用）と両方に存在するため、
+// このファイル内のモデル側 TimeOfDay は隠して個別に prefix import する。
+import '../models/notification_model.dart' hide TimeOfDay;
+import '../models/notification_model.dart' as notification_model show TimeOfDay;
 import '../providers/notification_provider.dart';
 
 /// 通知バッジ（未読数表示）
@@ -319,7 +322,10 @@ class NotificationSettingsPage extends ConsumerWidget {
                       if (time != null) {
                         ref.read(reminderConfigProvider.notifier)
                             .setDailyReminderTime(
-                          TimeOfDay(hour: time.hour, minute: time.minute),
+                          notification_model.TimeOfDay(
+                            hour: time.hour,
+                            minute: time.minute,
+                          ),
                         );
                       }
                     },
