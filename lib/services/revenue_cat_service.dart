@@ -76,7 +76,8 @@ abstract class RevenueCatService {
     try {
       final info = await getCustomerInfo();
       final entitlement = info.entitlements.active[premiumEntitlementId];
-      return entitlement?.expirationDate;
+      final expirationDate = entitlement?.expirationDate;
+      return expirationDate != null ? DateTime.tryParse(expirationDate) : null;
     } catch (e) {
       return null;
     }
@@ -95,7 +96,7 @@ abstract class RevenueCatService {
   Future<CustomerInfo?> purchase(Package package) async {
     try {
       final result = await Purchases.purchasePackage(package);
-      return result;
+      return result.customerInfo;
     } on PurchasesErrorCode catch (e) {
       if (e == PurchasesErrorCode.purchaseCancelledError) return null;
       rethrow;

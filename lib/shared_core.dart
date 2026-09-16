@@ -184,3 +184,4 @@ export 'models/notification_model.dart';                    // AppNotification, 
 export 'providers/notification_provider.dart';              // NotificationNotifier, ReminderConfigNotifier, notificationProvider, reminderConfigProvider, unreadNotificationCountProvider, notificationStatsProvider, notificationsByTypeProvider, recentNotificationsProvider（Phase 4.23）
 export 'services/reminder_service.dart';                    // ReminderService（スケジュール通知・リマインダー配信 Phase 4.23）
 export 'widgets/notification_widget.dart';                  // NotificationBadge, NotificationListPage, NotificationSettingsPage（通知管理UI Phase 4.23）
+export 'widgets/weekly_bonus_widget.dart';                  // WeeklyBonusWidget（週次ボーナス表示ウィジェット）

@@ -112,7 +112,7 @@ class LearningDashboardWidget extends ConsumerWidget {
                     context: context,
                     label: '連続学習',
                     value: '${metrics.streakDays}日',
-                    icon: Icons.flame,
+                    icon: Icons.local_fire_department,
                     progress: (metrics.streakDays / 30).clamp(0.0, 1.0),
                   ),
                 ],

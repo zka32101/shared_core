@@ -368,7 +368,7 @@ class _MissionTile extends StatelessWidget {
     }
 
     final percentage =
-        (progress.currentValue / mission.targetValue).clamp(0, 1);
+        (progress.currentValue / mission.targetValue).clamp(0.0, 1.0);
 
     return Row(
       children: [

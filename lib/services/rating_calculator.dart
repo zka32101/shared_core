@@ -64,7 +64,7 @@ class RatingCalculator {
       );
     }
 
-    final newRating = (player.rating + totalChange).clamp(1400, 2800);
+    final newRating = (player.rating + totalChange).clamp(1400.0, 2800.0);
     return player.copyWith(
       rating: newRating,
       winCount: player.winCount + results.where((r) => r.playerWon).length,
@@ -116,7 +116,7 @@ class RatingCalculator {
         k * gValue * (actualScore - expectedScore);
 
     return player.copyWith(
-      rating: newRating.clamp(1400, 2800),
+      rating: newRating.clamp(1400.0, 2800.0),
       ratingDeviation: newRD,
       volatility: newVolatility,
       winCount: player.winCount + (playerWon ? 1 : 0),
@@ -171,7 +171,7 @@ class RatingCalculator {
     final newRating = player.rating + k * sumGValueDiff;
 
     return player.copyWith(
-      rating: newRating.clamp(1400, 2800),
+      rating: newRating.clamp(1400.0, 2800.0),
       ratingDeviation: newRD,
       volatility: newVolatility,
       winCount: player.winCount + winCount,
@@ -185,7 +185,7 @@ class RatingCalculator {
     if (daysSince == 0) return currentRD;
     final c = 50.0; // 減衰速度の定数
     final decayed = sqrt(currentRD * currentRD + c * c * daysSince);
-    return decayed.clamp(30, 350); // 最小値30、最大値350
+    return decayed.clamp(30.0, 350.0); // 最小値30、最大値350
   }
 
   /// Glicko-2の g(RD') 関数。
