@@ -44,7 +44,7 @@ final outgoingFriendRequestsProvider = StreamProvider.autoDispose<List<FriendReq
           snapshot.docs.map((doc) => FriendRequest.fromFirestore(doc)).toList());
 });
 
-final userSearchResultsProvider = StateProvider<List<UserProfile>>((ref) => []);
+final userSearchResultsProvider = StateProvider<List<FriendSearchProfile>>((ref) => []);
 
 class FriendRequestNotifier extends StateNotifier<FriendRequestState> {
   FriendRequestNotifier(this.ref) : super(const FriendRequestState());
@@ -54,7 +54,7 @@ class FriendRequestNotifier extends StateNotifier<FriendRequestState> {
   final _auth = FirebaseAuth.instance;
 
   /// ユーザーを検索（名前またはID）
-  Future<List<UserProfile>> searchUsers(String query) async {
+  Future<List<FriendSearchProfile>> searchUsers(String query) async {
     try {
       if (query.isEmpty) return [];
 
@@ -69,11 +69,11 @@ class FriendRequestNotifier extends StateNotifier<FriendRequestState> {
           .limit(10)
           .get();
 
-      final results = <UserProfile>[];
+      final results = <FriendSearchProfile>[];
       for (var doc in snapshot.docs) {
         if (doc.id == currentUserId) continue; // 自分を除外
 
-        final profile = UserProfile.fromFirestore(doc);
+        final profile = FriendSearchProfile.fromFirestore(doc);
         // フレンド状態を確認
         final status = await _getFriendshipStatus(currentUserId, doc.id);
         results.add(profile.copyWith(friendshipStatus: status));

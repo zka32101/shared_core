@@ -10,13 +10,13 @@ export 'models/lesson_content_model.dart'; // LessonContent, LessonSection（解
 export 'models/feedback_model.dart'; // FeedbackType, FeedbackReport（バグ報告・改善要望）
 export 'models/ranking_model.dart'; // RankingEntry, RankingGroupBy, RankingFilter（ランキング）
 export 'models/friend_model.dart'; // Friend（友達機能の共通基盤）
-export 'models/friend_request_model.dart'; // FriendRequest, UserProfile, FriendRequestStatus, FriendshipStatus（Phase 4.19）
+export 'models/friend_request_model.dart'; // FriendRequest, FriendSearchProfile, FriendRequestStatus, FriendshipStatus（Phase 4.19）
 export 'models/multiplayer_model.dart'; // MatchmakingQueueEntry, MatchState, PlayerRating（マルチプレイ対戦の共通基盤）
 export 'models/screen_time_model.dart'; // ScreenTimeSettings, ScreenTimeUsage（利用時間制限）
 export 'models/global_ranking_model.dart'; // GlobalRankingEntry, SubjectRankingEntry, UserRankingStats（Phase 4.3）
-export 'models/mission_model.dart' hide MissionReward; // Mission, UserMissionProgress, MissionListItem（Phase 4.5）— MissionReward は daily_mission_model.dart 側を優先
-export 'models/daily_mission_model.dart'; // DailyMission, MissionReward, DailyMissionProgress, DailyMissionListItem（Phase 4.20）
-export 'models/retention_model.dart' hide DailyMission, WeeklyBonus; // StreakData, RetentionConfig（Phase 4.13）— DailyMission/WeeklyBonus は daily_mission_model.dart 側を優先
+export 'models/mission_model.dart' hide MissionReward, RewardType, MissionDifficulty, $MissionRewardCopyWith; // Mission, UserMissionProgress, MissionListItem（Phase 4.5）— 重複シンボルは daily_mission_model.dart 側を優先
+export 'models/daily_mission_model.dart'; // DailyMission, MissionReward, RewardType, DailyMissionProgress, DailyMissionListItem（Phase 4.20）
+export 'models/retention_model.dart' hide DailyMission, WeeklyBonus, $DailyMissionCopyWith, $WeeklyBonusCopyWith; // StreakData, RetentionConfig（Phase 4.13）— DailyMission/WeeklyBonus は daily_mission_model.dart 側を優先
 export 'models/learning_metrics.dart'; // LearningMetrics, WeeklyMetrics, MonthlyMetrics（Phase 4.10）
 export 'models/adaptive_difficulty_model.dart'; // DifficultyLevel, AdaptiveMetrics, UserAdaptiveDifficulty, DifficultyAdjustmentHistory, AdaptiveDifficultyConfig, DifficultyRecommendation, DifficultyPerformanceStats, UserLearningPattern（Phase 4.19）
 
@@ -32,7 +32,6 @@ export 'providers/coin_provider.dart';
 export 'providers/badge_provider.dart';
 export 'providers/avatar_provider.dart';
 export 'providers/profile_provider.dart';
-export 'providers/profile_data_migration.dart'; // ProfileDataMigration（profile-scoped key 生成）
 export 'providers/learning_timer_provider.dart';
 export 'providers/character_state_provider.dart'; // BaseCharacterNotifier, BaseCharacterProfileNotifier (Phase 4.1), CharacterStateMap, CharacterProfileMap, characterStateProvider
 export 'providers/inventory_provider.dart';        // InventoryNotifier, inventoryProvider
@@ -147,7 +146,7 @@ export 'providers/ab_test_notifier.dart';                   // ABTestNotifier, a
 export 'widgets/ab_test_dashboard.dart';                    // ABTestDashboard, ABTestEventRecorder（A/B テスト分析ダッシュボード Phase 4.15）
 
 // Analytics & Reporting (Phase 4.16)
-export 'models/analytics_model.dart' hide PopulationStats;  // LearningMetric, UserSegmentAnalytics, WeeklyReport, MonthlyReport, LearningGoal, AnalyticsConfig, BehaviorAnalytics, CohortAnalytics, ABTestMetrics（Phase 4.16）— PopulationStats は ab_test_model.dart 側を優先
+export 'models/analytics_model.dart' hide PopulationStats, $PopulationStatsCopyWith;  // LearningMetric, UserSegmentAnalytics, WeeklyReport, MonthlyReport, LearningGoal, AnalyticsConfig, BehaviorAnalytics, CohortAnalytics, ABTestMetrics（Phase 4.16）— PopulationStats は ab_test_model.dart 側を優先
 export 'providers/analytics_provider.dart' hide populationStatsProvider, abTestResultsProvider; // analyticsConfigProvider, userSegmentAnalyticsProvider, weeklyReportProvider, monthlyReportProvider, userLearningGoalsProvider, recentLearningMetricsProvider, behaviorAnalyticsProvider, cohortAnalyticsProvider, abTestMetricsProvider（Phase 4.16）— 重複 provider は ab_test_providers.dart 側を優先
 export 'providers/analytics_notifier.dart';                 // AnalyticsNotifier, analyticsNotifierProvider（Phase 4.16）
 export 'widgets/analytics_dashboard.dart';                  // AnalyticsDashboard（分析ダッシュボード Phase 4.16）

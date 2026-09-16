@@ -6,8 +6,8 @@ part of 'friend_request_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FriendRequestImpl _$$FriendRequestImplFromJson(Map<String, dynamic> json) =>
-    _$FriendRequestImpl(
+_FriendRequest _$FriendRequestFromJson(Map<String, dynamic> json) =>
+    _FriendRequest(
       id: json['id'] as String,
       senderId: json['senderId'] as String,
       senderName: json['senderName'] as String,
@@ -23,7 +23,7 @@ _$FriendRequestImpl _$$FriendRequestImplFromJson(Map<String, dynamic> json) =>
       message: json['message'] as String?,
     );
 
-Map<String, dynamic> _$$FriendRequestImplToJson(_$FriendRequestImpl instance) =>
+Map<String, dynamic> _$FriendRequestToJson(_FriendRequest instance) =>
     <String, dynamic>{
       'id': instance.id,
       'senderId': instance.senderId,
@@ -43,8 +43,8 @@ const _$FriendRequestStatusEnumMap = {
   FriendRequestStatus.cancelled: 'cancelled',
 };
 
-_$UserProfileImpl _$$UserProfileImplFromJson(Map<String, dynamic> json) =>
-    _$UserProfileImpl(
+_FriendSearchProfile _$FriendSearchProfileFromJson(Map<String, dynamic> json) =>
+    _FriendSearchProfile(
       userId: json['userId'] as String,
       name: json['name'] as String,
       avatarEmoji: json['avatarEmoji'] as String,
@@ -59,16 +59,17 @@ _$UserProfileImpl _$$UserProfileImplFromJson(Map<String, dynamic> json) =>
           FriendshipStatus.none,
     );
 
-Map<String, dynamic> _$$UserProfileImplToJson(_$UserProfileImpl instance) =>
-    <String, dynamic>{
-      'userId': instance.userId,
-      'name': instance.name,
-      'avatarEmoji': instance.avatarEmoji,
-      'level': instance.level,
-      'completedStages': instance.completedStages,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'friendshipStatus': _$FriendshipStatusEnumMap[instance.friendshipStatus]!,
-    };
+Map<String, dynamic> _$FriendSearchProfileToJson(
+  _FriendSearchProfile instance,
+) => <String, dynamic>{
+  'userId': instance.userId,
+  'name': instance.name,
+  'avatarEmoji': instance.avatarEmoji,
+  'level': instance.level,
+  'completedStages': instance.completedStages,
+  'createdAt': instance.createdAt.toIso8601String(),
+  'friendshipStatus': _$FriendshipStatusEnumMap[instance.friendshipStatus]!,
+};
 
 const _$FriendshipStatusEnumMap = {
   FriendshipStatus.none: 'none',

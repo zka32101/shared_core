@@ -18,7 +18,7 @@ class AddFriendDialog extends ConsumerStatefulWidget {
 
 class _AddFriendDialogState extends ConsumerState<AddFriendDialog> {
   final _searchController = TextEditingController();
-  List<UserProfile> _searchResults = [];
+  List<FriendSearchProfile> _searchResults = [];
   bool _isSearching = false;
   bool _isLoading = false;
 
@@ -44,7 +44,7 @@ class _AddFriendDialogState extends ConsumerState<AddFriendDialog> {
     });
   }
 
-  Future<void> _sendFriendRequest(UserProfile profile) async {
+  Future<void> _sendFriendRequest(FriendSearchProfile profile) async {
     setState(() => _isLoading = true);
     final success = await ref
         .read(friendRequestProvider.notifier)

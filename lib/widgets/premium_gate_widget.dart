@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_core/providers/premium_provider.dart';
-import 'package:shared_core/theme/app_theme.dart';
+import 'package:shared_core/theme/app_theme_base.dart';
 
 /// プレミアム機能へのアクセスゲート
 /// 

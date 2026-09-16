@@ -75,8 +75,8 @@ extension FriendRequestFirestore on FriendRequest {
 
 /// ユーザープロフィール（フレンド検索用）
 @freezed
-class UserProfile with _$UserProfile {
-  const factory UserProfile({
+class FriendSearchProfile with _$FriendSearchProfile {
+  const factory FriendSearchProfile({
     required String userId,
     required String name,
     required String avatarEmoji,
@@ -85,14 +85,14 @@ class UserProfile with _$UserProfile {
     required DateTime createdAt,
     @Default(FriendshipStatus.none)
     FriendshipStatus friendshipStatus,   // フレンド状態
-  }) = _UserProfile;
+  }) = _FriendSearchProfile;
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileFromJson(json);
+  factory FriendSearchProfile.fromJson(Map<String, dynamic> json) =>
+      _$FriendSearchProfileFromJson(json);
 
-  factory UserProfile.fromFirestore(DocumentSnapshot doc) {
+  factory FriendSearchProfile.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return UserProfile(
+    return FriendSearchProfile(
       userId: doc.id,
       name: data['name'] as String,
       avatarEmoji: data['avatarEmoji'] as String? ?? '👤',
@@ -110,7 +110,7 @@ class UserProfile with _$UserProfile {
 
 }
 
-extension UserProfileFirestore on UserProfile {
+extension UserProfileFirestore on FriendSearchProfile {
   Map<String, dynamic> toFirestore() => {
     'name': name,
     'avatarEmoji': avatarEmoji,

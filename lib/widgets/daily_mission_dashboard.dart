@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/daily_mission_model.dart';
 import '../providers/daily_mission_provider.dart';
-import '../theme/app_theme.dart';
+import '../theme/app_theme_base.dart';
 
 /// Phase 4.5: デイリーミッション統一ダッシュボード
 /// ミッション進捗・報酬・完了状況を一元表示
