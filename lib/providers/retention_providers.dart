@@ -96,7 +96,7 @@ final streakDataProvider = FutureProvider.autoDispose<StreakData>((ref) async {
     final auth = FirebaseAuth.instance;
     final userId = auth.currentUser?.uid ?? '';
     if (userId.isEmpty) {
-      return const StreakData(
+      return StreakData(
         userId: '',
         currentStreak: 0,
         longestStreak: 0,
@@ -117,7 +117,7 @@ final streakDataProvider = FutureProvider.autoDispose<StreakData>((ref) async {
       return StreakData.fromJson(doc.data() as Map<String, dynamic>);
     }
 
-    return const StreakData(
+    return StreakData(
       userId: '',
       currentStreak: 0,
       longestStreak: 0,
@@ -127,7 +127,7 @@ final streakDataProvider = FutureProvider.autoDispose<StreakData>((ref) async {
     );
   } catch (e) {
     debugPrint('Error fetching streak data: $e');
-    return const StreakData(
+    return StreakData(
       userId: '',
       currentStreak: 0,
       longestStreak: 0,
@@ -145,12 +145,13 @@ final weeklyBonusProgressProvider =
     final auth = FirebaseAuth.instance;
     final userId = auth.currentUser?.uid ?? '';
     if (userId.isEmpty) {
-      return const WeeklyBonusProgress(
-        userId: '',
+      return WeeklyBonusProgress(
+        userId: \'\',
         weekNumber: 0,
         bonuses: [],
         completedDays: 0,
         startedAt: DateTime.fromMillisecondsSinceEpoch(0),
+        completedAt: null,
       );
     }
 
@@ -172,21 +173,23 @@ final weeklyBonusProgressProvider =
       return WeeklyBonusProgress.fromJson(doc.data() as Map<String, dynamic>);
     }
 
-    return const WeeklyBonusProgress(
-      userId: '',
+    return WeeklyBonusProgress(
+      userId: \'\',
       weekNumber: 0,
       bonuses: [],
       completedDays: 0,
       startedAt: DateTime.fromMillisecondsSinceEpoch(0),
+      completedAt: null,
     );
   } catch (e) {
     debugPrint('Error fetching weekly bonus progress: $e');
-    return const WeeklyBonusProgress(
-      userId: '',
+    return WeeklyBonusProgress(
+      userId: \'\',
       weekNumber: 0,
       bonuses: [],
       completedDays: 0,
       startedAt: DateTime.fromMillisecondsSinceEpoch(0),
+      completedAt: null,
     );
   }
 });

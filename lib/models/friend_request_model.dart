@@ -58,6 +58,9 @@ class FriendRequest with _$FriendRequest {
     );
   }
 
+}
+
+extension FriendRequestFirestore on FriendRequest {
   Map<String, dynamic> toFirestore() => {
     'senderId': senderId,
     'senderName': senderName,
@@ -105,6 +108,9 @@ class UserProfile with _$UserProfile {
     );
   }
 
+}
+
+extension UserProfileFirestore on UserProfile {
   Map<String, dynamic> toFirestore() => {
     'name': name,
     'avatarEmoji': avatarEmoji,

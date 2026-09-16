@@ -55,7 +55,7 @@ class _DynamicPaywallWidgetState extends ConsumerState<DynamicPaywallWidget> {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final dynamicPriceAsync = ref.watch(dynamicPriceProvider(widget.userId));
 
     return dynamicPriceAsync.when(
