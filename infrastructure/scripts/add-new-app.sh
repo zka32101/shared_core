@@ -143,7 +143,7 @@ fi
 echo ""
 
 # --- Step 1: tfvars ファイルを生成し、既存内容との差分を表示 ---
-echo "🔧 [1/3] 設定内容(tfvars)を確認しています..."
+echo "🔧 [1/4] 設定内容(tfvars)を確認しています..."
 TFVARS_NEW="$(mktemp)"
 {
   echo "project_id    = \"${PROJECT_ID}\""
@@ -175,8 +175,45 @@ fi
 rm -f "${TFVARS_NEW}"
 echo ""
 
-# --- Step 2: クラウド側の実際の状態を確認し、不備がある場合のみ修正 ---
-echo "🔧 [2/3] クラウド側(GCP)の状態を確認しています..."
+# --- Step 2: GCPプロジェクト自体の存在確認・自動作成・課金アカウントの自動リンク ---
+echo "🔧 [2/4] GCPプロジェクトを確認しています..."
+if gcloud projects describe "${PROJECT_ID}" >/dev/null 2>&1; then
+  echo "   ✅ GCPプロジェクト '${PROJECT_ID}' は既に存在します"
+else
+  echo "   🆕 GCPプロジェクト '${PROJECT_ID}' が存在しません。作成します..."
+  run_step "GCPプロジェクト作成" gcloud projects create "${PROJECT_ID}" --name="${APP_NAME}"
+fi
+
+# 課金アカウントのリンク確認・自動リンク
+# （Secret Manager 等の一部APIは課金アカウントのリンクが前提のため）
+BILLING_ENABLED="$(gcloud billing projects describe "${PROJECT_ID}" --format="value(billingEnabled)" 2>/dev/null || echo "false")"
+if [ "${BILLING_ENABLED}" = "True" ] || [ "${BILLING_ENABLED}" = "true" ]; then
+  echo "   ✅ 課金アカウントは既にリンクされています"
+else
+  mapfile -t OPEN_BILLING_ACCOUNTS < <(gcloud billing accounts list --filter="open=true" --format="value(name)" 2>/dev/null || true)
+  case "${#OPEN_BILLING_ACCOUNTS[@]}" in
+    0)
+      echo "   ⚠️  利用可能な課金アカウントが見つかりません。以下を確認してください:"
+      echo "      gcloud billing accounts list"
+      echo "      （個人開発の場合、GCP Console で課金アカウントの新規作成が必要な場合があります）"
+      ;;
+    1)
+      echo "   🔗 課金アカウントを自動でリンクします: ${OPEN_BILLING_ACCOUNTS[0]}"
+      run_step "課金アカウントのリンク" gcloud billing projects link "${PROJECT_ID}" --billing-account="${OPEN_BILLING_ACCOUNTS[0]#billingAccounts/}"
+      ;;
+    *)
+      echo "   ⚠️  複数の課金アカウントが見つかりました。どれを使うか自動判断できないため、手動でリンクしてください:"
+      for ba in "${OPEN_BILLING_ACCOUNTS[@]}"; do
+        echo "      - ${ba}"
+      done
+      echo "      gcloud billing projects link ${PROJECT_ID} --billing-account=<上記のいずれか>"
+      ;;
+  esac
+fi
+echo ""
+
+# --- Step 3: 必要なAPIを有効化し、クラウド側の実際の状態を確認して不備があれば修正 ---
+echo "🔧 [3/4] クラウド側(GCP)の状態を確認しています..."
 run_step "GCP API 有効化" gcloud services enable \
   secretmanager.googleapis.com \
   iam.googleapis.com \
@@ -218,8 +255,8 @@ SA_EMAIL=$(terraform output -raw service_account_email)
 WIF_PROVIDER=$(terraform output -raw workload_identity_provider)
 echo ""
 
-# --- Step 3: GitHub Variables を確認し、不一致がある場合のみ更新 ---
-echo "🔧 [3/3] GitHub リポジトリの Variables を確認しています..."
+# --- Step 4: GitHub Variables を確認し、不一致がある場合のみ更新 ---
+echo "🔧 [4/4] GitHub リポジトリの Variables を確認しています..."
 
 # GitHub Variables の現在値を取得する（未設定なら空文字を返す）
 get_github_variable() {

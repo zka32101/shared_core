@@ -68,8 +68,16 @@ cd shared_core/infrastructure/scripts
 
 これで以下がまとめて実行される（人間のパスワード・長期鍵ファイルは一切生成しない）:
 1. `infrastructure/terraform/environments/_template/tfvars/<app_name>.tfvars` を自動生成
-2. 必要な GCP API 有効化 + `terraform apply`（専用サービスアカウント・Secret Manager の箱・WIF を作成）
-3. GitHub リポジトリの Variables（`GCP_PROJECT_ID` / `GCP_SERVICE_ACCOUNT` / `GCP_WIF_PROVIDER`）を `gh` CLI で自動設定
+2. **GCPプロジェクト自体の確認・自動作成** — 指定した `<gcp_project_id>` がまだ存在しなければ
+   `gcloud projects create` で新規作成する。さらに課金アカウントも確認し、
+   - 有効な課金アカウントが1つだけ → 自動でリンク
+   - 0個 → 「課金アカウントが必要」と案内（自動化不可。GCP Consoleでの作成が必要）
+   - 2個以上 → どれを使うか自動判断できないため一覧を出して手動リンクを案内
+3. 必要な GCP API 有効化 + `terraform apply`（専用サービスアカウント・Secret Manager の箱・WIF を作成）
+4. GitHub リポジトリの Variables（`GCP_PROJECT_ID` / `GCP_SERVICE_ACCOUNT` / `GCP_WIF_PROVIDER`）を `gh` CLI で自動設定
+
+つまり、**まだ存在しないGCPプロジェクトIDを渡しても、そのプロジェクトの作成から自動で行われる**
+（既に存在するプロジェクトIDを渡した場合はスキップされ、既存アプリの確認・不備修正の対象になる）。
 
 最後に、シークレットの実際の値だけ投入する（これは自動化できない — 値そのものを人間が知っている必要があるため）:
 ```bash
@@ -77,6 +85,8 @@ echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id>
 ```
 
 **前提**: `gcloud auth login`（管理者アカウント `yourwishdev@gmail.com` で1回だけ）と `gh auth login` が済んでいること。
+新規プロジェクト作成には、この管理者アカウントに Organization 配下でのプロジェクト作成権限
+（`roles/resourcemanager.projectCreator` 等）が必要。
 
 ## 既に登録済みのアプリに対する動作（確認・不備修正）
 

@@ -123,14 +123,19 @@ EOF
   if echo "$output" | grep -qiE "project .* not found|PROJECT_NOT_FOUND|Unable to find project|does not exist"; then
     matched=1
     cat <<'EOF'
-【GCPプロジェクトが見つからない】
-  指定したプロジェクトIDが存在しません。
+【GCPプロジェクトが見つからない/作成できない】
+  add-new-app.sh はプロジェクトが存在しない場合に自動作成を試みるが、それでも
+  このエラーになった場合、プロジェクトIDの形式か権限に問題がある可能性が高い。
 
   対処法:
-  - プロジェクトID（プロジェクト名ではなく英数字とハイフンのID）を確認する:
-      gcloud projects list --filter="name:<プロジェクト名>"
-  - 新規プロジェクトの場合は先に作成する:
-      gcloud projects create <project_id> --name="<表示名>"
+  - プロジェクトID（プロジェクト名ではなく英数字とハイフンのID、6-30文字）の
+    形式を確認する: gcloud projects list --filter="name:<プロジェクト名>"
+  - プロジェクトID作成の権限があるか確認する（Organization配下の場合、
+    Project Creator ロールが必要な場合がある）:
+      gcloud organizations list
+      gcloud projects create <project_id> --name="<表示名>" --organization=<ORG_ID>
+  - 既に他のユーザーが同じIDを使っている場合はIDを変える（プロジェクトIDは
+    全体でグローバルに一意である必要がある）
 
 EOF
   fi
