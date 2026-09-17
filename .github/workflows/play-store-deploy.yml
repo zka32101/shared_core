@@ -1,0 +1,105 @@
+name: Play Store Deploy (Reusable)
+
+# =============================================================================
+# Google Play Console への配布テンプレート。
+#
+# 方針:
+#   - Internal Testing まではフル自動化
+#   - Production リリースは自動化しない（GitHub Environment の
+#     Required Reviewers 機能で人間の承認を必須にする）
+#   - 認証は Google Play サービスアカウント JSON を使うが、これも
+#     Secret Manager 経由で取得し、GitHub Secrets には平文で置かない
+#
+# 呼び出し側の使用例:
+#
+#   jobs:
+#     deploy_internal:
+#       uses: zka32101/shared_core/.github/workflows/play-store-deploy.yml@main
+#       with:
+#         app_name: yourwish
+#         gcp_project_id: yourwish-prod-123456
+#         gcp_service_account: yourwish-ci-bot@yourwish-prod-123456.iam.gserviceaccount.com
+#         gcp_wif_provider: projects/.../workloadIdentityPools/...
+#         package_name: com.petitworks.yourwish
+#         track: internal        # internal / alpha / beta のみ許可。production は不可
+#         aab_path: build/app/outputs/bundle/release/app-release.aab
+# =============================================================================
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      gcp_project_id:
+        required: true
+        type: string
+      gcp_service_account:
+        required: true
+        type: string
+      gcp_wif_provider:
+        required: true
+        type: string
+      package_name:
+        required: true
+        type: string
+      track:
+        required: true
+        type: string
+        description: "internal / alpha / beta のみ。production は許可しない（手動リリース必須）"
+      aab_path:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block production track
+        run: |
+          if [ "${{ inputs.track }}" = "production" ]; then
+            echo "❌ production トラックへの自動デプロイは禁止されています。"
+            echo "   Google Play Console の Web UI で人間が最終承認してください。"
+            exit 1
+          fi
+
+  deploy:
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Authenticate to GCP via Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ inputs.gcp_wif_provider }}
+          service_account: ${{ inputs.gcp_service_account }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Fetch Play Store service account key from Secret Manager
+        id: play_key
+        run: |
+          set -euo pipefail
+          gcloud secrets versions access latest \
+            --secret="${{ inputs.app_name }}-play-console-sa-key" \
+            --project="${{ inputs.gcp_project_id }}" \
+            > /tmp/play-key.json
+          chmod 600 /tmp/play-key.json
+
+      - name: Upload to Google Play (${{ inputs.track }})
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: /tmp/play-key.json
+          packageName: ${{ inputs.package_name }}
+          releaseFiles: ${{ inputs.aab_path }}
+          track: ${{ inputs.track }}
+
+      - name: Clean up key file
+        if: always()
+        run: rm -f /tmp/play-key.json
