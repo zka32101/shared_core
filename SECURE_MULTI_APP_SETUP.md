@@ -39,6 +39,8 @@ shared_core/
 │   │           └── tfvars/<app>.tfvars    # アプリごとの設定値（add-new-app.shが自動生成）
 │   └── scripts/
 │       ├── add-new-app.sh                 # 【推奨】ワンコマンドで新規アプリ追加
+│       ├── service-presets.sh             # よく使うサービスのシークレットキープリセット定義
+│       ├── error-troubleshooter.sh        # 失敗時にエラー内容から対処法を提示
 │       ├── setup-service-accounts.sh      # 個別ディレクトリ方式の初期セットアップ（旧）
 │       └── set-secret-value.sh            # シークレット値の投入・更新
 └── .github/workflows/
@@ -53,11 +55,15 @@ tfvars生成 → `terraform apply` → GitHub Variables 設定まで1コマン�
 
 ```bash
 cd shared_core/infrastructure/scripts
-./add-new-app.sh <app_name> <gcp_project_id> <github_repo> [secret_key ...]
+./add-new-app.sh <app_name> <gcp_project_id> <github_repo> [--services <name,...>] [secret_key ...]
 
-# 例
+# 例1: 個別キーを直接指定
 ./add-new-app.sh shogi_app shogi-app-prod-123456 zka32101/shogi_app \
     revenuecat-api-key admob-app-id firebase-admin-key
+
+# 例2: よく使うサービスをプリセットでまとめて指定（推奨・こちらが簡単）
+./add-new-app.sh shogi_app shogi-app-prod-123456 zka32101/shogi_app \
+    --services standard,twitter
 ```
 
 これで以下がまとめて実行される（人間のパスワード・長期鍵ファイルは一切生成しない）:
@@ -74,6 +80,81 @@ echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id>
 
 **既存アプリへのシークレット追加**は、同じコマンドを新しいシークレットキー付きで再実行すればよい
 （Terraform は差分適用なので既存のサービスアカウントやシークレットは壊れない）。
+
+## サービスプリセット一覧
+
+`--services` に指定できるプリセット。一覧はいつでも `./add-new-app.sh --list-services` で確認できる。
+
+```bash
+./add-new-app.sh --list-services
+```
+
+| サービス名 | 説明 | 展開されるキー |
+|---|---|---|
+| `revenuecat` | サブスクリプション・課金管理 | `revenuecat-api-key` |
+| `admob` | Google AdMob 広告 | `admob-app-id`, `admob-banner-ad-unit-id`, `admob-interstitial-ad-unit-id`, `admob-rewarded-ad-unit-id` |
+| `firebase` | Firebase Admin SDK（サーバーサイド） | `firebase-admin-key` |
+| `play_console` | Google Play Console 配布（Play Developer API） | `play-console-sa-key` |
+| `app_store_connect` | Apple App Store Connect 配布（API） | `app-store-connect-api-key`, `app-store-connect-issuer-id`, `app-store-connect-key-id` |
+| `twitter` | Twitter/X API v2 連携 | `twitter-bearer-token`, `twitter-api-key`, `twitter-api-secret`, `twitter-access-token`, `twitter-access-token-secret` |
+| `facebook` | Facebook/Meta Graph API 連携 | `facebook-app-id`, `facebook-app-secret`, `facebook-access-token` |
+| `line` | LINE Messaging API 連携 | `line-channel-id`, `line-channel-secret`, `line-channel-access-token` |
+| `sentry` | Sentry エラートラッキング | `sentry-dsn` |
+| `onesignal` | OneSignal プッシュ通知 | `onesignal-app-id`, `onesignal-api-key` |
+| `slack` | Slack 通知（Webhook） | `slack-webhook-url` |
+
+**複合グループ**（よくある組み合わせをまとめて指定できる）:
+
+| グループ名 | 展開されるサービス |
+|---|---|
+| `standard` | `revenuecat` + `admob` + `firebase` + `play_console`（アプリの基本セット） |
+| `sns` | `twitter` + `facebook` + `line` |
+| `monitoring` | `sentry` + `slack` |
+
+`--services` と個別キーは併用できる: `--services standard,twitter custom-webhook-secret`
+
+**新しいプリセットを追加したい場合**は `infrastructure/scripts/service-presets.sh` の
+`SERVICE_PRESET_KEYS` / `SERVICE_PRESET_DESC`（必要なら `SERVICE_PRESET_GROUPS`）に1行追加するだけでよい。
+
+## 登録に失敗した場合（エラー診断）
+
+`add-new-app.sh` の各ステップ（GCP API有効化 / `terraform init` / `terraform apply` /
+GitHub Variables 設定）は失敗すると、生のエラーを表示するだけでなく、
+`infrastructure/scripts/error-troubleshooter.sh` が出力内容を既知パターンと照合して
+**原因と具体的な対処コマンド**を自動で提示する。
+
+現在カバーしているパターン:
+
+| パターン | 想定される原因 |
+|---|---|
+| 権限不足 (`PERMISSION_DENIED` 等) | 管理者アカウントにOwner/Editorロールがない |
+| API未有効化 | Terraformが使うAPIがプロジェクトで無効 |
+| 課金未リンク | GCPプロジェクトに課金アカウントが紐付いていない |
+| リソース重複 (`already exists`) | 前回実行の途中失敗、または別途作成済み |
+| プロジェクト不明 | プロジェクトIDのtypo、または未作成 |
+| GitHub CLI未認証 | `gh auth login` が必要 |
+| GitHubリポジトリ不明 | リポジトリ名のtypo、または未作成 |
+| GitHubへの権限不足 | Variables設定にAdmin/Write権限が必要 |
+| Terraform state ロック | 前回実行が異常終了しロックが残留 |
+
+いずれにも一致しない場合は「未知のエラーパターン」として、
+`error-troubleshooter.sh` へのパターン追加方法（コードスニペット付き）を案内する
+ので、次に同じエラーが起きたときは自動で対処法が出るようになる。
+
+**新しいパターンを追加したい場合**は `error-troubleshooter.sh` の `suggest_fix()` に
+以下の形式で1ブロック追加するだけでよい:
+```bash
+if echo "$output" | grep -qiE "<エラーの特徴的な文字列>"; then
+  matched=1
+  cat <<'EOF'
+【<エラーの種類>】
+  <原因の説明>
+
+  対処法:
+    <具体的なコマンドや手順>
+EOF
+fi
+```
 
 ## 新しいアプリを追加する手順（詳細に制御したい場合）
 
