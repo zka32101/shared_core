@@ -19,6 +19,7 @@ export 'models/daily_mission_model.dart'; // DailyMission, MissionReward, Reward
 export 'models/retention_model.dart' hide DailyMission, WeeklyBonus, $DailyMissionCopyWith, $WeeklyBonusCopyWith, DailyMissionPatterns, WeeklyBonusPatterns; // StreakData, RetentionConfig（Phase 4.13）— DailyMission/WeeklyBonus は daily_mission_model.dart 側を優先
 export 'models/learning_metrics.dart'; // LearningMetrics, WeeklyMetrics, MonthlyMetrics（Phase 4.10）
 export 'models/adaptive_difficulty_model.dart'; // DifficultyLevel, AdaptiveMetrics, UserAdaptiveDifficulty, DifficultyAdjustmentHistory, AdaptiveDifficultyConfig, DifficultyRecommendation, DifficultyPerformanceStats, UserLearningPattern（Phase 4.19）
+export 'models/subscription_config.dart'; // SubscriptionConfig（RevenueCat 設定 - Phase 4.22）
 
 // Data
 export 'data/badge_data.dart'; // unifiedBadges, getBadgesForSubject（Phase 4.1：60個の統一バッジデータ）
@@ -92,6 +93,7 @@ export 'services/firestore_matchmaking_service.dart'; // FirestoreMatchmakingSer
 export 'services/weekly_report_notification_scheduler.dart'; // WeeklyReportNotificationScheduler（保護者向け週次サマリー通知）
 export 'services/rating_calculator.dart'; // RatingCalculator（Elo & Glicko-2 レーティング計算 - Phase 4.14）
 export 'services/revenue_cat_service.dart'; // RevenueCatService（統一サブスク管理 - Phase 4.7）
+export 'services/purchase_service.dart'; // PurchaseService（統一 RevenueCat 実装 - Phase 4.22）
 
 // Providers (Phase 4.14)
 export 'providers/battle_session_provider.dart' hide GetUserRatingHandler, userMatchHistoryProvider; // BattleSessionHandlers, activeBattleSessionProvider, userRatingProvider, leaderboard providers — 重複シンボルは matchmaking_provider.dart / match_provider.dart 側を優先
@@ -104,11 +106,13 @@ export 'widgets/multiplayer/leaderboard_screen.dart'; // LeaderboardScreen, User
 // Utils
 export 'utils/parental_gate_helper.dart'; // requireParentalGate（保護者ゲート呼び出しヘルパー）
 
+// Initializers (Phase 4.22)
+export 'core/initializers/shared_core_initializer.dart'; // SharedCoreInitializer（統一初期化ユーティリティ - Phase 4.22）
+
 // Theme & Config
 export 'theme/app_theme_base.dart';
 export 'config/app_colors.dart';        // AppColors, SubjectColors, LightColors, DarkColors（v3.0.0 新規）
 export 'config/app_typography.dart';   // AppTypography（v3.0.0 新規）
-export 'config/subscription_config.dart'; // SubscriptionConfig for unified RevenueCat configuration (Phase 4.7)
 
 // UI Components (v3.0.0 新規)
 export 'widgets/components/app_button.dart';     // AppButton, AppButtonStyle, AppButtonSize

@@ -913,7 +913,7 @@ Navigator.push(
 
 ---
 
-## 実装状況（2026-09-11）
+## 実装状況（2026-09-17）
 
 | フェーズ | 機能 | 状態 |
 |---|---|---|
@@ -926,6 +926,9 @@ Navigator.push(
 | **Phase 4.15** | A/B テストフレームワーク統一 | ✅ 実装完了 |
 | **Phase 4.16** | Analytics・レポート強化統一化 | ✅ 実装完了 |
 | **Phase 4.17** | Cloud Functions・ユーザー分析自動実行 | ✅ 実装完了 |
+| **Phase 4.20** | デイリーミッション統一・週次ボーナスシステム | ✅ 実装完了 |
+| **Phase 4.21** | Parental Gate Enhancement — 親管理機能統一化 | ✅ 実装完了 |
+| **Phase 4.22** | 購読機能統一化（PurchaseService） | ✅ 実装完了 |
 
 ---
 
@@ -1390,8 +1393,209 @@ ref.read(screenTimeProvider.notifier).setMonitoringConfig(
 
 ---
 
+## Phase 4.22: 購読機能統一化（PurchaseService） ✅ (2026-09-17 実装完了)
+
+### 目的
+RevenueCat 統合を shared_core に統一実装し、各アプリが共通の `PurchaseService` インターフェースで購読機能を使用できるようにする。SubscriptionConfig で API キーを一元管理。
+
+### 実装内容
+
+#### モデル定義（`lib/models/subscription_config.dart`）✅
+- **SubscriptionConfig**: RevenueCat 設定モデル（Freezed）
+  - `googleKey`: Google Play Billing API キー
+  - `appleKey`: Apple App Store Server API キー
+  - `premiumEntitlementId`: プレミアム Entitlement ID（デフォルト: 'premium'）
+  - `enableDebugLogging`: デバッグログの有効化
+
+#### サービス実装（`lib/services/purchase_service.dart`）✅
+- **PurchaseService**: 統一 RevenueCat サービス
+  - `initialize()`: RevenueCat の初期化
+  - `getCustomerInfo()`: カスタマー情報を取得
+  - `isSubscribed()`: プレミアム購読状態を確認
+  - `getSubscriptionExpirationDate()`: サブスクリプション有効期限を取得
+  - `getOfferings()`: 利用可能なオファリングを取得
+  - `purchase()`: パッケージを購入
+  - `restorePurchases()`: 購入を復元
+  - `customerInfoStream`: カスタマー情報の変更を監視（Stream）
+  - `dispose()`: サービスをクリーンアップ
+
+#### 初期化ユーティリティ（`lib/core/initializers/shared_core_initializer.dart`）✅
+- **SharedCoreInitializer**: 統一初期化クラス
+  - `initialize()`: Firebase と RevenueCat を一度に初期化
+  - `initializeSubscriptions()`: 購読機能のみを初期化
+  - `getPurchaseService()`: 初期化済みの PurchaseService インスタンスを取得
+  - `dispose()`: サービスをクリーンアップ
+
+### 各アプリへの統合手順
+
+#### Step 1: pubspec.yaml で依存を確認
+```yaml
+dependencies:
+  shared_core:
+    git:
+      url: https://github.com/org-zka32101/shared_core.git
+      ref: main
+```
+
+#### Step 2: main.dart で初期化
+```dart
+import 'package:shared_core/models/subscription_config.dart';
+import 'package:shared_core/core/initializers/shared_core_initializer.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // shared_core を初期化（Firebase + RevenueCat）
+  await SharedCoreInitializer.initialize(
+    subscriptionConfig: SubscriptionConfig(
+      googleKey: 'goog_xxxxx',
+      appleKey: 'appl_xxxxx',
+      premiumEntitlementId: 'premium', // オプション
+      enableDebugLogging: false, // 本番環境では false
+    ),
+  );
+
+  runApp(MyApp());
+}
+```
+
+#### Step 3: PurchaseService を使用
+```dart
+import 'package:shared_core/core/initializers/shared_core_initializer.dart';
+
+// ① 購読状態を確認
+final purchaseService = SharedCoreInitializer.getPurchaseService();
+final isSubscribed = await purchaseService?.isSubscribed(userId) ?? false;
+
+// ② オファリングを取得して購入
+final offerings = await purchaseService?.getOfferings();
+if (offerings != null && offerings.current != null) {
+  final package = offerings.current!.availablePackages.first;
+  final result = await purchaseService.purchase(package);
+  if (result != null) {
+    // 購入成功時の処理
+    print('Subscription purchased');
+  }
+}
+
+// ③ 有効期限を確認
+final expirationDate = await purchaseService?.getSubscriptionExpirationDate(userId);
+if (expirationDate != null) {
+  print('Expires: ${expirationDate.toIso8601String()}');
+}
+
+// ④ 購入を復元
+try {
+  final restoredInfo = await purchaseService?.restorePurchases();
+  print('Purchases restored');
+} catch (e) {
+  print('Restore failed: $e');
+}
+
+// ⑤ 購読状態の変更を監視
+purchaseService?.customerInfoStream.listen((info) {
+  print('Customer info updated: ${info.entitlements.active}');
+});
+```
+
+### 実装ファイル一覧
+
+| ファイル | 説明 | 状態 |
+|---------|------|------|
+| `lib/models/subscription_config.dart` | **【新規】** SubscriptionConfig モデル | ✅ |
+| `lib/services/purchase_service.dart` | **【新規】** 統一 PurchaseService | ✅ |
+| `lib/core/initializers/shared_core_initializer.dart` | **【新規】** 統一初期化ユーティリティ | ✅ |
+| `pubspec.yaml` | purchases_flutter 依存を追加 | ✅ |
+
+### pubspec.yaml への依存追加
+
+```yaml
+dependencies:
+  purchases_flutter: ^8.3.0
+```
+
+### 利用シーン別の実装例
+
+#### Paywall 画面での使用
+```dart
+class PaywallScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder<Offerings?>(
+      future: SharedCoreInitializer.getPurchaseService()?.getOfferings(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.data == null) return Center(child: Text('No offerings'));
+
+        final offerings = snapshot.data!;
+        final currentOffering = offerings.current;
+        if (currentOffering == null) return Center(child: Text('No current offering'));
+
+        return ListView(
+          children: currentOffering.availablePackages
+              .map((package) => PurchaseButton(
+                    package: package,
+                    onPressed: () => _purchasePackage(package),
+                  ))
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Future<void> _purchasePackage(Package package) async {
+    final purchaseService = SharedCoreInitializer.getPurchaseService();
+    try {
+      final result = await purchaseService?.purchase(package);
+      if (result != null) {
+        // 購入成功
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('購入成功')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('購入失敗: $e')));
+    }
+  }
+}
+```
+
+#### リストア機能での使用
+```dart
+Future<void> restorePurchases() async {
+  final purchaseService = SharedCoreInitializer.getPurchaseService();
+  try {
+    await purchaseService?.restorePurchases();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('購入を復元しました')));
+  } catch (e) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('復元に失敗しました')));
+  }
+}
+```
+
+#### クリーンアップ
+```dart
+@override
+void dispose() {
+  // アプリ終了時に呼び出し
+  SharedCoreInitializer.dispose();
+  super.dispose();
+}
+```
+
+---
+
 ## 最新更新ログ
 
+- **2026-09-17**: Phase 4.22 購読機能統一化実装完了 ✅
+  - SubscriptionConfig: RevenueCat API キー管理
+  - PurchaseService: 統一購読機能インターフェース
+  - SharedCoreInitializer: 統一初期化ユーティリティ
+  - pubspec.yaml: purchases_flutter 依存を追加
 - **2026-09-12**: Phase 4.21 Parental Gate Enhancement 実装完了 ✅
   - TimeSlot モデル：時間帯別利用制限対応
   - MonitoringConfig: 監視・通知設定
