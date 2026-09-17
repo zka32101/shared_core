@@ -33,6 +33,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./service-presets.sh
 source "${SCRIPT_DIR}/service-presets.sh"
+# shellcheck source=./error-troubleshooter.sh
+source "${SCRIPT_DIR}/error-troubleshooter.sh"
 
 print_usage() {
   cat <<'USAGE'
@@ -141,17 +143,20 @@ echo "   ✅ ${TFVARS_FILE} を生成しました"
 echo ""
 
 # --- Step 2: 必要な GCP API を有効化 + terraform apply ---
+# 失敗した場合は run_step が error-troubleshooter.sh の suggest_fix を呼び、
+# エラー内容から考えられる原因と具体的な対処コマンドを提示してから終了する。
 echo "🔧 [2/3] GCP API を有効化し、Terraform を適用します..."
-gcloud services enable \
+run_step "GCP API 有効化" gcloud services enable \
   secretmanager.googleapis.com \
   iam.googleapis.com \
   iamcredentials.googleapis.com \
   sts.googleapis.com \
+  cloudresourcemanager.googleapis.com \
   --project="${PROJECT_ID}"
 
 cd "${TEMPLATE_DIR}"
-terraform init -input=false
-terraform apply -input=false -auto-approve -var-file="tfvars/${APP_NAME}.tfvars"
+run_step "terraform init" terraform init -input=false
+run_step "terraform apply" terraform apply -input=false -auto-approve -var-file="tfvars/${APP_NAME}.tfvars"
 
 SA_EMAIL=$(terraform output -raw service_account_email)
 WIF_PROVIDER=$(terraform output -raw workload_identity_provider)
@@ -160,9 +165,9 @@ echo ""
 # --- Step 3: GitHub Variables に自動設定 ---
 echo "🔧 [3/3] GitHub リポジトリの Variables を設定しています..."
 if command -v gh >/dev/null 2>&1; then
-  gh variable set GCP_PROJECT_ID       --repo "${GITHUB_REPO}" --body "${PROJECT_ID}"
-  gh variable set GCP_SERVICE_ACCOUNT  --repo "${GITHUB_REPO}" --body "${SA_EMAIL}"
-  gh variable set GCP_WIF_PROVIDER     --repo "${GITHUB_REPO}" --body "${WIF_PROVIDER}"
+  run_step "GitHub Variables 設定(GCP_PROJECT_ID)"      gh variable set GCP_PROJECT_ID      --repo "${GITHUB_REPO}" --body "${PROJECT_ID}"
+  run_step "GitHub Variables 設定(GCP_SERVICE_ACCOUNT)" gh variable set GCP_SERVICE_ACCOUNT --repo "${GITHUB_REPO}" --body "${SA_EMAIL}"
+  run_step "GitHub Variables 設定(GCP_WIF_PROVIDER)"    gh variable set GCP_WIF_PROVIDER    --repo "${GITHUB_REPO}" --body "${WIF_PROVIDER}"
   echo "   ✅ GCP_PROJECT_ID / GCP_SERVICE_ACCOUNT / GCP_WIF_PROVIDER を設定しました"
 else
   echo "   ⚠️  gh CLI が見つかりません。以下を手動で実行してください:"

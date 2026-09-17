@@ -40,6 +40,7 @@ shared_core/
 │   └── scripts/
 │       ├── add-new-app.sh                 # 【推奨】ワンコマンドで新規アプリ追加
 │       ├── service-presets.sh             # よく使うサービスのシークレットキープリセット定義
+│       ├── error-troubleshooter.sh        # 失敗時にエラー内容から対処法を提示
 │       ├── setup-service-accounts.sh      # 個別ディレクトリ方式の初期セットアップ（旧）
 │       └── set-secret-value.sh            # シークレット値の投入・更新
 └── .github/workflows/
@@ -114,6 +115,46 @@ echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id>
 
 **新しいプリセットを追加したい場合**は `infrastructure/scripts/service-presets.sh` の
 `SERVICE_PRESET_KEYS` / `SERVICE_PRESET_DESC`（必要なら `SERVICE_PRESET_GROUPS`）に1行追加するだけでよい。
+
+## 登録に失敗した場合（エラー診断）
+
+`add-new-app.sh` の各ステップ（GCP API有効化 / `terraform init` / `terraform apply` /
+GitHub Variables 設定）は失敗すると、生のエラーを表示するだけでなく、
+`infrastructure/scripts/error-troubleshooter.sh` が出力内容を既知パターンと照合して
+**原因と具体的な対処コマンド**を自動で提示する。
+
+現在カバーしているパターン:
+
+| パターン | 想定される原因 |
+|---|---|
+| 権限不足 (`PERMISSION_DENIED` 等) | 管理者アカウントにOwner/Editorロールがない |
+| API未有効化 | Terraformが使うAPIがプロジェクトで無効 |
+| 課金未リンク | GCPプロジェクトに課金アカウントが紐付いていない |
+| リソース重複 (`already exists`) | 前回実行の途中失敗、または別途作成済み |
+| プロジェクト不明 | プロジェクトIDのtypo、または未作成 |
+| GitHub CLI未認証 | `gh auth login` が必要 |
+| GitHubリポジトリ不明 | リポジトリ名のtypo、または未作成 |
+| GitHubへの権限不足 | Variables設定にAdmin/Write権限が必要 |
+| Terraform state ロック | 前回実行が異常終了しロックが残留 |
+
+いずれにも一致しない場合は「未知のエラーパターン」として、
+`error-troubleshooter.sh` へのパターン追加方法（コードスニペット付き）を案内する
+ので、次に同じエラーが起きたときは自動で対処法が出るようになる。
+
+**新しいパターンを追加したい場合**は `error-troubleshooter.sh` の `suggest_fix()` に
+以下の形式で1ブロック追加するだけでよい:
+```bash
+if echo "$output" | grep -qiE "<エラーの特徴的な文字列>"; then
+  matched=1
+  cat <<'EOF'
+【<エラーの種類>】
+  <原因の説明>
+
+  対処法:
+    <具体的なコマンドや手順>
+EOF
+fi
+```
 
 ## 新しいアプリを追加する手順（詳細に制御したい場合）
 
