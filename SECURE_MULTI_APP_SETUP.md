@@ -33,33 +33,69 @@ shared_core/
 │   ├── terraform/
 │   │   ├── modules/app-service-account/   # 再利用可能なTerraformモジュール
 │   │   └── environments/
-│   │       ├── yourwish/                  # yourwish 用の設定
-│   │       ├── goen/                      # goen 用の設定
-│   │       └── _template/                 # 新規アプリ追加用テンプレート
+│   │       ├── yourwish/                  # yourwish 用の設定（個別ディレクトリ方式・旧）
+│   │       ├── goen/                      # goen 用の設定（個別ディレクトリ方式・旧）
+│   │       └── _template/                 # 汎用環境（tfvars駆動・コピー不要・推奨）
+│   │           └── tfvars/<app>.tfvars    # アプリごとの設定値（add-new-app.shが自動生成）
 │   └── scripts/
-│       ├── setup-service-accounts.sh      # 初期セットアップ（1回だけ）
+│       ├── add-new-app.sh                 # 【推奨】ワンコマンドで新規アプリ追加
+│       ├── setup-service-accounts.sh      # 個別ディレクトリ方式の初期セットアップ（旧）
 │       └── set-secret-value.sh            # シークレット値の投入・更新
 └── .github/workflows/
     ├── secure-secrets-inject.yml          # 再利用可能: Secret取得
     └── play-store-deploy.yml              # 再利用可能: Play Store配布
 ```
 
-## 新しいアプリを追加する手順
+## 新しいアプリを追加する手順（ワンコマンド・推奨）
+
+アプリ名・GCPプロジェクトID・GitHubリポジトリ・シークレットキー一覧を渡すだけで、
+tfvars生成 → `terraform apply` → GitHub Variables 設定まで1コマンドで完了する。
+
+```bash
+cd shared_core/infrastructure/scripts
+./add-new-app.sh <app_name> <gcp_project_id> <github_repo> [secret_key ...]
+
+# 例
+./add-new-app.sh shogi_app shogi-app-prod-123456 zka32101/shogi_app \
+    revenuecat-api-key admob-app-id firebase-admin-key
+```
+
+これで以下がまとめて実行される（人間のパスワード・長期鍵ファイルは一切生成しない）:
+1. `infrastructure/terraform/environments/_template/tfvars/<app_name>.tfvars` を自動生成
+2. 必要な GCP API 有効化 + `terraform apply`（専用サービスアカウント・Secret Manager の箱・WIF を作成）
+3. GitHub リポジトリの Variables（`GCP_PROJECT_ID` / `GCP_SERVICE_ACCOUNT` / `GCP_WIF_PROVIDER`）を `gh` CLI で自動設定
+
+最後に、シークレットの実際の値だけ投入する（これは自動化できない — 値そのものを人間が知っている必要があるため）:
+```bash
+echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id> revenuecat-api-key
+```
+
+**前提**: `gcloud auth login`（管理者アカウント `yourwishdev@gmail.com` で1回だけ）と `gh auth login` が済んでいること。
+
+**既存アプリへのシークレット追加**は、同じコマンドを新しいシークレットキー付きで再実行すればよい
+（Terraform は差分適用なので既存のサービスアカウントやシークレットは壊れない）。
+
+## 新しいアプリを追加する手順（詳細に制御したい場合）
+
+ワンコマンドではなく、各ステップを個別に確認しながら進めたい場合の手順。
 
 ### 1. GCP プロジェクトを用意
 既存の GCP プロジェクトを使うか、新規作成する（1アプリ1プロジェクトを推奨）。
 
-### 2. Terraform 環境を追加
+### 2. tfvars ファイルを作成
 ```bash
-cd shared_core/infrastructure/terraform/environments
-cp -r _template <新アプリ名>
-# main.tf の app_name, secrets, ci_repository を編集
+cd shared_core/infrastructure/terraform/environments/_template
+cp tfvars/example.tfvars.sample tfvars/<新アプリ名>.tfvars
+# project_id, app_name, ci_repository, secrets を編集
 ```
+（`environments/yourwish`, `environments/goen` のように専用ディレクトリを作る旧方式も動作するが、
+新規アプリではこの tfvars 方式を推奨する — ディレクトリコピーが不要になる）
 
-### 3. サービスアカウントを作成（人間が1回だけ実行）
+### 3. Terraform を適用（人間が1回だけ実行）
 ```bash
-cd shared_core/infrastructure/scripts
-./setup-service-accounts.sh <新アプリ名> <GCPプロジェクトID>
+cd shared_core/infrastructure/terraform/environments/_template
+terraform init
+terraform apply -var-file="tfvars/<新アプリ名>.tfvars"
 ```
 これで以下が自動生成される（パスワード不要）:
 - 専用サービスアカウント
@@ -67,14 +103,14 @@ cd shared_core/infrastructure/scripts
 - Workload Identity Federation（GitHub Actions 用の鍵ファイル不要認証）
 
 ### 4. GitHub リポジトリに変数を設定
-スクリプトの出力に従って:
 ```bash
-gh variable set GCP_SERVICE_ACCOUNT --repo zka32101/<新アプリ名> --body "<出力されたメール>"
-gh variable set GCP_WIF_PROVIDER    --repo zka32101/<新アプリ名> --body "<出力されたプロバイダ>"
+gh variable set GCP_SERVICE_ACCOUNT --repo zka32101/<新アプリ名> --body "$(terraform output -raw service_account_email)"
+gh variable set GCP_WIF_PROVIDER    --repo zka32101/<新アプリ名> --body "$(terraform output -raw workload_identity_provider)"
 ```
 
 ### 5. シークレットの値を投入
 ```bash
+cd shared_core/infrastructure/scripts
 echo -n "実際のAPIキー" | ./set-secret-value.sh <新アプリ名> <GCPプロジェクトID> revenuecat-api-key
 ```
 

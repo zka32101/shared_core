@@ -1,0 +1,10 @@
+# このファイルは add-new-app.sh が自動生成するファイルの参考例です。
+# 手動で作る場合はこの内容をコピーして tfvars/<app_name>.tfvars として保存してください。
+
+project_id    = "your-gcp-project-id"
+app_name      = "your_app_name"
+ci_repository = "zka32101/your-repo-name"
+secrets = [
+  "revenuecat-api-key",
+  "admob-app-id",
+]
