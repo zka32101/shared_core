@@ -32,6 +32,12 @@ dependencies:
 import 'package:shared_core/shared_core.dart';
 ```
 
+## セキュアな複数アプリ運用
+
+RevenueCat / AdMob / Google Play Console / Firebase 等の認証情報を、
+人間のパスワードを使わず複数アプリで安全に自動化する方法は
+[SECURE_MULTI_APP_SETUP.md](SECURE_MULTI_APP_SETUP.md) を参照してください。
+
 ## 注意事項
 
 - `shared_core` は姉妹パッケージ `cross_promo_kit`（クロスプロモーション
