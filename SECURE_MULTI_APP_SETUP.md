@@ -39,6 +39,7 @@ shared_core/
 │   │           └── tfvars/<app>.tfvars    # アプリごとの設定値（add-new-app.shが自動生成）
 │   └── scripts/
 │       ├── add-new-app.sh                 # 【推奨】ワンコマンドで新規アプリ追加
+│       ├── service-presets.sh             # よく使うサービスのシークレットキープリセット定義
 │       ├── setup-service-accounts.sh      # 個別ディレクトリ方式の初期セットアップ（旧）
 │       └── set-secret-value.sh            # シークレット値の投入・更新
 └── .github/workflows/
@@ -53,11 +54,15 @@ tfvars生成 → `terraform apply` → GitHub Variables 設定まで1コマン�
 
 ```bash
 cd shared_core/infrastructure/scripts
-./add-new-app.sh <app_name> <gcp_project_id> <github_repo> [secret_key ...]
+./add-new-app.sh <app_name> <gcp_project_id> <github_repo> [--services <name,...>] [secret_key ...]
 
-# 例
+# 例1: 個別キーを直接指定
 ./add-new-app.sh shogi_app shogi-app-prod-123456 zka32101/shogi_app \
     revenuecat-api-key admob-app-id firebase-admin-key
+
+# 例2: よく使うサービスをプリセットでまとめて指定（推奨・こちらが簡単）
+./add-new-app.sh shogi_app shogi-app-prod-123456 zka32101/shogi_app \
+    --services standard,twitter
 ```
 
 これで以下がまとめて実行される（人間のパスワード・長期鍵ファイルは一切生成しない）:
@@ -74,6 +79,41 @@ echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id>
 
 **既存アプリへのシークレット追加**は、同じコマンドを新しいシークレットキー付きで再実行すればよい
 （Terraform は差分適用なので既存のサービスアカウントやシークレットは壊れない）。
+
+## サービスプリセット一覧
+
+`--services` に指定できるプリセット。一覧はいつでも `./add-new-app.sh --list-services` で確認できる。
+
+```bash
+./add-new-app.sh --list-services
+```
+
+| サービス名 | 説明 | 展開されるキー |
+|---|---|---|
+| `revenuecat` | サブスクリプション・課金管理 | `revenuecat-api-key` |
+| `admob` | Google AdMob 広告 | `admob-app-id`, `admob-banner-ad-unit-id`, `admob-interstitial-ad-unit-id`, `admob-rewarded-ad-unit-id` |
+| `firebase` | Firebase Admin SDK（サーバーサイド） | `firebase-admin-key` |
+| `play_console` | Google Play Console 配布（Play Developer API） | `play-console-sa-key` |
+| `app_store_connect` | Apple App Store Connect 配布（API） | `app-store-connect-api-key`, `app-store-connect-issuer-id`, `app-store-connect-key-id` |
+| `twitter` | Twitter/X API v2 連携 | `twitter-bearer-token`, `twitter-api-key`, `twitter-api-secret`, `twitter-access-token`, `twitter-access-token-secret` |
+| `facebook` | Facebook/Meta Graph API 連携 | `facebook-app-id`, `facebook-app-secret`, `facebook-access-token` |
+| `line` | LINE Messaging API 連携 | `line-channel-id`, `line-channel-secret`, `line-channel-access-token` |
+| `sentry` | Sentry エラートラッキング | `sentry-dsn` |
+| `onesignal` | OneSignal プッシュ通知 | `onesignal-app-id`, `onesignal-api-key` |
+| `slack` | Slack 通知（Webhook） | `slack-webhook-url` |
+
+**複合グループ**（よくある組み合わせをまとめて指定できる）:
+
+| グループ名 | 展開されるサービス |
+|---|---|
+| `standard` | `revenuecat` + `admob` + `firebase` + `play_console`（アプリの基本セット） |
+| `sns` | `twitter` + `facebook` + `line` |
+| `monitoring` | `sentry` + `slack` |
+
+`--services` と個別キーは併用できる: `--services standard,twitter custom-webhook-secret`
+
+**新しいプリセットを追加したい場合**は `infrastructure/scripts/service-presets.sh` の
+`SERVICE_PRESET_KEYS` / `SERVICE_PRESET_DESC`（必要なら `SERVICE_PRESET_GROUPS`）に1行追加するだけでよい。
 
 ## 新しいアプリを追加する手順（詳細に制御したい場合）
 
