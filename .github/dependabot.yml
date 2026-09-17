@@ -1,0 +1,14 @@
+# 依存パッケージの脆弱性を自動検知し、PRを自動作成する設定。
+version: 2
+updates:
+  # Flutter/Dart パッケージ依存
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions（今回追加した secure-secrets-inject.yml, play-store-deploy.yml 含む）
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
