@@ -12,6 +12,19 @@ RevenueCat / AdMob / Google Play Console / Firebase などの認証情報を、
 4. **シークレットの値は Git にもログにも残さない** — Secret Manager に一元管理
 5. **Production リリースは自動化しない** — 人間の最終承認を必須にする
 
+## 管理者アカウント
+
+Google Cloud / Firebase / Google Play Console / AdMob の管理者アカウント（人間がログインする側）は
+**すべて `yourwishdev@gmail.com` に統一**する。
+
+- `gcloud auth login` はこのアカウントで実行する（初期セットアップ時のみ）
+- Firebase プロジェクト作成・Play Console でのアプリ登録・AdMob アカウント作成も同アカウントで行う
+- 複数アプリを1つの Google アカウント配下で「プロジェクト」として管理する構成（本ドキュメント冒頭の設計原則どおり）
+- **このアカウント自体のログインパスワードは、CI/CD や自動化スクリプトのどこにも登場しない** — 自動化は本ドキュメントの Terraform モジュールが作る専用サービスアカウント + Workload Identity Federation 経由でのみ行う
+
+再発防止のため、新しい GCP プロジェクトやアプリを追加する際は、この管理者アカウントで作業したことを
+`infrastructure/terraform/environments/<app_name>/main.tf` 追加時のコミットメッセージ等に記録しておくとよい。
+
 ## ディレクトリ構成
 
 ```
