@@ -43,7 +43,9 @@ shared_core/
 │       ├── error-troubleshooter.sh        # 失敗時にエラー内容から対処法を提示
 │       ├── setup-service-accounts.sh      # 個別ディレクトリ方式の初期セットアップ（旧）
 │       ├── set-secret-value.sh            # シークレット値の投入・更新
-│       └── check-secrets-status.sh        # 既存登録／未登録の自動判別（値の聞き直し防止）
+│       ├── check-secrets-status.sh        # 既存登録／未登録の自動判別（値の聞き直し防止）
+│       ├── ensure-firebase-app.sh         # Firebaseアプリ登録の自動確認・自動登録
+│       └── ensure-revenuecat-app.sh       # RevenueCatアプリ登録の自動確認・自動登録
 └── .github/workflows/
     ├── secure-secrets-inject.yml          # 再利用可能: Secret取得
     └── play-store-deploy.yml              # 再利用可能: Play Store配布
@@ -104,6 +106,55 @@ echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id>
 **前提**: `gcloud auth login`（管理者アカウント `yourwishdev@gmail.com` で1回だけ）と `gh auth login` が済んでいること。
 新規プロジェクト作成には、この管理者アカウントに Organization 配下でのプロジェクト作成権限
 （`roles/resourcemanager.projectCreator` 等）が必要。
+
+## Firebase / RevenueCat の「アプリ登録自体」の自動確認・自動登録
+
+`check-secrets-status.sh` は Secret Manager に**値が入っているか**を確認するだけで、
+Firebase や RevenueCat の**ダッシュボード側にそのアプリが実際に登録されているか**は
+別問題。この確認・登録を自動化するのが以下の2スクリプト。動作方針は
+`check-secrets-status.sh` と同じ:
+
+- ✅ 既に登録済み → 表示するだけ（重複作成しない）。呼び出し側は
+  ユーザーに「この登録内容のままで良いか」の確認だけを依頼すること。
+- 🆕 未登録 → 対象サービスのAPIで自動的に作成する（人間の追加操作は不要）。
+
+### Firebase: `ensure-firebase-app.sh`
+
+Firebase Management API を使い、GCPプロジェクトへのFirebase追加・
+Android/iOSアプリの登録を自動確認・自動作成する。
+
+```bash
+./ensure-firebase-app.sh <app_name> <gcp_project_id> android <package_name>
+./ensure-firebase-app.sh <app_name> <gcp_project_id> ios <bundle_id>
+
+# 例:
+./ensure-firebase-app.sh kokugo-kore shougakukore android com.yourwish.shougakukore.kokugo
+```
+
+前提: `gcloud auth login` 済みで、対象GCPプロジェクトに対する Firebase Admin 権限
+（`roles/firebase.admin` 等）を持つこと。追加の人間操作は不要。
+
+### RevenueCat: `ensure-revenuecat-app.sh`
+
+RevenueCat REST API v2 を使い、プロジェクト・アプリの存在確認と自動作成を行う。
+既存アプリのSDK用公開APIキーが取れた場合は `check-secrets-status.sh` と連動して
+Secret Manager (`revenuecat-api-key`) への登録状況もあわせて確認する。
+
+```bash
+export REVENUECAT_SECRET_API_KEY="sk_xxxxx"  # RevenueCatダッシュボードで人間が1回だけ発行
+./ensure-revenuecat-app.sh <app_name> <gcp_project_id> play_store <package_name>
+./ensure-revenuecat-app.sh <app_name> <gcp_project_id> app_store <bundle_id>
+```
+
+> ⚠️ **`ensure-revenuecat-app.sh` はネットワークアクセスのない環境で作成されたため、
+> RevenueCat API v2 のリクエスト/レスポンス形式が公式ドキュメントで未検証**。
+> 初回実行時にAPIエラーが出た場合は、スクリプト内のエンドポイント・フィールド名を
+> [RevenueCat公式ドキュメント](https://www.revenuecat.com/docs/api-v2) と照合して
+> 修正すること。動作確認が取れたら、この注記は削除してよい。
+
+いずれも `app_name` / `gcp_project_id` / プラットフォーム / パッケージ名（バンドルID）を
+引数に取る汎用スクリプトなので、特定のアプリに固定されない。開発中の全アプリ
+（yourwish, goen, kokugo-kore, sansu-kore 等）で同じコマンドを使い回せる。
 
 ## 既に登録済みのアプリに対する動作（確認・不備修正）
 
@@ -316,15 +367,15 @@ Production への反映は、Google Play Console の Web UI で人間が
 
 ## サービス別の対応状況
 
-| サービス | 自動化方式 | パスワード不要 | Production自動化 |
-|---------|-----------|:---:|:---:|
-| Google Cloud | サービスアカウント + WIF | ✅ | ✅ |
-| Firebase | サービスアカウント (Admin SDK) | ✅ | ✅ |
-| Secret Manager | サービスアカウント + WIF | ✅ | ✅ |
-| RevenueCat | API キー（Secret Managerで管理） | ✅ | ✅ |
-| AdMob | OAuth2 サービスアカウント | ✅ | ⚠️ 広告有効化は手動推奨 |
-| Google Play Console | Play Developer API + サービスアカウント | ✅ | ❌ 手動承認必須 |
-| Apple Developer | — | — | ❌ Web UI 自動化は規約違反 |
+| サービス | 自動化方式 | パスワード不要 | アプリ登録自体の自動化 | Production自動化 |
+|---------|-----------|:---:|:---:|:---:|
+| Google Cloud | サービスアカウント + WIF | ✅ | — | ✅ |
+| Firebase | サービスアカウント (Admin SDK) | ✅ | ✅ `ensure-firebase-app.sh` | ✅ |
+| Secret Manager | サービスアカウント + WIF | ✅ | — | ✅ |
+| RevenueCat | API キー（Secret Managerで管理） | ✅ | ✅ `ensure-revenuecat-app.sh`（要動作確認） | ✅ |
+| AdMob | OAuth2 サービスアカウント | ✅ | ❌ アプリ新規作成はAPI未提供 | ⚠️ 広告有効化は手動推奨 |
+| Google Play Console | Play Developer API + サービスアカウント | ✅ | ❌ アプリ新規作成はAPI未提供 | ❌ 手動承認必須 |
+| Apple Developer | — | — | ❌ | ❌ Web UI 自動化は規約違反 |
 
 ## やってはいけないこと
 
