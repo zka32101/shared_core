@@ -199,6 +199,148 @@ EOF
 EOF
   fi
 
+  if echo "$output" | grep -qiE "command not found.*gcloud|command not found.*terraform|command not found.*gh\b|gcloud: command not found|terraform: command not found"; then
+    matched=1
+    cat <<'EOF'
+【gcloud / gh / terraform がこの環境にインストールされていない】
+  リモート実行環境（特にネットワーク制限のあるサンドボックス）では、これらの
+  CLI がプリインストールされていないことがある。以下で代替できる:
+
+  - terraform: releases.hashicorp.com から直接バイナリを取得
+      curl -sS -o terraform.zip \
+        https://releases.hashicorp.com/terraform/<version>/terraform_<version>_linux_amd64.zip
+      unzip terraform.zip && chmod +x terraform
+    （sdk.cloud.google.com や registry.terraform.io がプロキシでブロック
+     されている環境では、次の「レジストリ到達不可」パターンも参照）
+
+  - gcloud: pip で Python 版 GCP クライアントライブラリを使う
+      pip3 install google-cloud-resource-manager google-cloud-secret-manager google-auth
+    （gcloud CLI 自体の公式インストーラ sdk.cloud.google.com がブロック
+     されている環境が多いため、CLI自体の導入は諦めて Python/curl で代替する）
+
+  - gh: GitHub REST API を curl で直接叩く（後述の「GitHub Actions パス
+     への直接アクセスがプロキシに拒否される」パターンも参照）
+
+EOF
+  fi
+
+  if echo "$output" | grep -qiE "could not connect to registry.terraform.io|failed to request discovery document|forbidden.*registry.terraform.io"; then
+    matched=1
+    cat <<'EOF'
+【Terraform provider レジストリ(registry.terraform.io)がプロキシでブロックされている】
+  組織のネットワークポリシーで registry.terraform.io への接続が拒否される
+  環境がある。releases.hashicorp.com は許可されていることが多いので、
+  そこから provider バイナリを直接取得し、filesystem_mirror として使う。
+
+  対処法:
+    1. provider バイナリを直接ダウンロード:
+       mkdir -p /tmp/tf-mirror/registry.terraform.io/hashicorp/google/<version>/linux_amd64
+       curl -sS -o /tmp/provider.zip \
+         https://releases.hashicorp.com/terraform-provider-google/<version>/terraform-provider-google_<version>_linux_amd64.zip
+       unzip /tmp/provider.zip -d /tmp/tf-mirror/registry.terraform.io/hashicorp/google/<version>/linux_amd64/
+
+    2. ~/.terraformrc (または /root/.terraformrc) を作成:
+       provider_installation {
+         filesystem_mirror {
+           path    = "/tmp/tf-mirror"
+           include = ["registry.terraform.io/*/*"]
+         }
+       }
+
+    3. .terraform ディレクトリと .terraform.lock.hcl を削除してから
+       terraform init をやり直す
+
+EOF
+  fi
+
+  if echo "$output" | grep -qiE "cannot create projects without a parent|Service accounts cannot create projects"; then
+    matched=1
+    cat <<'EOF'
+【サービスアカウントは親組織/フォルダなしで新規GCPプロジェクトを作成できない】
+  人間のユーザーアカウントは自分の直下（no-parent）にプロジェクトを作成
+  できるが、サービスアカウントには常に parent（organizations/<ID> または
+  folders/<ID>）の指定が必須という GCP 仕様上の制約がある。
+
+  対処法（いずれか）:
+  - ブートストラップ用サービスアカウントが属する組織IDを調べて指定する:
+      gcloud organizations list
+      （または既存プロジェクトの parent を調べる:
+       gcloud projects describe <既存project_id> --format="value(parent)"）
+    その上でプロジェクト作成時に parent を明示的に渡す。
+  - 新規プロジェクトの分離にこだわらないなら、既存の管理用プロジェクトに
+    アプリ用のリソース（サービスアカウント・Secret Manager・WIF）を
+    同居させる方式に倒す（tfvars の project_id を既存プロジェクトIDにする）。
+    課金・IAM境界の分離は失うが、権限昇格なしにすぐ動く。
+  - GCP Console から人間が一度だけプロジェクトを作成し、以降のリソース
+    管理だけを自動化に任せる。
+
+EOF
+  fi
+
+  if echo "$output" | grep -qiE "Access to this GitHub Actions path is not permitted through this proxy"; then
+    matched=1
+    cat <<'EOF'
+【GitHub Actions Variables/Secrets API への直接アクセスがプロキシに拒否される】
+  このリモート実行環境のネットワークプロキシは、
+  /repos/{owner}/{repo}/actions/variables や .../secrets 配下への直接の
+  REST API 呼び出し（curl等）や gh CLI 経由の操作をセキュリティ上ブロック
+  している。GitHub MCP ツール群にも Variables/Secrets を設定する機能はない。
+
+  これは回避すべきでない意図的なガードレールなので、以下のいずれかで
+  対応する:
+  - 人間が手元の端末（gh CLI ログイン済み）で以下を実行する:
+      gh variable set <NAME> --repo <owner>/<repo> --body "<value>"
+  - GitHub Actions への書き込み権限を持つ別の実行環境（プロキシ制限のない
+    セッション等）に依頼する。
+  - 対処法をコミット/PR にまとめ、コマンドをそのまま提示して人間に
+    実行してもらう。
+
+EOF
+  fi
+
+  if echo "$output" | grep -qiE "doesn't match regexp.*a-z0-9|must contain only lowercase letters.*dashes|project display name contains invalid characters"; then
+    matched=1
+    cat <<'EOF'
+【app_name にアンダースコア等、GCPの命名規則で許可されない文字が含まれている】
+  サービスアカウントID・Workload Identity Pool ID は
+  "^[a-z](?:[-a-z0-9]{4,28}[a-z0-9])$" のように英小文字・数字・ハイフン
+  のみ許可され、アンダースコアは使えない（Secret ID 自体はアンダースコア
+  を許容するため気づきにくい）。GCPプロジェクトの display_name も同様に
+  制約がある。
+
+  対処法:
+    tfvars の app_name をハイフン区切りに変更する
+    （例: "kokugo_kore" → "kokugo-kore"）。
+    tfvars ファイル名自体も add-new-app.sh の規約 (${APP_NAME}.tfvars) に
+    合わせてリネームしておくと以後の実行で迷わない。
+
+EOF
+  fi
+
+  if echo "$output" | grep -qiE "Unable to load PEM file|Invalid private key|InvalidData.*Invalid symbol"; then
+    matched=1
+    cat <<'EOF'
+【GCPサービスアカウントキーのPEM鍵が壊れている（手動転記によるタイプミスの可能性大）】
+  Google Drive等から取得したサービスアカウントキーJSONを、一度読んだ内容を
+  見ながら別ファイルに書き写す（Write ツールで手打ちする等）と、長い
+  private_key 文字列の一部が転記ミスで欠落・変化し、PEMとして壊れることが
+  ある。
+
+  対処法:
+  - 取得した base64 コンテンツは、絶対に手動で書き写さず、必ず機械的に
+    デコードする:
+      echo "<base64文字列>" | base64 -d > /path/to/key.json
+    （Google Drive の download_file_content が返す content フィールドは
+     base64 エンコード済みなので、1回だけデコードすればよい。
+     search_files の contentSnippet は Markdown エスケープ済みの
+     プレビュー文字列であり、絶対にこの用途に使わない）
+  - デコード後は python3 -c "import json; json.load(open('key.json'))"
+    で構造を検証し、さらに service_account.Credentials で実際に認証
+    できることを確認してから使う。
+
+EOF
+  fi
+
   if [ "$matched" -eq 0 ]; then
     cat <<EOF
 【未知のエラーパターン】
