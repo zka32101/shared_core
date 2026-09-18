@@ -300,12 +300,14 @@ cat <<EOF
 ✅ '${APP_NAME}' の確認が完了しました（不備があった箇所のみ修正済み）。
    パスワード・長期鍵ファイルは一切生成していません。
 
-次にやること（新しいシークレットの値がある場合のみ）:
 EOF
 
-for key in "${SECRET_KEYS[@]}"; do
-  echo "  echo -n \"実際の値\" | ./set-secret-value.sh ${APP_NAME} ${PROJECT_ID} ${key}"
-done
+# シークレットの値を「ユーザーに聞くべきか」「既存値の確認だけで良いか」を
+# 自動判別する。呼び出し側（Claudeセッション等）は、ここで「既に登録済み」と
+# 表示されたキーについてはユーザーに値を聞き直さず、確認だけを求めること。
+if [ ${#SECRET_KEYS[@]} -gt 0 ]; then
+  "${SCRIPT_DIR}/check-secrets-status.sh" "${APP_NAME}" "${PROJECT_ID}" "${SECRET_KEYS[@]}"
+fi
 
 cat <<EOF
 
