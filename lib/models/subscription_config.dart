@@ -5,7 +5,7 @@ part 'subscription_config.g.dart';
 
 /// RevenueCat API キーと設定情報
 @freezed
-class SubscriptionConfig with _$SubscriptionConfig {
+abstract class SubscriptionConfig with _$SubscriptionConfig {
   const factory SubscriptionConfig({
     /// Google Play Billing API キー
     required String googleKey,
