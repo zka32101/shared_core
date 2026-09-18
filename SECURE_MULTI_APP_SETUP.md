@@ -42,7 +42,8 @@ shared_core/
 │       ├── service-presets.sh             # よく使うサービスのシークレットキープリセット定義
 │       ├── error-troubleshooter.sh        # 失敗時にエラー内容から対処法を提示
 │       ├── setup-service-accounts.sh      # 個別ディレクトリ方式の初期セットアップ（旧）
-│       └── set-secret-value.sh            # シークレット値の投入・更新
+│       ├── set-secret-value.sh            # シークレット値の投入・更新
+│       └── check-secrets-status.sh        # 既存登録／未登録の自動判別（値の聞き直し防止）
 └── .github/workflows/
     ├── secure-secrets-inject.yml          # 再利用可能: Secret取得
     └── play-store-deploy.yml              # 再利用可能: Play Store配布
@@ -79,10 +80,26 @@ cd shared_core/infrastructure/scripts
 つまり、**まだ存在しないGCPプロジェクトIDを渡しても、そのプロジェクトの作成から自動で行われる**
 （既に存在するプロジェクトIDを渡した場合はスキップされ、既存アプリの確認・不備修正の対象になる）。
 
-最後に、シークレットの実際の値だけ投入する（これは自動化できない — 値そのものを人間が知っている必要があるため）:
+最後に、シークレットの実際の値を投入する（これは自動化できない — 値そのものを人間が知っている必要があるため）:
 ```bash
 echo -n "実際のAPIキー" | ./set-secret-value.sh <app_name> <gcp_project_id> revenuecat-api-key
 ```
+
+`add-new-app.sh` は実行の最後に `check-secrets-status.sh` を自動で呼び出し、各シークレットキーが
+**既に登録済みか／未登録か**を自動判別して表示する。
+
+> ⚠️ **重要（Claude セッションなど呼び出し側の運用ルール）**:
+> `check-secrets-status.sh` が「✅ 既に登録済み」と表示したキーについては、
+> ユーザーに AdMob ID・RevenueCat キーなどの**値を聞き直してはいけない**。
+> 代わりに「〇〇は既に登録されています（最終更新: yyyy-mm-dd）。今の値のままで
+> 問題ないか確認してください」という**確認依頼**をユーザーに送ること。
+> 「🆕 未登録」と表示されたキーについてのみ、実際の値をユーザーに尋ねて
+> `set-secret-value.sh` で登録する。
+>
+> 単体で確認したい場合:
+> ```bash
+> ./check-secrets-status.sh <app_name> <gcp_project_id> <secret_key> [secret_key ...]
+> ```
 
 **前提**: `gcloud auth login`（管理者アカウント `yourwishdev@gmail.com` で1回だけ）と `gh auth login` が済んでいること。
 新規プロジェクト作成には、この管理者アカウントに Organization 配下でのプロジェクト作成権限
