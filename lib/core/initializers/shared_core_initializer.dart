@@ -3,7 +3,6 @@ import 'package:shared_core/models/subscription_config.dart';
 import 'package:shared_core/services/firebase_service.dart';
 import 'package:shared_core/services/purchase_service.dart';
 import 'package:shared_core/services/push_notification_service.dart';
-import 'package:shared_core/services/reminder_service.dart';
 
 /// shared_core の統一初期化ユーティリティ
 ///
@@ -65,15 +64,16 @@ class SharedCoreInitializer {
 
   /// 通知機能のみを初期化
   ///
-  /// PushNotificationService と ReminderService を初期化します。
+  /// PushNotificationService（Firebase Cloud Messaging & Local
+  /// Notifications）を初期化します。ReminderService はシングルトンの
+  /// コンストラクタ内でのみ状態を持ち、明示的な初期化処理を必要としません。
   ///
   /// 例:
   /// ```dart
   /// await SharedCoreInitializer.initializeNotifications();
   /// ```
   static Future<void> initializeNotifications() async {
-    await PushNotificationService.initialize();
-    await ReminderService.instance.initialize();
+    await PushNotificationService().initialize();
   }
 
   /// 初期化済みの PurchaseService インスタンスを取得
