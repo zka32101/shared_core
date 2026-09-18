@@ -9,4 +9,7 @@ secrets = [
   "admob-rewarded-ad-unit-id",
   "firebase-admin-key",
   "play-console-sa-key",
+  "android-keystore-base64",
+  "android-keystore-password",
+  "android-key-password",
 ]
