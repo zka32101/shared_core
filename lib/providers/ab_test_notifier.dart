@@ -91,17 +91,22 @@ class ABTestNotifier extends StateNotifier<ABTestState> {
           transaction.set(ref, updated.toJson());
         } else {
           // 新規作成
+          final newImpressions = metric == TestMetric.impression ? value : 0;
+          final newConversions = metric == TestMetric.conversion ? value : 0;
+          final newRevenue = metric == TestMetric.revenue
+              ? value
+              : (metric == TestMetric.conversion ? value : 0);
           final result = ABTestResult(
             testId: testId,
             variant: variant,
-            impressions: metric == TestMetric.impression ? value : 0,
-            conversions: metric == TestMetric.conversion ? 1 : 0,
-            conversionRate: metric == TestMetric.conversion ? 1.0 : 0.0,
-            totalRevenue: metric == TestMetric.revenue
-                ? value
-                : (metric == TestMetric.conversion ? value : 0),
+            impressions: newImpressions,
+            conversions: newConversions,
+            conversionRate: newImpressions > 0
+                ? newConversions / newImpressions
+                : 0.0,
+            totalRevenue: newRevenue,
             averageOrderValue:
-                metric == TestMetric.conversion ? value.toDouble() : 0.0,
+                newConversions > 0 ? newRevenue / newConversions : 0.0,
             updatedAt: DateTime.now(),
           );
 

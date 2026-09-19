@@ -194,7 +194,7 @@ class RatingCalculator {
     return sin(pi / (2 * _glicko2ScalingFactor) * sqrt(exp(x)));
   }
 
-  /// Glicko-2の新しいvolatility計算（複雑な非線形方程式を反復法で解く）。
+  /// Glicko-2の新しいvolatility計算（Illinois法による反復で非線形方程式を解く）。
   static double _glicko2_volatility(
     double prevVolatility,
     double rd,
@@ -202,36 +202,38 @@ class RatingCalculator {
     double m,
   ) {
     const tau = _glicko2Tau;
+    const epsilon = 0.000001;
     final a = log(prevVolatility * prevVolatility);
-    final b = _glicko2_getB(a, dSquared, m, rd, tau);
-    final x = _glicko2_getX(a, b, dSquared, m, rd, tau);
 
-    final volatilitySquared = exp(x);
-    return sqrt(volatilitySquared);
-  }
-
-  static double _glicko2_getB(double a, double dSquared, double m, double rd, double tau) {
-    const tau2 = _glicko2Tau;
-    double left = a;
-    double right = a;
-
-    while (right - left > 0.0001) {
-      right += 1;
-    }
-    while (right - left > 0.0001) {
-      final mid = (left + right) / 2;
-      if (_glicko2_f(mid, a, dSquared, m, rd, tau2) < 0) {
-        left = mid;
-      } else {
-        right = mid;
+    double A = a;
+    double B;
+    if (m * m > rd * rd + 1 / dSquared) {
+      B = log(m * m - rd * rd - 1 / dSquared);
+    } else {
+      double k = 1;
+      while (_glicko2_f(a - k * tau, a, dSquared, m, rd, tau) < 0) {
+        k += 1;
       }
+      B = a - k * tau;
     }
 
-    return (left + right) / 2;
-  }
+    double fA = _glicko2_f(A, a, dSquared, m, rd, tau);
+    double fB = _glicko2_f(B, a, dSquared, m, rd, tau);
 
-  static double _glicko2_getX(double a, double b, double dSquared, double m, double rd, double tau) {
-    return a + (b - a) / (1 + exp((b - a) / 2));
+    while ((B - A).abs() > epsilon) {
+      final C = A + (A - B) * fA / (fB - fA);
+      final fC = _glicko2_f(C, a, dSquared, m, rd, tau);
+      if (fC * fB <= 0) {
+        A = B;
+        fA = fB;
+      } else {
+        fA = fA / 2;
+      }
+      B = C;
+      fB = fC;
+    }
+
+    return exp(A / 2);
   }
 
   static double _glicko2_f(double x, double a, double dSquared, double m, double rd, double tau) {

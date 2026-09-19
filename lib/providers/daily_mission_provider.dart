@@ -176,6 +176,10 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
           debugPrint('Error calling progressHandler: $e');
           // Cache is already updated, so continue gracefully
         }
+      } else {
+        // No app-specific handler injected; fall back to shared_core's
+        // own Firestore persistence so progress survives reinstalls.
+        await _saveProgressToFirestore(updatedProgress);
       }
     } catch (e) {
       state = state.copyWith(
@@ -343,9 +347,9 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
           .doc(_userId)
           .collection('progress')
           .doc(_formatDate(lastReset))
-          .update({
+          .set({
         progress.missionId: progress.toJson(),
-      });
+      }, SetOptions(merge: true));
     } catch (e) {
       // Silently fail on Firestore writes; cache is the source of truth
     }

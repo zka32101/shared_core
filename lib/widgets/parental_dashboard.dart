@@ -78,7 +78,7 @@ class ParentalDashboard extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              '${settings.dailyLimitMinutes! - state.usage.usedMinutes} 分',
+                              '${(settings.dailyLimitMinutes! - state.usage.usedMinutes).clamp(0, settings.dailyLimitMinutes!)} 分',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
