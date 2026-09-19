@@ -4,6 +4,8 @@
 #
 # 「アプリ名 + GCPプロジェクトID + GitHubリポジトリ + シークレットキー一覧」を
 # 渡すだけで、以下をまとめて実行する:
+#   0. まず「現在の登録状況」を確認し、これから自動登録する対象を明記する
+#      （この時点では一切書き込みを行わない、読み取り専用の確認ステップ）
 #   1. tfvars ファイルを生成/更新（既存なら差分を表示するだけで上書きしない）
 #   2. terraform plan で「クラウド側の実際の状態」との差分（不備）を確認し、
 #      差分がある場合のみ terraform apply で修正する（差分ゼロなら何もしない）
@@ -65,6 +67,9 @@ print_usage() {
 
 既に登録済みのアプリに対して同じコマンドを再実行すると、"登録内容の確認"のみ行い、
 クラウド側やGitHub側に不備（差分）がある場合だけ自動で修正します。
+
+実行するとまず「現在の登録状況」（読み取り専用）を表示し、続けて
+「これから自動登録する対象」を明記してから、実際の登録処理に進みます。
 USAGE
 }
 
@@ -141,6 +146,87 @@ else
   echo "   シークレット       : (なし — 後から追加可能)"
 fi
 echo ""
+
+# =============================================================================
+# Step 0: 現在の登録状況を確認する（読み取り専用。ここでは一切書き込まない）
+# =============================================================================
+echo "🔧 [0/4] 現在の登録状況を確認しています（読み取り専用）..."
+echo ""
+
+# --- 0a. tfvars（アプリ設定）の現在の状態 ---
+if [ "$IS_EXISTING" = true ]; then
+  echo "   📄 tfvars: 既存ファイルあり（${TFVARS_FILE}）"
+else
+  echo "   📄 tfvars: 未作成（このアプリは初回登録です）"
+fi
+
+# --- 0b. GCPプロジェクトの現在の状態（作成はしない、確認のみ） ---
+PROJECT_EXISTS=false
+if gcloud projects describe "${PROJECT_ID}" >/dev/null 2>&1; then
+  PROJECT_EXISTS=true
+  echo "   ☁️  GCPプロジェクト '${PROJECT_ID}': 既に存在します"
+else
+  echo "   ☁️  GCPプロジェクト '${PROJECT_ID}': 未作成"
+fi
+
+# --- 0c. シークレットの現在の登録状況（値の有無まで確認。箱の作成はしない） ---
+if [ ${#SECRET_KEYS[@]} -gt 0 ]; then
+  echo ""
+  "${SCRIPT_DIR}/check-secrets-status.sh" "${APP_NAME}" "${PROJECT_ID}" "${SECRET_KEYS[@]}"
+fi
+
+# --- 0d. GitHub Variables の現在の状態（読み取りのみ） ---
+echo "   🐙 GitHub Variables（${GITHUB_REPO}）:"
+if command -v gh >/dev/null 2>&1; then
+  for var_name in GCP_PROJECT_ID GCP_SERVICE_ACCOUNT GCP_WIF_PROVIDER; do
+    current_value="$(gh variable list --repo "${GITHUB_REPO}" --json name,value \
+      -q ".[] | select(.name==\"${var_name}\") | .value" 2>/dev/null || true)"
+    if [ -n "$current_value" ]; then
+      echo "      - ${var_name}: 設定済み"
+    else
+      echo "      - ${var_name}: 未設定"
+    fi
+  done
+else
+  echo "      ⚠️  gh CLI が見つからないため確認をスキップしました"
+fi
+echo ""
+
+# --- 現状確認のまとめ: これから自動登録する対象を明記する ---
+echo "📋 これから自動登録する対象:"
+AUTO_TARGETS_FOUND=false
+
+if [ "$IS_EXISTING" = false ]; then
+  echo "   - tfvars ファイルを新規作成します"
+  AUTO_TARGETS_FOUND=true
+fi
+
+if [ "$PROJECT_EXISTS" = false ]; then
+  echo "   - GCPプロジェクト '${PROJECT_ID}' を新規作成します"
+  AUTO_TARGETS_FOUND=true
+fi
+
+echo "   - GCP API 有効化・Secret Managerの「箱」・サービスアカウント・WIF を"
+echo "     terraform plan で確認し、差分があれば自動で作成/修正します"
+AUTO_TARGETS_FOUND=true
+
+if [ ${#SECRET_KEYS[@]} -gt 0 ]; then
+  echo "   - シークレットの「箱」: 上記の登録状況で「未登録」「箱が存在しない」と"
+  echo "     表示されたキーについて、このあとの手順で箱を作成します"
+  echo "     （箱の作成のみ自動で行われます。値の入力はユーザーへの確認が必要です）"
+fi
+
+echo "   - GitHub Variables（GCP_PROJECT_ID / GCP_SERVICE_ACCOUNT / GCP_WIF_PROVIDER）を"
+echo "     期待値と比較し、不一致があれば自動で修正します"
+
+if [ "$AUTO_TARGETS_FOUND" = false ]; then
+  echo "   （対象なし。現状のままで登録済みです）"
+fi
+echo ""
+
+# =============================================================================
+# ここから実際の自動登録処理（Step 1〜4）
+# =============================================================================
 
 # --- Step 1: tfvars ファイルを生成し、既存内容との差分を表示 ---
 echo "🔧 [1/4] 設定内容(tfvars)を確認しています..."
@@ -306,6 +392,7 @@ EOF
 # 自動判別する。呼び出し側（Claudeセッション等）は、ここで「既に登録済み」と
 # 表示されたキーについてはユーザーに値を聞き直さず、確認だけを求めること。
 if [ ${#SECRET_KEYS[@]} -gt 0 ]; then
+  echo "🔁 登録処理後の最終状況（Step 0 の確認と比較してください）:"
   "${SCRIPT_DIR}/check-secrets-status.sh" "${APP_NAME}" "${PROJECT_ID}" "${SECRET_KEYS[@]}"
 fi
 
