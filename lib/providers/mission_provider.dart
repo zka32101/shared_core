@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -422,8 +423,7 @@ final missionProvider =
 /// 特定ミッションの進捗 (リアルタイム)
 final missionProgressProvider = StreamProvider.family<UserMissionProgress?, String>(
   (ref, missionId) {
-    // 本来は userId も必要。実装時に修正
-    final userId = 'current_user'; // TODO: 実装時に修正
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? 'current_user';
     return FirebaseFirestore.instance
         .collection('user_mission_progress')
         .doc('${userId}_$missionId')
