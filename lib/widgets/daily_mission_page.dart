@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,7 +39,7 @@ class _DailyMissionPageState extends ConsumerState<DailyMissionPage> {
   @override
   void initState() {
     super.initState();
-    _userId = 'current_user'; // TODO: 実装時に Auth から取得
+    _userId = FirebaseAuth.instance.currentUser?.uid ?? 'current_user';
 
     // ページ初期化時にミッションを読み込み
     Future.microtask(() {

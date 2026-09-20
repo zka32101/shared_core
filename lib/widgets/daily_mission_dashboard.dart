@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,7 +37,7 @@ class _DailyMissionDashboardState extends ConsumerState<DailyMissionDashboard> {
   @override
   void initState() {
     super.initState();
-    _userId = 'current_user'; // TODO: Auth から取得
+    _userId = FirebaseAuth.instance.currentUser?.uid ?? 'current_user';
     _appId = 'app'; // TODO: アプリIDを設定
 
     // ダッシュボード初期化時にミッションを読み込み
