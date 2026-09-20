@@ -83,7 +83,12 @@ jobs:
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run tests
-        run: flutter test
+        run: |
+          if [ -d "test" ] && find test -name "*_test.dart" | grep -q .; then
+            flutter test
+          else
+            echo "::warning::test/ ディレクトリまたは *_test.dart が見つからないためテストをスキップしました。リリース前にテストを追加することを推奨します。"
+          fi
 
       - name: "Android applicationId と google-services.json の整合性確認"
         if: inputs.check_google_services
