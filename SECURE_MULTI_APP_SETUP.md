@@ -48,7 +48,9 @@ shared_core/
 │       └── ensure-revenuecat-app.sh       # RevenueCatアプリ登録の自動確認・自動登録
 └── .github/workflows/
     ├── secure-secrets-inject.yml          # 再利用可能: Secret取得
-    └── play-store-deploy.yml              # 再利用可能: Play Store配布
+    ├── play-store-deploy.yml              # 再利用可能: Play Store配布
+    └── release-readiness-check.yml        # 再利用可能: リリース前チェック一括実行
+                                            #（add-new-app.shが各アプリに呼び出し設定を自動配置）
 ```
 
 ## 新しいアプリを追加する手順（ワンコマンド・推奨）
@@ -78,6 +80,12 @@ cd shared_core/infrastructure/scripts
    - 2個以上 → どれを使うか自動判断できないため一覧を出して手動リンクを案内
 3. 必要な GCP API 有効化 + `terraform apply`（専用サービスアカウント・Secret Manager の箱・WIF を作成）
 4. GitHub リポジトリの Variables（`GCP_PROJECT_ID` / `GCP_SERVICE_ACCOUNT` / `GCP_WIF_PROVIDER`）を `gh` CLI で自動設定
+5. **`release-readiness-check.yml`（リリース前チェックの呼び出し設定）が
+   アプリリポジトリに無ければ自動配置する**（`gh api` でリポジトリに直接コミット。
+   既に配置済みなら変更しない）。これにより、「固定の対象アプリ一覧」を手作業で
+   増やさなくても、`add-new-app.sh` で登録した全アプリが自動的に
+   `pub get` / `build_runner` / `flutter analyze`（error 0件必須）/ `flutter test` /
+   `google-services.json` 整合性チェックを `workflow_dispatch` から実行できるようになる
 
 つまり、**まだ存在しないGCPプロジェクトIDを渡しても、そのプロジェクトの作成から自動で行われる**
 （既に存在するプロジェクトIDを渡した場合はスキップされ、既存アプリの確認・不備修正の対象になる）。
@@ -172,6 +180,9 @@ export REVENUECAT_SECRET_API_KEY="sk_xxxxx"  # RevenueCatダッシュボード�
    - 一致 → 「変更なし」
    - 未設定 → 新規設定
    - 不一致（誰かが手動で書き換えた等） → 修正
+4. **`release-readiness-check.yml` の確認** — アプリリポジトリに既にあるか `gh api` で確認する
+   - あり → 「変更しません」（アプリ側でカスタマイズしていても上書きしない）
+   - なし → 新規作成（`workflow_dispatch` から呼び出す13行程度のファイル）
 
 つまり、**「登録済みかどうか分からないアプリ」でも、同じコマンドを実行するだけで
 安全に確認・修正できる**（変更が無ければ何もしない。壊れることはない）。
@@ -340,6 +351,27 @@ jobs:
           REVENUECAT_API_KEY=$(echo "$SECRETS_JSON" | jq -r '.REVENUECAT_API_KEY')
           flutter build apk --dart-define=REVENUECAT_API_KEY=$REVENUECAT_API_KEY
 ```
+
+### 7. リリース前チェックを追加
+
+`add-new-app.sh` が自動配置する内容と同じもの。手作業で追加する場合:
+
+```yaml
+# <新アプリ>/.github/workflows/release-readiness-check.yml
+name: Release Readiness Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    uses: zka32101/shared_core/.github/workflows/release-readiness-check.yml@main
+    with:
+      flutter_version: '3.x'   # アプリ固有のバージョンがあれば書き換える
+```
+
+Actionsタブから手動実行すると、`pub get` / `build_runner` / `flutter analyze`（errorレベル0件必須）/
+`flutter test` / Android `applicationId` と `google-services.json` の整合性を一括確認できる。
 
 ## Google Play Console への配布
 
