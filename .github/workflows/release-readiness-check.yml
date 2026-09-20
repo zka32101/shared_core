@@ -1,0 +1,111 @@
+name: Release Readiness Check (Reusable)
+
+# =============================================================================
+# 複数リポジトリから呼び出せる再利用可能ワークフロー。
+#
+# 小学コレシリーズ各アプリのリリース前に共通で確認すべき項目を一括実行する。
+# secure-secrets-inject.yml と同じ「shared_core を単一のソースにする」方針で、
+# 各アプリはこのワークフローを workflow_dispatch から呼び出すだけでよい。
+#
+# 呼び出し側の使用例（kokugo-kore/.github/workflows/release-readiness-check.yml）:
+#
+#   name: Release Readiness Check
+#   on:
+#     workflow_dispatch:
+#   jobs:
+#     check:
+#       uses: zka32101/shared_core/.github/workflows/release-readiness-check.yml@main
+#       with:
+#         flutter_version: '3.44.4'
+#
+# 確認項目:
+#   1. flutter pub get が警告なく通るか
+#   2. build_runner によるコード生成が成功するか（build_runner未使用アプリはスキップ）
+#   3. flutter analyze が error レベルの指摘ゼロで通るか（continue-on-error なし）
+#   4. flutter test が全て通るか
+#   5. Android applicationId と google-services.json の package_name が一致するか
+#      （実際にこの不一致でAPKビルドが失敗した事例があるため必須項目にしている）
+# =============================================================================
+
+on:
+  workflow_call:
+    inputs:
+      flutter_version:
+        required: false
+        type: string
+        default: '3.44.4'
+        description: "使用する Flutter バージョン"
+      run_build_runner:
+        required: false
+        type: boolean
+        default: true
+        description: "build_runner によるコード生成を実行するか（pubspec.yamlにbuild_runner依存が無ければ自動スキップ）"
+      check_google_services:
+        required: false
+        type: boolean
+        default: true
+        description: "Android applicationId と google-services.json の整合性チェックを実行するか"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Release Readiness Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ inputs.flutter_version }}
+          channel: 'stable'
+
+      - name: Clean and get dependencies
+        run: |
+          flutter clean
+          rm -f pubspec.lock
+          rm -rf .dart_tool/
+          flutter pub get
+
+      - name: Generate code (build_runner)
+        if: inputs.run_build_runner
+        run: |
+          if grep -q "build_runner" pubspec.yaml; then
+            flutter pub run build_runner build --delete-conflicting-outputs
+          else
+            echo "build_runner はこのアプリの依存に含まれていないためスキップします"
+          fi
+
+      - name: Analyze (error ゼロを必須とする厳格チェック)
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Run tests
+        run: flutter test
+
+      - name: "Android applicationId と google-services.json の整合性確認"
+        if: inputs.check_google_services
+        run: |
+          set -euo pipefail
+          GRADLE_FILE="android/app/build.gradle.kts"
+          GS_FILE="android/app/google-services.json"
+
+          if [ ! -f "$GRADLE_FILE" ] || [ ! -f "$GS_FILE" ]; then
+            echo "Android設定ファイルが見つからないためスキップします"
+            exit 0
+          fi
+
+          APP_ID=$(grep -oP 'applicationId\s*=\s*"\K[^"]+' "$GRADLE_FILE" | head -1)
+          if [ -z "$APP_ID" ]; then
+            echo "::error file=$GRADLE_FILE::applicationId を取得できませんでした"
+            exit 1
+          fi
+
+          if ! grep -q "\"$APP_ID\"" "$GS_FILE"; then
+            echo "::error file=$GS_FILE::applicationId ($APP_ID) と一致する package_name が google-services.json に見つかりません。Firebaseコンソールから設定ファイルを再ダウンロードしてください。"
+            exit 1
+          fi
+
+          echo "✓ applicationId ($APP_ID) が google-services.json と一致しています"
