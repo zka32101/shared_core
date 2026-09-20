@@ -10,9 +10,13 @@
 #   2. terraform plan で「クラウド側の実際の状態」との差分（不備）を確認し、
 #      差分がある場合のみ terraform apply で修正する（差分ゼロなら何もしない）
 #   3. GitHub Variables も現在値を確認し、期待値と異なる場合のみ更新する
+#   4. release-readiness-check.yml（リリース前チェックの呼び出し設定）が
+#      アプリリポジトリに無ければ自動配置する（既にあれば変更しない）
 #
 # つまり、既に登録済みのアプリに対して再実行しても安全。
 # 「新規登録」と「既存登録の確認・不備修正」は同じコマンドで自動判別される。
+# これにより、このスクリプトで登録した全アプリが「固定の対象アプリ一覧」を
+# 都度更新しなくても、自動的にリリース前チェックの対象になる。
 #
 # 前提:
 #   - gcloud CLI にログイン済み（人間の認証はこの1回だけ。以降は一切不要）
@@ -150,7 +154,7 @@ echo ""
 # =============================================================================
 # Step 0: 現在の登録状況を確認する（読み取り専用。ここでは一切書き込まない）
 # =============================================================================
-echo "🔧 [0/4] 現在の登録状況を確認しています（読み取り専用）..."
+echo "🔧 [0/5] 現在の登録状況を確認しています（読み取り専用）..."
 echo ""
 
 # --- 0a. tfvars（アプリ設定）の現在の状態 ---
@@ -190,6 +194,21 @@ if command -v gh >/dev/null 2>&1; then
 else
   echo "      ⚠️  gh CLI が見つからないため確認をスキップしました"
 fi
+
+# --- 0e. release-readiness-check.yml（リリース前チェック呼び出し）の現在の状態 ---
+RELEASE_CHECK_PATH=".github/workflows/release-readiness-check.yml"
+RELEASE_CHECK_EXISTS=false
+echo "   🧪 リリース前チェック（${RELEASE_CHECK_PATH}）:"
+if command -v gh >/dev/null 2>&1; then
+  if gh api "repos/${GITHUB_REPO}/contents/${RELEASE_CHECK_PATH}" >/dev/null 2>&1; then
+    RELEASE_CHECK_EXISTS=true
+    echo "      - 既に配置済みです"
+  else
+    echo "      - 未配置です"
+  fi
+else
+  echo "      ⚠️  gh CLI が見つからないため確認をスキップしました"
+fi
 echo ""
 
 # --- 現状確認のまとめ: これから自動登録する対象を明記する ---
@@ -219,6 +238,13 @@ fi
 echo "   - GitHub Variables（GCP_PROJECT_ID / GCP_SERVICE_ACCOUNT / GCP_WIF_PROVIDER）を"
 echo "     期待値と比較し、不一致があれば自動で修正します"
 
+if [ "$RELEASE_CHECK_EXISTS" = false ]; then
+  echo "   - ${RELEASE_CHECK_PATH} を新規作成します"
+  echo "     （リリース前チェック: pub get/build_runner/analyze厳格チェック/test/"
+  echo "     google-services.json整合性を workflow_dispatch から一括実行できるようになります）"
+  AUTO_TARGETS_FOUND=true
+fi
+
 if [ "$AUTO_TARGETS_FOUND" = false ]; then
   echo "   （対象なし。現状のままで登録済みです）"
 fi
@@ -229,7 +255,7 @@ echo ""
 # =============================================================================
 
 # --- Step 1: tfvars ファイルを生成し、既存内容との差分を表示 ---
-echo "🔧 [1/4] 設定内容(tfvars)を確認しています..."
+echo "🔧 [1/5] 設定内容(tfvars)を確認しています..."
 TFVARS_NEW="$(mktemp)"
 {
   echo "project_id    = \"${PROJECT_ID}\""
@@ -262,7 +288,7 @@ rm -f "${TFVARS_NEW}"
 echo ""
 
 # --- Step 2: GCPプロジェクト自体の存在確認・自動作成・課金アカウントの自動リンク ---
-echo "🔧 [2/4] GCPプロジェクトを確認しています..."
+echo "🔧 [2/5] GCPプロジェクトを確認しています..."
 if gcloud projects describe "${PROJECT_ID}" >/dev/null 2>&1; then
   echo "   ✅ GCPプロジェクト '${PROJECT_ID}' は既に存在します"
 else
@@ -299,7 +325,7 @@ fi
 echo ""
 
 # --- Step 3: 必要なAPIを有効化し、クラウド側の実際の状態を確認して不備があれば修正 ---
-echo "🔧 [3/4] クラウド側(GCP)の状態を確認しています..."
+echo "🔧 [3/5] クラウド側(GCP)の状態を確認しています..."
 run_step "GCP API 有効化" gcloud services enable \
   secretmanager.googleapis.com \
   iam.googleapis.com \
@@ -342,7 +368,7 @@ WIF_PROVIDER=$(terraform output -raw workload_identity_provider)
 echo ""
 
 # --- Step 4: GitHub Variables を確認し、不一致がある場合のみ更新 ---
-echo "🔧 [4/4] GitHub リポジトリの Variables を確認しています..."
+echo "🔧 [4/5] GitHub リポジトリの Variables を確認しています..."
 
 # GitHub Variables の現在値を取得する（未設定なら空文字を返す）
 get_github_variable() {
@@ -379,6 +405,51 @@ else
   echo "   gh variable set GCP_PROJECT_ID      --repo ${GITHUB_REPO} --body \"${PROJECT_ID}\""
   echo "   gh variable set GCP_SERVICE_ACCOUNT --repo ${GITHUB_REPO} --body \"${SA_EMAIL}\""
   echo "   gh variable set GCP_WIF_PROVIDER    --repo ${GITHUB_REPO} --body \"${WIF_PROVIDER}\""
+fi
+echo ""
+
+# =============================================================================
+# Step 5: release-readiness-check.yml をアプリリポジトリに自動配置
+#
+# これにより、このスクリプトで登録した全アプリが「固定の対象アプリ一覧」を
+# 手作業で更新しなくても、自動的にリリース前チェック
+# （pub get / build_runner / analyze厳格チェック / test /
+#   google-services.json整合性）の対象になる。
+# 既に配置済みの場合は変更しない（アプリ側で内容をカスタマイズしていても上書きしない）。
+# =============================================================================
+echo "🔧 [5/5] release-readiness-check.yml の呼び出し設定を確認しています..."
+
+if command -v gh >/dev/null 2>&1; then
+  if [ "$RELEASE_CHECK_EXISTS" = true ]; then
+    echo "   ✅ ${RELEASE_CHECK_PATH} は既に配置済みです（変更しません）"
+  else
+    echo "   🆕 ${RELEASE_CHECK_PATH} が存在しないため新規作成します"
+    WORKFLOW_CONTENT="name: Release Readiness Check
+
+# リリース前チェックを一括実行する。実体は shared_core の再利用可能ワークフロー。
+# 実行方法: Actionsタブ → \"Release Readiness Check\" → Run workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    uses: zka32101/shared_core/.github/workflows/release-readiness-check.yml@main
+    with:
+      flutter_version: '3.x'
+"
+    ENCODED_CONTENT="$(printf '%s' "${WORKFLOW_CONTENT}" | base64 | tr -d '\n')"
+    run_step "release-readiness-check.yml 作成" gh api "repos/${GITHUB_REPO}/contents/${RELEASE_CHECK_PATH}" \
+      --method PUT \
+      -f message="feat: リリース前チェック(shared_core reusable workflow)の呼び出しを追加" \
+      -f content="${ENCODED_CONTENT}" \
+      -f branch="main"
+    echo "   ✅ ${RELEASE_CHECK_PATH} を作成しました（mainブランチに直接コミット）"
+    echo "      Flutterバージョンがこのアプリ独自の場合は、後で手動で書き換えてください"
+  fi
+else
+  echo "   ⚠️  gh CLI が見つからないため配置をスキップしました。手動で以下を配置してください:"
+  echo "      ${RELEASE_CHECK_PATH}"
 fi
 
 cat <<EOF
