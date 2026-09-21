@@ -1,0 +1,48 @@
+name: Verify All Apps (shared_core change guard)
+
+# =============================================================================
+# shared_core の変更が7アプリのいずれかをデグレさせないか、マージ前に自動検証する。
+#
+# lib/ や pubspec.yaml が変更された PR で、7アプリそれぞれの pubspec.yaml の
+# shared_core 依存を「この PR のコミット」に一時的に差し替えた状態で
+# release-readiness-check.yml（flutter analyze / test / build_runner 等）を実行する。
+# 各アプリのリポジトリ本体には一切書き込まない（チェックのみ・使い捨てチェックアウト）。
+#
+# 1つのアプリでも失敗すれば、このワークフロー自体が失敗としてPRのステータスに出る。
+# =============================================================================
+
+on:
+  pull_request:
+    paths:
+      - 'lib/**'
+      - 'pubspec.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: "Verify ${{ matrix.app.repo }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - repo: kokugo-kore
+            flutter_version: '3.44.4'
+          - repo: sansu-kore
+            flutter_version: '3.44.0'
+          - repo: newrepo
+            flutter_version: '3.x'
+          - repo: eigo
+            flutter_version: '3.x'
+          - repo: social_quiz_app
+            flutter_version: '3.x'
+          - repo: shinshin
+            flutter_version: '3.x'
+          - repo: shogaku-kore-programming
+            flutter_version: '3.47.1'
+    uses: ./.github/workflows/release-readiness-check.yml
+    with:
+      target_repo: zka32101/${{ matrix.app.repo }}
+      shared_core_ref: ${{ github.event.pull_request.head.sha }}
+      flutter_version: ${{ matrix.app.flutter_version }}

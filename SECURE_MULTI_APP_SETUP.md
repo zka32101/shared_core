@@ -373,6 +373,24 @@ jobs:
 Actionsタブから手動実行すると、`pub get` / `build_runner` / `flutter analyze`（errorレベル0件必須）/
 `flutter test` / Android `applicationId` と `google-services.json` の整合性を一括確認できる。
 
+## shared_core変更によるデグレ防止（複数セッション並行改修時）
+
+複数のセッションが同時に別々のアプリ・shared_coreを改修する運用では、shared_core側の
+変更が特定アプリだけを壊す「サイレントデグレ」が起きやすい。これを防ぐため、
+`shared_core` の PR で `lib/**` または `pubspec.yaml` を変更すると、
+`.github/workflows/verify-all-apps.yml` が自動的に発火し、7アプリ全てに対して
+PRのコミットを一時的に依存させた状態で `release-readiness-check.yml` を実行する
+（各アプリのリポジトリ本体は一切変更しない、使い捨てチェックアウトでの検証）。
+
+- 1つでもアプリが失敗すれば、shared_coreのPR自体がステータス失敗になりマージ前に気づける
+- 各アプリの `flutter_version` はワークフロー内のmatrixで管理（アプリ追加時はここに追記）
+- 手動でも同様の検証をしたい場合、`release-readiness-check.yml` は
+  `target_repo` (owner/repo) と `shared_core_ref` (ブランチ/SHA) を受け取れるので、
+  任意のアプリ×任意のshared_coreコミットの組み合わせで単発実行できる
+
+**運用ルール**: shared_coreへの変更は、この検証がgreenになってからマージする。
+7アプリ全部に影響するため、他の個別アプリの変更よりも慎重に扱う。
+
 ## Google Play Console への配布
 
 Internal Testing までは完全自動化、Production は手動必須:

@@ -25,6 +25,12 @@ name: Release Readiness Check (Reusable)
 #   4. flutter test が全て通るか
 #   5. Android applicationId と google-services.json の package_name が一致するか
 #      （実際にこの不一致でAPKビルドが失敗した事例があるため必須項目にしている）
+#
+# shared_core 自体の変更によるデグレ防止:
+#   shared_core 側の PR で target_repo / shared_core_ref を指定して各アプリ向けに
+#   このワークフローを呼び出すと、各アプリの pubspec.yaml の shared_core 依存を
+#   PRのコミットに一時的に差し替えた上で上記チェックを実行できる。
+#   実際の呼び出し元: shared_core/.github/workflows/verify-all-apps.yml
 # =============================================================================
 
 on:
@@ -45,6 +51,21 @@ on:
         type: boolean
         default: true
         description: "Android applicationId と google-services.json の整合性チェックを実行するか"
+      target_repo:
+        required: false
+        type: string
+        default: ''
+        description: "チェック対象リポジトリ（owner/repo）。空の場合は呼び出し元リポジトリ自身を対象にする。shared_core から他アプリを検証する用途で使用"
+      target_ref:
+        required: false
+        type: string
+        default: ''
+        description: "target_repo のチェックアウト対象ブランチ/SHA。空の場合はデフォルトブランチ"
+      shared_core_ref:
+        required: false
+        type: string
+        default: ''
+        description: "指定した場合、pubspec.yaml の shared_core git依存をこの ref (ブランチ/SHA) で上書きする。shared_core側の変更を各アプリでマージ前に検証するデグレ防止用"
 
 permissions:
   contents: read
@@ -56,12 +77,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+        with:
+          repository: ${{ inputs.target_repo != '' && inputs.target_repo || github.repository }}
+          ref: ${{ inputs.target_ref }}
 
       - name: Setup Flutter
         uses: subosito/flutter-action@7814e4f6c70abd7a5641333f613efa098fe34381 # v2.14.0
         with:
           flutter-version: ${{ inputs.flutter_version }}
           channel: 'stable'
+
+      - name: "shared_core git依存をshared_core_refで上書き（デグレ検証用）"
+        if: inputs.shared_core_ref != ''
+        run: |
+          if ! grep -q "shared_core" pubspec.yaml; then
+            echo "shared_core への依存が無いためスキップします"
+            exit 0
+          fi
+          cat >> pubspec.yaml << EOF
+
+          dependency_overrides:
+            shared_core:
+              git:
+                url: https://github.com/zka32101/shared_core.git
+                ref: ${{ inputs.shared_core_ref }}
+          EOF
+          echo "✓ shared_core を ref=${{ inputs.shared_core_ref }} に固定しました"
 
       - name: Clean and get dependencies
         run: |
