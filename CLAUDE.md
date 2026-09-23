@@ -278,7 +278,7 @@ dependencies:
     sdk: flutter
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main  # または特定タグ
 ```
 
@@ -361,7 +361,7 @@ final characterStateProvider = StateNotifierProvider<CharacterNotifier, Characte
 ### 1. リポジトリクローン
 
 ```bash
-git clone https://github.com/org-zka32101/shared_core.git
+git clone https://github.com/zka32101/shared_core.git
 cd shared_core
 ```
 
@@ -385,7 +385,7 @@ dependencies:
 dependencies:
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main
 ```
 
@@ -1149,7 +1149,7 @@ Navigator.push(
 dependencies:
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main  # または指定ブランチ
 ```
 
@@ -1433,7 +1433,7 @@ RevenueCat 統合を shared_core に統一実装し、各アプリが共通の `
 dependencies:
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main
 ```
 

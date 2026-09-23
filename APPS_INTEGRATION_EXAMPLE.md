@@ -231,7 +231,7 @@ dependencies:
   # 既存依存...
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main
   
   # Phase 4.12 新規：RemoteConfig（自動で依存される可能性が高いが明示的に）
