@@ -1603,11 +1603,16 @@ shared_core を必ずクローンしているため、ここに書いておけ�
 C:\BuildWork\
 ├── flutter\        # Flutter SDK 本体（git clone / 展開先）
 ├── android-sdk\     # Android SDK 本体（cmdline-tools 等）
-├── temp\            # Windows TEMP/TMP
+├── temp\            # ビルドプロセス限定の TEMP/TMP（Windows全体には適用しない）
 ├── pub-cache\       # Flutter/Dart の PUB_CACHE
 ├── gradle\          # Android の GRADLE_USER_HOME
 └── artifacts\       # ビルド済み APK/AAB の一時保管（Driveアップロード前）
 ```
+
+**重要**: `TEMP`/`TMP` は `setx` で Windows ユーザー環境変数として永続変更しない。
+永続変更すると Office・ブラウザなど Flutter と無関係な一般アプリの一時ファイルまで
+このフォルダに書かれてしまうため、ビルドを実行する PowerShell プロセスの中だけで
+一時的に設定する（下記「各アプリのビルドスクリプトでの利用」参照）。
 
 ### セットアップ手順（PowerShell、管理者権限不要）
 
@@ -1623,9 +1628,8 @@ New-Item -ItemType Directory -Force -Path C:\BuildWork\artifacts
 # ② Flutter SDK をこのフォルダにクローン（未インストールの場合）
 git clone https://github.com/flutter/flutter.git -b stable C:\BuildWork\flutter
 
-# ③ 環境変数を永続化（ユーザー環境変数、setxは新しいターミナルから有効）
-setx TEMP "C:\BuildWork\temp"
-setx TMP "C:\BuildWork\temp"
+# ③ Flutter/Android専用の環境変数のみ永続化（ユーザー環境変数、setxは新しい
+#    ターミナルから有効）。TEMP/TMPはここに含めない（他の一般アプリに影響するため）
 setx PUB_CACHE "C:\BuildWork\pub-cache"
 setx GRADLE_USER_HOME "C:\BuildWork\gradle"
 setx ANDROID_HOME "C:\BuildWork\android-sdk"
@@ -1637,7 +1641,6 @@ setx ANDROID_SDK_ROOT "C:\BuildWork\android-sdk"
 #    C:\BuildWork\android-sdk\platform-tools
 
 # ⑤ 設定後は必ずターミナル/IDEを再起動してから反映を確認
-echo $env:TEMP
 echo $env:PUB_CACHE
 echo $env:GRADLE_USER_HOME
 echo $env:ANDROID_HOME
@@ -1648,11 +1651,20 @@ flutter doctor
 ### 各アプリのビルドスクリプトでの利用
 
 ```powershell
-# ① ビルド成果物を統一フォルダにコピー
+# ① TEMP/TMPはこのビルドスクリプトのプロセス内だけで一時的に上書き
+#    （setxではないので、他のターミナル/アプリやOSには影響しない）
+$env:TEMP = "C:\BuildWork\temp"
+$env:TMP = "C:\BuildWork\temp"
+
+# ② ビルド実行
+flutter build apk --release
+flutter build appbundle --release
+
+# ③ ビルド成果物を統一フォルダにコピー
 Copy-Item build\app\outputs\flutter-apk\*.apk C:\BuildWork\artifacts\
 Copy-Item build\app\outputs\bundle\release\*.aab C:\BuildWork\artifacts\
 
-# ② 最終成果物として Google ドライブの共有フォルダにもコピー
+# ④ 最終成果物として Google ドライブの共有フォルダにもコピー
 #    （マイドライブ同期経由でアップロードされる。全アプリ共通の保存先）
 Copy-Item C:\BuildWork\artifacts\*.apk "$env:USERPROFILE\マイドライブ\apk\"
 Copy-Item C:\BuildWork\artifacts\*.aab "$env:USERPROFILE\マイドライブ\apk\"
@@ -1664,8 +1676,9 @@ APK/AAB などのビルド済みファイルは、CI（GitHub Actions）経由�
 
 ### 注意点
 
-- `TEMP`/`TMP` を変更すると他の一般アプリ（Office、ブラウザ等）の一時ファイルも
-  このフォルダに書かれるようになる。定期的に中身を掃除する運用にする
+- `TEMP`/`TMP` は **`setx` で永続変更しない**。永続変更すると Office・ブラウザ等
+  Flutter と無関係な一般アプリの一時ファイルまでこのフォルダに書かれてしまう。
+  必ずビルドスクリプトのプロセス内（`$env:TEMP = ...`）だけで一時的に設定する
 - ドライブの空き容量が少ない環境では、`C:\BuildWork` を空き容量の多いドライブ
   （例: `D:\BuildWork`）に置き換える
 - 既存のFlutter/Android SDKが別の場所に入っている場合、移動ではなく
