@@ -1589,6 +1589,83 @@ void dispose() {
 
 ---
 
+## Windows ローカルビルド環境の統一（全アプリ共通ルール）
+
+小学コレシリーズ各アプリをWindowsローカル環境でビルドする際、Flutter/Android SDK本体・
+キャッシュ・一時ファイル・ビルド成果物が環境ごとにバラバラの場所に散らばらないよう、
+1つの作業ルートフォルダ配下に統一する。**このルールは shared_core を利用する全アプリ
+（小学コレシリーズ全体）に適用される共通運用ルールであり、各アプリのローカルセッションは
+shared_core を必ずクローンしているため、ここに書いておけば確実に読み込まれる。**
+
+### 統一後の構成
+
+```
+C:\BuildWork\
+├── flutter\        # Flutter SDK 本体（git clone / 展開先）
+├── android-sdk\     # Android SDK 本体（cmdline-tools 等）
+├── temp\            # Windows TEMP/TMP
+├── pub-cache\       # Flutter/Dart の PUB_CACHE
+├── gradle\          # Android の GRADLE_USER_HOME
+└── artifacts\       # ビルド済み APK/AAB の一時保管（Driveアップロード前）
+```
+
+### セットアップ手順（PowerShell、管理者権限不要）
+
+```powershell
+# ① 作業ルートと各サブフォルダを作成
+New-Item -ItemType Directory -Force -Path C:\BuildWork\flutter
+New-Item -ItemType Directory -Force -Path C:\BuildWork\android-sdk
+New-Item -ItemType Directory -Force -Path C:\BuildWork\temp
+New-Item -ItemType Directory -Force -Path C:\BuildWork\pub-cache
+New-Item -ItemType Directory -Force -Path C:\BuildWork\gradle
+New-Item -ItemType Directory -Force -Path C:\BuildWork\artifacts
+
+# ② Flutter SDK をこのフォルダにクローン（未インストールの場合）
+git clone https://github.com/flutter/flutter.git -b stable C:\BuildWork\flutter
+
+# ③ 環境変数を永続化（ユーザー環境変数、setxは新しいターミナルから有効）
+setx TEMP "C:\BuildWork\temp"
+setx TMP "C:\BuildWork\temp"
+setx PUB_CACHE "C:\BuildWork\pub-cache"
+setx GRADLE_USER_HOME "C:\BuildWork\gradle"
+setx ANDROID_HOME "C:\BuildWork\android-sdk"
+setx ANDROID_SDK_ROOT "C:\BuildWork\android-sdk"
+
+# ④ PATH に Flutter/Android SDK の bin を追加（システム環境変数のPATH編集、
+#    またはユーザーPATHへ以下を追記）
+#    C:\BuildWork\flutter\bin
+#    C:\BuildWork\android-sdk\platform-tools
+
+# ⑤ 設定後は必ずターミナル/IDEを再起動してから反映を確認
+echo $env:TEMP
+echo $env:PUB_CACHE
+echo $env:GRADLE_USER_HOME
+echo $env:ANDROID_HOME
+flutter --version
+flutter doctor
+```
+
+### 各アプリのビルドスクリプトでの利用
+
+```powershell
+# ビルド成果物を統一フォルダにコピーしてからアップロード
+Copy-Item build\app\outputs\flutter-apk\*.apk C:\BuildWork\artifacts\
+Copy-Item build\app\outputs\bundle\release\*.aab C:\BuildWork\artifacts\
+```
+
+### 注意点
+
+- `TEMP`/`TMP` を変更すると他の一般アプリ（Office、ブラウザ等）の一時ファイルも
+  このフォルダに書かれるようになる。定期的に中身を掃除する運用にする
+- ドライブの空き容量が少ない環境では、`C:\BuildWork` を空き容量の多いドライブ
+  （例: `D:\BuildWork`）に置き換える
+- 既存のFlutter/Android SDKが別の場所に入っている場合、移動ではなく
+  そのまま使い続けて構わない（新規セットアップ時のみこの構成を推奨）
+- `GRADLE_USER_HOME`/Flutter SDK 移動後は初回のみ再ダウンロードが走るため、
+  初回ビルドは時間がかかる
+- 低メモリ環境（RAM 3GB等）でのGradle設定（`-Xmx1G`、`org.gradle.daemon=false`）は
+  引き続き各アプリの `android/gradle.properties` 側で個別管理する（このフォルダ統一とは別軸）
+
 ## 最新更新ログ
 
 - **2026-09-17**: Phase 4.22 購読機能統一化実装完了 ✅
