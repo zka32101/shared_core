@@ -1648,10 +1648,19 @@ flutter doctor
 ### 各アプリのビルドスクリプトでの利用
 
 ```powershell
-# ビルド成果物を統一フォルダにコピーしてからアップロード
+# ① ビルド成果物を統一フォルダにコピー
 Copy-Item build\app\outputs\flutter-apk\*.apk C:\BuildWork\artifacts\
 Copy-Item build\app\outputs\bundle\release\*.aab C:\BuildWork\artifacts\
+
+# ② 最終成果物として Google ドライブの共有フォルダにもコピー
+#    （マイドライブ同期経由でアップロードされる。全アプリ共通の保存先）
+Copy-Item C:\BuildWork\artifacts\*.apk "$env:USERPROFILE\マイドライブ\apk\"
+Copy-Item C:\BuildWork\artifacts\*.aab "$env:USERPROFILE\マイドライブ\apk\"
 ```
+
+APK/AAB などのビルド済みファイルは、CI（GitHub Actions）経由だけでなく
+ローカルビルド時も必ず `マイドライブ\apk\` に保存する運用とする
+（全アプリ共通ルール）。
 
 ### 注意点
 
