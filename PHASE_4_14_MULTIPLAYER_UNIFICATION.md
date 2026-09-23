@@ -115,7 +115,7 @@ final subjectLeaderboardProvider = FutureProvider.autoDispose.family<List<Leader
 dependencies:
   shared_core:
     git:
-      url: https://github.com/org-zka32101/shared_core.git
+      url: https://github.com/zka32101/shared_core.git
       ref: main  # または特定のタグ
 ```
 
