@@ -82,7 +82,7 @@ jobs:
           ref: ${{ inputs.target_ref }}
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@7814e4f6c70abd7a5641333f613efa098fe34381 # v2.14.0
+        uses: subosito/flutter-action@1c5eb12d812966ca84680edc38353a0851c8fd56 # v2.14.0
         with:
           flutter-version: ${{ inputs.flutter_version }}
           channel: 'stable'
