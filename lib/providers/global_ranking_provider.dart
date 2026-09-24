@@ -46,7 +46,11 @@ class GlobalRankingState {
 
 /// グローバルランキング管理 (Firestore)
 class GlobalRankingNotifier extends Notifier<GlobalRankingState> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // main() は Firebase.initializeApp() より前にこのNotifierを構築するアプリがあるため、
+  // フィールド初期化子で FirebaseFirestore.instance を評価すると
+  // 「No Firebase App has been created」でアプリごと落ちて白画面になる。
+  // 実際に使われるタイミング（初期化後）まで遅延評価する。
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
   GlobalRankingFetchHandler? _fetchHandler;
 
   void setFetchHandler(GlobalRankingFetchHandler handler) {
