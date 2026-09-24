@@ -36,7 +36,7 @@ class SubscriptionConfig {
   // ─── 統一エンタイトルメント ID ──────────────────────────
   // すべてのアプリで同じエンタイトルメント ID を使用
   // RevenueCat ダッシュボードで作成必須
-  static const String premiumEntitlementId = 'premium';
+  static const String premiumEntitlementId = '小学コレ_pro';
 
   // ─── 統一商品 ID ────────────────────────────────────────
   // App Store Connect / Google Play Console で作成する商品 ID
