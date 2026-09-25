@@ -41,11 +41,16 @@ class CoinShopPage extends StatelessWidget {
   final List<AppShopItem> exchangeItems;
   final Map<String, List<AppShopItem>> seasonalItems;
 
+  /// true の場合、AppBar に戻るボタンを表示する。
+  /// (Navigator.push/GoRouter.push で独立した画面として開く場合に使う)
+  final bool showBackButton;
+
   const CoinShopPage({
     super.key,
     required this.characters,
     required this.exchangeItems,
     required this.seasonalItems,
+    this.showBackButton = false,
   });
 
   @override
@@ -54,7 +59,7 @@ class CoinShopPage extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: showBackButton,
           title: const Row(
             children: [
               Text('コレショップ'),
@@ -174,6 +179,34 @@ class _CharacterLevelUpTab extends ConsumerWidget {
   }
 }
 
+/// キャラクターの見た目を表示する。[BaseCharacter.imageAssetForLevel] が
+/// 画像を返せばそれを使い、無ければ [emoji] にフォールバックする。
+class _CharacterPortrait extends StatelessWidget {
+  final BaseCharacter character;
+  final int level;
+
+  const _CharacterPortrait({required this.character, required this.level});
+
+  @override
+  Widget build(BuildContext context) {
+    final asset = character.imageAssetForLevel(level);
+    if (asset == null) {
+      return Text(character.emoji, style: const TextStyle(fontSize: 40));
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.asset(
+        asset,
+        width: 56,
+        height: 56,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Text(character.emoji, style: const TextStyle(fontSize: 40)),
+      ),
+    );
+  }
+}
+
 class _LevelUpCard extends ConsumerWidget {
   final BaseCharacter character;
   final CharacterState state;
@@ -207,9 +240,12 @@ class _LevelUpCard extends ConsumerWidget {
               alignment: Alignment.topRight,
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Text(character.emoji,
-                        style: const TextStyle(fontSize: 40))),
+                  padding: const EdgeInsets.all(4),
+                  child: _CharacterPortrait(
+                    character: character,
+                    level: state.level,
+                  ),
+                ),
                 if (state.hasSparkle)
                   const Text('✨', style: TextStyle(fontSize: 12)),
               ],
