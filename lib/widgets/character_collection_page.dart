@@ -418,7 +418,28 @@ class _CharacterDetailSheet extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            // これまでに解放した姿を一覧表示（現在のレベルまで）
+            if (character.levelImages != null) ...[
+              const Text('✨ これまでの姿',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 14)),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 92,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    for (var lv = 1; lv <= state.level; lv++)
+                      _LevelThumbnail(
+                        character: character,
+                        level: lv,
+                        isCurrent: lv == state.level,
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
             // Unlocked features
             if (state.hasExpressions)
               _FeatureChip(text: '表情3種 解放済み', icon: '😊'),
@@ -492,6 +513,57 @@ class _CharacterDetailSheet extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// キャラ詳細シートで、これまでに到達したレベルの見た目を
+/// サムネイル一覧として横並び表示するためのアイテム。
+class _LevelThumbnail extends StatelessWidget {
+  final BaseCharacter character;
+  final int level;
+  final bool isCurrent;
+
+  const _LevelThumbnail({
+    required this.character,
+    required this.level,
+    required this.isCurrent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final asset = character.imageAssetForLevel(level);
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: Column(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isCurrent ? Colors.amber.shade400 : Colors.grey.shade200,
+                width: isCurrent ? 2 : 1,
+              ),
+            ),
+            child: asset != null
+                ? Image.asset(asset, fit: BoxFit.contain)
+                : Center(
+                    child: Text(character.emoji,
+                        style: const TextStyle(fontSize: 28))),
+          ),
+          const SizedBox(height: 4),
+          Text(level >= 5 ? 'MAX' : 'Lv.$level',
+              style: TextStyle(
+                  fontSize: 10,
+                  color: isCurrent ? Colors.amber.shade700 : kTextMuted,
+                  fontWeight:
+                      isCurrent ? FontWeight.bold : FontWeight.normal)),
+        ],
       ),
     );
   }
