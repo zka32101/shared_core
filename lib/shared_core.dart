@@ -155,13 +155,6 @@ export 'providers/analytics_provider.dart' hide populationStatsProvider, abTestR
 export 'providers/analytics_notifier.dart';                 // AnalyticsNotifier, analyticsNotifierProvider（Phase 4.16）
 export 'widgets/analytics_dashboard.dart';                  // AnalyticsDashboard（分析ダッシュボード Phase 4.16）
 
-// Cloud Functions & User Analysis (Phase 4.17)
-export 'models/cloud_functions_model.dart';                 // CloudFunctionConfig, SegmentationResult, CohortAnalysisResult, NotificationPayload, FunctionExecutionLog, ChurnPrediction（Phase 4.17）
-export 'providers/cloud_functions_provider.dart';           // cloudFunctionsConfigProvider, latestSegmentationResultsProvider, cohortAnalysisProvider, churnPredictionsProvider, functionExecutionLogsProvider（Phase 4.17）
-export 'providers/cloud_functions_notifier.dart';           // CloudFunctionsNotifier, cloudFunctionsNotifier（Phase 4.17）
-export 'services/cloud_functions_service.dart';             // CloudFunctionsService（Cloud Functions 実行ロジック Phase 4.17）
-export 'widgets/cloud_functions_dashboard.dart';            // CloudFunctionsDashboard（Cloud Functions 管理ダッシュボード Phase 4.17）
-
 // Push Notifications & Retention (Phase 4.18)
 // 注: models/notification_model.dart・providers/notification_provider.dart は
 // Phase 4.23 で全面書き換えされ、下の Phase 4.23 ブロックで改めて export
