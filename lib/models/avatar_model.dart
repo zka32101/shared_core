@@ -9,7 +9,7 @@ class AvatarModel {
 
   /// Asset path (package-qualified) for the illustrated avatar icon.
   /// Falls back to [emoji] wherever the image can't be loaded.
-  String get imageAsset => 'packages/shared_core/assets/avatars/avatar_$id.jpg';
+  String get imageAsset => 'packages/shared_core/lib/assets/avatars/avatar_$id.jpg';
 
   const AvatarModel({
     required this.id,
