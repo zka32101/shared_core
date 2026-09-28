@@ -12,10 +12,10 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.6.1
   shared_preferences: ^2.3.0
-  firebase_auth: ^5.5.4
-  cloud_firestore: ^5.5.0
-  firebase_remote_config: ^5.1.0
-  firebase_messaging: ^15.0.0
+  firebase_auth: ^6.7.0
+  cloud_firestore: ^6.10.0
+  firebase_remote_config: ^6.7.0
+  firebase_messaging: ^16.7.0
   uuid: ^4.0.0
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.10+1
