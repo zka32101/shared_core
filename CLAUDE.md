@@ -1593,6 +1593,7 @@ void dispose() {
 
 Windows ローカル / クラウド Code の役割分担、マネタイズ・広告（子ども向けポリシー）、セキュリティ、実機テスト観点の正本:
 **[`docs/DEV_PLAYBOOK.md`](https://github.com/zka32101/shared_core/blob/main/docs/DEV_PLAYBOOK.md)**（shared_core）。
+実機テストの方針: **`docs/DEVICE_TEST_POLICY.md`**（全画面網羅・連携・異常系・合否基準）。
 自動チェックは `.claude/skills/ship-cycle/`（`ship.sh` / `store-check.sh` / `device-check.sh`）。
 
 ## Windows ローカルビルド環境の統一（全アプリ共通ルール）
