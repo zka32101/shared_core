@@ -1589,6 +1589,12 @@ void dispose() {
 
 ---
 
+## 開発プレイブック（全セッション必読）
+
+Windows ローカル / クラウド Code の役割分担、マネタイズ・広告（子ども向けポリシー）、セキュリティ、実機テスト観点の正本:
+**[`docs/DEV_PLAYBOOK.md`](https://github.com/zka32101/shared_core/blob/main/docs/DEV_PLAYBOOK.md)**（shared_core）。
+自動チェックは `.claude/skills/ship-cycle/`（`ship.sh` / `store-check.sh` / `device-check.sh`）。
+
 ## Windows ローカルビルド環境の統一（全アプリ共通ルール）
 
 小学コレシリーズ各アプリをWindowsローカル環境でビルドする際、Flutter/Android SDK本体・
