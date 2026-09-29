@@ -40,6 +40,13 @@ on:
         default: 'main'
         description: "判定スクリプトを取得する shared_core の ref"
 
+    secrets:
+      GOOGLE_DRIVE_SERVICE_ACCOUNT:
+        required: false
+      GOOGLE_DRIVE_FOLDER_ID:
+        required: false
+        description: "保存先の親フォルダ（APK と同じフォルダ）。配下の test-results/<アプリ名>/ に zip を 1 つ保存"
+
 permissions:
   contents: read
 
@@ -84,11 +91,27 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: OUT=$PWD/device-test-results bash $GITHUB_WORKSPACE/.ship-cycle-src/.claude/skills/ship-cycle/device-10check.sh android .
+      - name: Upload result zip to Google Drive (test-results/<app>/)
+        if: always()
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+          FOLDER: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          [ -n "$SA" ] && [ -n "$FOLDER" ] || { echo "Drive シークレット未登録 → スキップ"; exit 0; }
+          Z=$(cat device-test-results/.zip_path 2>/dev/null) || exit 0
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          APP=$(grep -m1 '^name:' pubspec.yaml | awk '{print $2}')
+          rclone copy "$Z" "gdrive:test-results/$APP/" --drive-service-account-file "$RUNNER_TEMP/sa.json" \
+            --drive-root-folder-id "$FOLDER" --config /dev/null --drive-scope drive 2>&1 | tail -3 || true
+          rm -f "$RUNNER_TEMP/sa.json"
+          echo "☁️ test-results/$APP/$(basename "$Z")" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: device-test-android
-          path: ${{ inputs.working_directory }}/device-test-results/
+          path: ${{ inputs.working_directory }}/device-test-results/*.zip
           if-no-files-found: ignore
 
   ios:
@@ -116,9 +139,25 @@ jobs:
       - name: Run 10-perspective test
         working-directory: ${{ inputs.working_directory }}
         run: OUT=$PWD/device-test-results bash $GITHUB_WORKSPACE/.ship-cycle-src/.claude/skills/ship-cycle/device-10check.sh ios .
+      - name: Upload result zip to Google Drive (test-results/<app>/)
+        if: always()
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+          FOLDER: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          [ -n "$SA" ] && [ -n "$FOLDER" ] || { echo "Drive シークレット未登録 → スキップ"; exit 0; }
+          Z=$(cat device-test-results/.zip_path 2>/dev/null) || exit 0
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          APP=$(grep -m1 '^name:' pubspec.yaml | awk '{print $2}')
+          rclone copy "$Z" "gdrive:test-results/$APP/" --drive-service-account-file "$RUNNER_TEMP/sa.json" \
+            --drive-root-folder-id "$FOLDER" --config /dev/null --drive-scope drive 2>&1 | tail -3 || true
+          rm -f "$RUNNER_TEMP/sa.json"
+          echo "☁️ test-results/$APP/$(basename "$Z")" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: device-test-ios
-          path: ${{ inputs.working_directory }}/device-test-results/
+          path: ${{ inputs.working_directory }}/device-test-results/*.zip
           if-no-files-found: ignore

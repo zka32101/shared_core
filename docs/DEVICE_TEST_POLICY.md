@@ -260,7 +260,71 @@ TestFlight の内部テスト（審査不要）に上げたビルドで §3（�
 - Review Notes に、保護者ゲートの解除方法・テスト用アカウント・課金の確認手順を書く
 - Kids カテゴリで出すなら、第三者の広告・分析を入れない（M4）。年齢区分と実際のコンテンツを一致させる
 
-## 12. 更新ルール
+## 12. スクリーンショット・録画（撮り方の標準）
+
+**原則: 撮る枚数を増やさず、1 回のテストを 1 つの zip にまとめ、決まった場所に置く。**
+
+| 目的 | 方法 | 備考 |
+|---|---|---|
+| 全画面の記録 | 10観点テストが自動で撮る（integration_test の `takeScreenshot`） | Android・iOS シミュレータ・**iOS 実機**すべて同じ方法（iOS 実機は CLI で撮れないため） |
+| 1 枚だけ撮る | `device-10check.sh shot <名前>` | Android は `adb exec-out screencap`（Windows で `adb shell screencap` を使うと改行変換で PNG が壊れる）。直前 200 行のログを同名で保存 |
+| 不具合の再現 | `device-10check.sh record <秒> <名前>` | 最大 180 秒。Android は `screenrecord`、シミュレータは `simctl io recordVideo` |
+| 比較しやすくする | `device-10check.sh demo on` | ステータスバーを固定（9:41・電池 100%・通知なし）。10観点テストは自動で ON→OFF |
+| 一覧で見る | 自動（ImageMagick があれば `contact_sheet.jpg`） | 人は一覧画像を 1 分眺めるだけ |
+
+**保存場所（固定）**: テスト 1 回ごとに `<アプリ>_<バージョン>_<platform>_<日時>.zip` を 1 つ作る（中身: スクリーンショット・一覧画像・ログ・report.md）。
+- ローカル（Windows）: `マイドライブ\apk\test-results\<アプリ>\`（APK と同じ Google ドライブ配下）へ自動コピー。`DRIVE_DIR` で変更可
+- CI: シークレット `GOOGLE_DRIVE_SERVICE_ACCOUNT` / `GOOGLE_DRIVE_FOLDER_ID`（APK アップロードと同じもの）があれば、Drive の `test-results/<アプリ>/` へ自動アップロード。GitHub の artifact も zip 1 つだけ
+- PR / Issue には zip のファイル名と report.md の表だけを貼る（画像を個別に貼らない）
+
+## 13. トラブルシューティング
+
+### 13.1 進め方（毎回この順）
+1. **再現**: 同じ手順で 2 回再現する。`record` で動画を撮る
+2. **切り分け**: 次のどちらで起きるかを確認する。原因の範囲が一気に絞れる
+   - debug か release か
+   - エミュレータか実機か
+   - ローカルビルドかストア配信版か
+   - Android か iOS か
+   - 最新版か前のバージョンか
+3. **収集**: ログ・スクリーンショット・端末/OS・アプリのバージョンを zip で残す（§12）
+4. **原因特定**: 下の「症状 → 最初に見る場所」から当たる。回帰なら `git bisect`
+5. **修正と再発防止**: 直したら、静的に検出できるものは ship-cycle へ、動作で確認するものは integration_test へチェックを追加する（§0-5）
+
+### 13.2 ログの取り方
+| 対象 | コマンド / 場所 |
+|---|---|
+| Android（アプリのみ） | `adb logcat --pid=$(adb shell pidof <パッケージ>)`、エラーだけなら `adb logcat *:E` |
+| Android（丸ごと） | `adb bugreport bug.zip`（ANR のトレースやネイティブクラッシュの tombstone を含む） |
+| Android（状態） | `adb shell dumpsys meminfo <pkg>` / `dumpsys activity <pkg>` / `dumpsys package <pkg>`（権限・バージョン） |
+| iOS シミュレータ | `xcrun simctl spawn booted log stream --predicate 'process == "Runner"'`、まとめて取るなら `xcrun simctl diagnose` |
+| iOS 実機 | Xcode → Devices and Simulators → Open Console / View Device Logs（`.ips` クラッシュレポート）、TestFlight のクラッシュとフィードバック |
+| Flutter | `flutter logs`、DevTools（Inspector・Performance・Memory・Network）、`flutter run --profile` |
+| 本番 | Crashlytics（カスタムキー・ログでユーザー操作を残す）、Android vitals、App Store Connect のクラッシュ |
+| 難読化されたスタックトレース | `flutter symbolize -i trace.txt -d build/symbols/app.android-arm64.symbols`。Crashlytics には `firebase crashlytics:symbols:upload` で symbols を、iOS は dSYM をアップロード |
+
+### 13.3 症状 → 最初に見る場所
+| 症状 | よくある原因 | 最初に確認すること |
+|---|---|---|
+| **release だけ**落ちる / 動かない | R8（難読化・縮小）がクラスを削除 | `build/app/outputs/mapping/release/missing_rules.txt` を `proguard-rules.pro` に追加 |
+| release で灰色の画面 | ビルド時の例外（debug では赤い画面） | profile で起動してログを見る。assets のパス、Firebase の初期化順 |
+| 起動直後に落ちる | AdMob アプリ ID 未設定、Firebase 設定ファイルの不一致、minSdk | 10観点 1・2・7、store-check S2・S7・P6・I8 |
+| **ストア配信版だけ** Google ログインが失敗 | Play アプリ署名鍵の SHA-1 が Firebase に未登録 | Play Console → アプリの完全性 → SHA-1 を Firebase に追加 |
+| 課金の商品が表示されない（iOS） | **有料 App 契約**（銀行・税務）が有効でない、商品が「提出準備完了」でない、Bundle ID・商品 ID の不一致 | App Store Connect の契約と商品状態。TestFlight 版で確認 |
+| 課金の商品が表示されない（Android） | Play 経由でインストールしていない、ライセンステスター未登録、商品が有効でない、内部テストに一度も上げていない | 内部テストトラックから入れ直す |
+| 広告が表示されない | 新しい広告ユニットは数時間出ない、app-ads.txt 未設定、No fill、同意（UMP）が未取得 | エラーコード（3 = No fill）、Ad Inspector、テストデバイス登録 |
+| 通知が届かない（iOS） | APNs 認証キーが Firebase に未登録、Push Notifications / Background Modes の Capability 不足、権限拒否 | Firebase の Cloud Messaging 設定、実機で確認（シミュレータは不可） |
+| 通知が届かない（Android） | Android 13 以降の通知権限、省電力による制限、チャンネル未作成 | 設定アプリの通知、`dumpsys notification` |
+| iOS ビルド失敗 | CocoaPods・Deployment Target の不一致、古い DerivedData | `pod repo update && pod install`、Podfile の platform、DerivedData を削除 |
+| Android ビルド失敗 | Gradle / AGP / Kotlin / Java の組み合わせ | `./gradlew --stacktrace`、Flutter の推奨バージョンに合わせる |
+| **CI だけ**失敗する | 古い pubspec.lock やキャッシュ、Flutter のバージョン差、生成物のコミット漏れ | ship-cycle の P1・P13・P14・P16、`flutter pub deps` |
+| 依存関係が解決できない | 共有パッケージのメジャー更新（P16） | エラーに出るパッケージの制約を両側でそろえる。`dependency_overrides` は一時的な手段に限る |
+| 動作が重い / 固まる | メインスレッドでの重い処理、画像サイズ、リビルドの連鎖 | `flutter run --profile` + DevTools の Performance。ANR は bugreport |
+| データが消える / 二重になる | オフライン中の書き込み、連打、アップデート時の移行 | §6 の異常系、Firestore の書き込み時刻と uid |
+
+参考: [Crashlytics で難読化を解除する](https://firebase.google.com/docs/crashlytics/flutter/get-deobfuscated-reports) / [Sandbox で課金をテストする](https://developer.apple.com/documentation/storekit/testing-in-app-purchases-with-sandbox) / [R8 の missing classes](https://github.com/flutter/flutter/issues/155458)
+
+## 14. 更新ルール
 
 - 審査リジェクトや本番障害が起きたら、該当する節に 1 行追記する。
 - 外部の基準（vitals の閾値・Test Lab の無料枠など）は `DEV_PLAYBOOK.md` と同じく 90 日ごとに公式ページで再確認する。
