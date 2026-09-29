@@ -30,3 +30,4 @@ coverage/
 # 実際のtfvars(値そのものは機密なし=プロジェクトID等だが、誤って秘密情報が
 # 書き込まれた場合の保険としてsample以外はレビュー必須)
 
+RELEASE_REPORT.md
