@@ -39,7 +39,7 @@ final coachingNotifierProvider = StateNotifierProvider<CoachingNotifier, Map<Str
 );
 
 class CoachingService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
   
   /// コーチングセッションを取得
   Future<CoachingSession?> getCoachingSession(String userId) async {

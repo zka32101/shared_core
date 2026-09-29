@@ -8,8 +8,8 @@ import '../models/retention_model.dart';
 class RetentionNotifier extends StateNotifier<RetentionState> {
   RetentionNotifier() : super(const RetentionState());
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  FirebaseAuth get _auth => FirebaseAuth.instance;
 
   /// デイリーミッション生成（毎日午前0時）
   Future<void> generateDailyMissions(List<DailyMission> missions) async {

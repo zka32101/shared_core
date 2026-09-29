@@ -64,7 +64,7 @@ final monthlyReportComparisonProvider =
 
 // ローカルキャッシュ用 StateNotifier
 class CrossAppReportNotifier extends StateNotifier<CrossAppReport?> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   CrossAppReportNotifier() : super(null);
 

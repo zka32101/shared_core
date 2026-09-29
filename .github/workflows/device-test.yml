@@ -1,0 +1,208 @@
+name: Device Test 10 (all apps)
+
+# =============================================================================
+# 全アプリの 10観点デバイステストを、このワークフロー 1 つで実行する（アプリ側には何も置かない）。
+# 方針: docs/DEV_PLAYBOOK.md「10観点テスト」
+#
+# - 対象アプリは自動検出: zka32101 の公開リポジトリのうち、ルートに pubspec.yaml・lib/main.dart・
+#   android/ がある Flutter アプリ（アーカイブ・フォーク・バックアップ・除外リストは対象外）
+# - 定期実行（週 1）: 直近 8 日に更新されたアプリだけ（低コスト）
+# - 手動実行: apps に「all」またはカンマ区切りのリポジトリ名
+# - 全画面ツアーのテストは実行時に差し込む（device-10check.sh）。アプリへのコミットは不要
+# - 結果は 1 つの zip にまとめ、Google ドライブ「memory」/test-results/<アプリ>/ に保存
+#   （シークレット GOOGLE_DRIVE_SERVICE_ACCOUNT を登録し、memory フォルダをそのサービスアカウントに共有）
+# =============================================================================
+
+on:
+  schedule:
+    - cron: '17 18 * * 0'   # 毎週月曜 03:17 JST
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: '対象（all / changed / カンマ区切りのリポジトリ名）'
+        default: 'changed'
+      ios:
+        description: 'iOS シミュレータも実行（macOS ランナー）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  OWNER: zka32101
+  # 対象外（SNS 配信ゲームは保留、バックアップ等）
+  EXCLUDE: 'yourwish|shared_core|cross_promo_kit|livestream-viewer-game|ios-certs-vault|_backup_|_broken_'
+  DRIVE_FOLDER_ID: 1BLPPbnOWzzdR1G4oJQZ6r3PRcHkUw7o1   # Google ドライブ「memory」
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.find.outputs.apps }}
+      os: ${{ steps.find.outputs.os }}
+    steps:
+      - id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SEL: ${{ inputs.apps || 'changed' }}
+        run: |
+          since=$(date -u -d '8 days ago' +%s)
+          gh api "users/$OWNER/repos?per_page=100&type=owner" --paginate \
+            --jq '.[] | select(.archived|not) | select(.fork|not) | select(.private|not) | "\(.name) \(.pushed_at)"' > repos.txt
+          apps=()
+          while read -r name pushed; do
+            echo "$name" | grep -qE "$EXCLUDE" && continue
+            case "$SEL" in
+              all) ;;
+              changed) [ "$(date -u -d "$pushed" +%s)" -ge "$since" ] || continue ;;
+              *) echo ",$SEL," | tr -d ' ' | grep -q ",$name," || continue ;;
+            esac
+            gh api "repos/$OWNER/$name/contents/lib/main.dart" >/dev/null 2>&1 || continue
+            gh api "repos/$OWNER/$name/contents/android" >/dev/null 2>&1 || continue
+            apps+=("$name")
+          done < repos.txt
+          json=$(printf '%s\n' "${apps[@]}" | jq -R . | jq -sc 'map(select(length>0))')
+          echo "apps=$json" >> "$GITHUB_OUTPUT"
+          if [ "${{ inputs.ios }}" = "true" ]; then echo 'os=["ubuntu-latest","macos-15"]'; else echo 'os=["ubuntu-latest"]'; fi >> "$GITHUB_OUTPUT"
+          echo "### 対象アプリ (${#apps[@]})" >> "$GITHUB_STEP_SUMMARY"; printf -- '- %s\n' "${apps[@]}" >> "$GITHUB_STEP_SUMMARY"
+
+  test:
+    needs: discover
+    if: needs.discover.outputs.apps != '[]'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        app: ${{ fromJson(needs.discover.outputs.apps) }}
+        os: ${{ fromJson(needs.discover.outputs.os) }}
+    steps:
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+        with:
+          path: .sc
+          sparse-checkout: .claude/skills/ship-cycle
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+        with:
+          repository: ${{ env.OWNER }}/${{ matrix.app }}
+          path: app
+      - id: fv
+        name: Flutter バージョン（アプリの CI に合わせる）
+        run: |
+          v=$(grep -rhoE "flutter-version:\s*['\"]?[0-9]+\.[0-9]+(\.[0-9]+)?" app/.github/workflows 2>/dev/null | grep -oE "[0-9]+\.[0-9]+(\.[0-9]+)?" | sort -V | tail -1)
+          echo "version=${v:-}" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-java@v4
+        if: runner.os == 'Linux'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@7814e4f6c70abd7a5641333f613efa098fe34381 # v2.14.0
+        with:
+          flutter-version: ${{ steps.fv.outputs.version }}
+          channel: stable
+          cache: true
+      - name: pub get
+        working-directory: app
+        run: flutter pub get
+      - name: Enable KVM
+        if: runner.os == 'Linux'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: 前回の結果を Drive から取得（画面の差分比較用）
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+        run: |
+          [ -n "$SA" ] || { echo "Drive 未設定 → 差分比較なし"; exit 0; }
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          plat=$([ "$RUNNER_OS" = macOS ] && echo ios || echo android)
+          R=":drive,scope=drive,service_account_file=$RUNNER_TEMP/sa.json,root_folder_id=$DRIVE_FOLDER_ID:test-results/${{ matrix.app }}"
+          last=$(rclone lsf "$R" --include "*_${plat}_*.zip" 2>/dev/null | sort | tail -1)
+          [ -n "$last" ] && rclone copyto "$R/$last" "$RUNNER_TEMP/prev.zip" && echo "PREV_ZIP=$RUNNER_TEMP/prev.zip" >> "$GITHUB_ENV" && echo "前回: $last"
+          true
+      - name: 10観点テスト（Android エミュレータ）
+        if: runner.os == 'Linux'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          working-directory: app
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: OUT=$GITHUB_WORKSPACE/results bash $GITHUB_WORKSPACE/.sc/.claude/skills/ship-cycle/device-10check.sh android .
+      - name: 10観点テスト（iOS シミュレータ）
+        if: runner.os == 'macOS'
+        working-directory: app
+        run: OUT=$GITHUB_WORKSPACE/results bash $GITHUB_WORKSPACE/.sc/.claude/skills/ship-cycle/device-10check.sh ios .
+      - name: 結果 zip を Google ドライブへ（memory/test-results/<アプリ>/）
+        if: always()
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+        run: |
+          Z=$(cat results/.zip_path 2>/dev/null) || exit 0
+          [ -n "$SA" ] || { echo "GOOGLE_DRIVE_SERVICE_ACCOUNT 未登録 → Drive 保存をスキップ（artifact のみ）"; exit 0; }
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          R=":drive,scope=drive,service_account_file=$RUNNER_TEMP/sa.json,root_folder_id=$DRIVE_FOLDER_ID:test-results/${{ matrix.app }}/"
+          rclone copy "$Z" "$R"
+          rm -f "$RUNNER_TEMP/sa.json"
+          echo "☁️ memory/test-results/${{ matrix.app }}/$(basename "$Z")" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: device-test-${{ matrix.app }}-${{ runner.os }}
+          path: |
+            results/*.zip
+            results/report.md
+          if-no-files-found: ignore
+
+  # 全アプリの結果を 1 枚にまとめる（誰が要対応かを一目で）
+  summary:
+    needs: [discover, test]
+    if: always() && needs.discover.outputs.apps != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: device-test-*
+          path: artifacts
+        continue-on-error: true
+      - name: 週次サマリを作成
+        run: |
+          python3 - <<'PYEOF'
+          import glob, os, re, datetime
+          rows = []
+          for rep in sorted(glob.glob("artifacts/*/report.md")):
+              name = re.sub(r"-(Linux|macOS)$", "", os.path.basename(os.path.dirname(rep))[len("device-test-"):])
+              txt = open(rep, encoding="utf-8").read()
+              cells = re.findall(r"^\| (\d+) \| ([^|]+) \| (✅|⚠️|❌|➖) \| ([^|]*) \|", txt, re.M)
+              ng = [f"{c[1].strip()}" for c in cells if c[2] == "❌"]
+              warn = [f"{c[1].strip()}" for c in cells if c[2] == "⚠️"]
+              diff = re.search(r"前回との差分: 変化 (\d+) / 同じ (\d+) / 新規 (\d+) / 消失 (\d+)", txt)
+              rows.append((name, ng, warn, diff.groups() if diff else None))
+          apps = set(os.path.basename(d)[len("device-test-"):] for d in glob.glob("artifacts/*"))
+          out = [f"# 10観点テスト 週次サマリ {datetime.date.today()}", "",
+                 "| アプリ | 結果 | ❌ | ⚠️ | 画面の変化 |", "|---|---|---|---|---|"]
+          for name, ng, warn, diff in sorted(rows, key=lambda r: (not r[1], r[0])):
+              status = "❌ 要対応" if ng else ("⚠️ 確認" if warn else "✅")
+              d = f"変化{diff[0]}/消失{diff[3]}" if diff else "初回"
+              out.append(f"| {name} | {status} | {', '.join(ng) or '-'} | {', '.join(warn) or '-'} | {d} |")
+          if not rows:
+              out.append("| （結果なし: 全アプリで実行に失敗した可能性。Actions のログを確認） | | | | |")
+          open("summary.md", "w", encoding="utf-8").write("\n".join(out) + "\n")
+          PYEOF
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Google ドライブへ（test-results/_summary/）
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+        run: |
+          [ -n "$SA" ] || { echo "Drive 未設定 → スキップ"; exit 0; }
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          R=":drive,scope=drive,service_account_file=$RUNNER_TEMP/sa.json,root_folder_id=$DRIVE_FOLDER_ID:test-results/_summary"
+          d=$(date +%F)
+          rclone copyto summary.md "$R/$d.md" && rclone copyto summary.md "$R/latest.md"
+          rm -f "$RUNNER_TEMP/sa.json"

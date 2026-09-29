@@ -5,32 +5,54 @@ service cloud.firestore {
     // Phase 4.3: ランキング
     // =====================
 
-    // グローバルランキング（公開読取、管理者のみ書込）
+    // ランキングの集計は Cloud Functions（管理者権限、ルールを迂回）だけが書く。
+    // クライアントが直接書けるとスコアを改ざんできるため、書き込みは全面禁止。
+    // 公開読取: 表示名（ニックネーム）と点数のみを入れること。本名・学年・メールは入れない（COPPA）。
+
+    // グローバルランキング
     match /global_rankings/{userId} {
       allow read: if true;
-      allow write: if request.auth.uid == resource.data.userId || isAdmin();
+      allow write: if false;
     }
 
-    // 教科別ランキング（公開読取、管理者のみ書込）
+    // 教科別ランキング
     match /subject_rankings/{subject}/users/{userId} {
       allow read: if true;
-      allow write: if request.auth.uid == userId || isAdmin();
+      allow write: if false;
     }
 
-    // ユーザーランキング統計（本人と管理者のみ）
+    // ユーザーランキング統計（読取は本人と管理者のみ。集計は Cloud Functions）
     match /user_ranking_stats/{userId} {
-      allow read: if request.auth.uid == userId || isAdmin();
-      allow write: if request.auth.uid == userId || isAdmin();
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if false;
     }
 
     // =====================
     // Phase 4.5: ミッション
     // =====================
 
-    // ユーザーミッション進捗（本人のみ）
+    // ユーザーミッション進捗（本人のみ）。docId は「<uid>_<missionId>」。
+    // 新規作成時は resource が null なので、作成は request.resource.data で判定する。
     match /user_mission_progress/{docId} {
-      allow read: if request.auth.uid == resource.data.userId || isAdmin();
-      allow write: if request.auth.uid == resource.data.userId || isAdmin();
+      allow read: if request.auth != null
+                  && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && docId.matches(request.auth.uid + '_.*');
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == resource.data.userId;
+      allow delete: if isAdmin();
+    }
+
+    // ミッション初期化フラグ（本人のみ）
+    match /user_missions/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // デイリーミッションの進捗（本人のみ）
+    match /analytics/daily_missions/users/{userId}/progress/{date} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
     // ミッションマスター（公開読取、管理者のみ書込）
@@ -45,7 +67,7 @@ service cloud.firestore {
 
     // 利用時間ログ（本人と親のみ）
     match /screen_time_logs/{userId}/daily/{date} {
-      allow read: if request.auth.uid == userId || isParentOf(userId) || isAdmin();
+      allow read: if request.auth != null && (request.auth.uid == userId || isParentOf(userId) || isAdmin());
       allow write: if isAdmin();
     }
 
@@ -84,8 +106,9 @@ service cloud.firestore {
 
     // 親-子関係判定
     function isParentOf(childUserId) {
+      // exists() は get(...).data のメソッドではなくパスに対する関数
       return request.auth != null &&
-             get(/databases/$(database)/documents/parent_relationships/$(request.auth.uid)/children/$(childUserId)).data.exists();
+             exists(/databases/$(database)/documents/parent_relationships/$(request.auth.uid)/children/$(childUserId));
     }
 
     // デフォルト：すべてを拒否

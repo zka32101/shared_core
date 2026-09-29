@@ -32,7 +32,7 @@ final leagueNotifierProvider = StateNotifierProvider<LeagueNotifier, Map<String,
 );
 
 class LeagueService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
   
   /// ユーザーのリーグ情報を取得
   Future<UserLeague?> getUserLeague(String userId) async {

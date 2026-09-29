@@ -1,0 +1,48 @@
+name: Tag Release
+
+# shared_core のバージョンタグ（v1.2.3）とリリースを作る。
+# アプリは pubspec の `ref: main` ではなく `ref: v1.2.3` で参照すると、
+# shared_core の変更が全アプリへ即座に波及せず、アプリごとに好きなタイミングで上げられる。
+#
+# 実行前提: main で "Verify All Apps" が緑であること（下で確認する）。
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'タグ（例: v0.2.0）'
+        required: true
+        type: string
+      note:
+        description: '変更点（1〜3 行）'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+        with:
+          ref: main
+      - name: 形式とバージョン重複の確認
+        run: |
+          [[ "${{ inputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::v1.2.3 形式で指定してください"; exit 1; }
+          git rev-parse -q --verify "refs/tags/${{ inputs.version }}" && { echo "::error::タグが既に存在します"; exit 1; } || true
+      - name: main の最新の一括検証（Verify All Apps）が緑か確認
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # lib/ か pubspec.yaml を変えた最新の main の実行結果を見る（docs だけの変更では走らないため）
+          concl=$(gh api "repos/${{ github.repository }}/actions/workflows/verify-all-apps.yml/runs?branch=main&event=push&status=completed&per_page=1" --jq '.workflow_runs[0].conclusion // "none"')
+          echo "verify-all-apps (main, 最新): $concl"
+          [ "$concl" = "success" ] || { echo "::error::main の一括検証が success ではありません（$concl）。先に修正してください"; exit 1; }
+      - name: タグとリリースを作成
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ inputs.version }}" --target main --title "${{ inputs.version }}" \
+            --notes "${{ inputs.note }}" --generate-notes

@@ -1,14 +1,30 @@
-# 依存パッケージの脆弱性を自動検知し、PRを自動作成する設定。
+# 依存パッケージの更新PRを自動作成する設定。
+#
+# 方針（DEV_PLAYBOOK §1）: shared_core は全アプリから git 依存で参照されるため、
+# **メジャー更新は自動PRにしない**（riverpod 3 や Firebase の一斉メジャー更新で
+# 全アプリの pub get が失敗した事例があるため）。メジャー更新は、全アプリの制約と
+# 同時に手動で行う。マイナー/パッチはグループ化して 1 本のPRにまとめる。
 version: 2
 updates:
-  # Flutter/Dart パッケージ依存
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      firebase:
+        patterns: ["firebase_*", "cloud_firestore", "cloud_functions"]
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
-  # GitHub Actions（今回追加した secure-secrets-inject.yml, play-store-deploy.yml 含む）
+  # GitHub Actions（Action は SHA 固定のため、更新は SHA ごと PR になる）
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]

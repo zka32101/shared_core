@@ -34,16 +34,19 @@ class DailyMissionPage extends ConsumerStatefulWidget {
 }
 
 class _DailyMissionPageState extends ConsumerState<DailyMissionPage> {
-  late String _userId;
+  String? _userId;
 
   @override
   void initState() {
     super.initState();
-    _userId = FirebaseAuth.instance.currentUser?.uid ?? 'current_user';
+    _userId = FirebaseAuth.instance.currentUser?.uid;
+    final userId = _userId;
+    // 未ログイン時は共有ダミーIDに書き込まないよう読み込みをスキップ
+    if (userId == null) return;
 
     // ページ初期化時にミッションを読み込み
     Future.microtask(() {
-      ref.read(missionProvider.notifier).initializeMissions(_userId);
+      ref.read(missionProvider.notifier).initializeMissions(userId);
     });
   }
 
@@ -197,18 +200,20 @@ class _DailyMissionPageState extends ConsumerState<DailyMissionPage> {
                     primaryColor: widget.primaryColor,
                     onCompleted: () {
                       widget.onMissionCompleted?.call(item.mission.missionId);
+                      final userId = _userId;
+                      if (userId == null) return;
                       // ミッション報酬を付与
                       ref
                           .read(missionProvider.notifier)
                           .awardMissionRewards(
-                            userId: _userId,
+                            userId: userId,
                             missionId: item.mission.missionId,
                           )
                           .then((_) {
                         // 状態を再読込
                         ref
                             .read(missionProvider.notifier)
-                            .initializeMissions(_userId);
+                            .initializeMissions(userId);
                       });
                     },
                   );

@@ -89,20 +89,41 @@ jobs:
 
       - name: "shared_core git依存をshared_core_refで上書き（デグレ検証用）"
         if: inputs.shared_core_ref != ''
+        env:
+          SC_REF: ${{ inputs.shared_core_ref }}
         run: |
           if ! grep -q "shared_core" pubspec.yaml; then
             echo "shared_core への依存が無いためスキップします"
             exit 0
           fi
-          cat >> pubspec.yaml << EOF
-
-          dependency_overrides:
-            shared_core:
-              git:
-                url: https://github.com/zka32101/shared_core.git
-                ref: ${{ inputs.shared_core_ref }}
-          EOF
-          echo "✓ shared_core を ref=${{ inputs.shared_core_ref }} に固定しました"
+          # 既に dependency_overrides: がある場合に重複キーで pubspec が壊れないよう、
+          # 既存のセクションへ追加する（無ければ末尾に新規作成）。
+          python3 - <<'PY'
+          import os, re
+          ref = os.environ["SC_REF"]
+          entry = ["  shared_core:", "    git:", "      url: https://github.com/zka32101/shared_core.git", f"      ref: {ref}"]
+          lines = open("pubspec.yaml", encoding="utf-8").read().split("\n")
+          idx = next((i for i, l in enumerate(lines) if re.match(r"^dependency_overrides:\s*(#.*)?$", l)), None)
+          if idx is None:
+              while lines and lines[-1] == "":
+                  lines.pop()
+              lines += ["", "dependency_overrides:"] + entry + [""]
+          else:
+              # 既存の shared_core の上書きがあれば取り除いてから、セクション先頭に追加
+              j = idx + 1
+              out = []
+              while j < len(lines) and (lines[j].startswith(" ") or lines[j] == ""):
+                  if re.match(r"^  shared_core:\s*$", lines[j]):
+                      j += 1
+                      while j < len(lines) and lines[j].startswith("    "):
+                          j += 1
+                      continue
+                  out.append(lines[j]); j += 1
+              lines = lines[: idx + 1] + entry + out + lines[j:]
+          open("pubspec.yaml", "w", encoding="utf-8").write("\n".join(lines))
+          PY
+          python3 -c "import yaml;yaml.safe_load(open('pubspec.yaml'))" 2>/dev/null || true
+          echo "✓ shared_core を ref=$SC_REF に固定しました"
 
       - name: Clean and get dependencies
         run: |

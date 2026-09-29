@@ -43,7 +43,7 @@ class MissionState {
 
 /// ミッション進捗管理
 class MissionNotifier extends Notifier<MissionState> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
   late SharedPreferences _prefs;
 
   /// 外部ハンドラー（必要に応じてオーバーライド可能）
@@ -423,7 +423,9 @@ final missionProvider =
 /// 特定ミッションの進捗 (リアルタイム)
 final missionProgressProvider = StreamProvider.family<UserMissionProgress?, String>(
   (ref, missionId) {
-    final userId = FirebaseAuth.instance.currentUser?.uid ?? 'current_user';
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    // 未ログイン時に共有ダミーID のドキュメントを読まないようにする
+    if (userId == null) return Stream.value(null);
     return FirebaseFirestore.instance
         .collection('user_mission_progress')
         .doc('${userId}_$missionId')
