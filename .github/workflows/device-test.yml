@@ -1,0 +1,124 @@
+name: Device Test 10 (Reusable)
+
+# =============================================================================
+# 10観点デバイステスト（Android エミュレータ / iOS シミュレータ）の再利用可能ワークフロー。
+# 方針の正本: docs/DEVICE_TEST_POLICY.md
+#
+# 各アプリは ship-cycle の bootstrap-tests.sh が生成する .github/workflows/device-test.yml
+# から呼び出すだけでよい（初回導入 PR で自動実行される）。
+#
+#   jobs:
+#     device-test:
+#       uses: zka32101/shared_core/.github/workflows/device-test.yml@main
+#       with:
+#         ios: false   # macOS ランナーは 10 倍課金。ios-test ラベル / 手動時のみ true
+#
+# 判定ロジックは .claude/skills/ship-cycle/device-10check.sh（ローカル実機と共通）。
+# =============================================================================
+
+on:
+  workflow_call:
+    inputs:
+      flutter_version:
+        type: string
+        default: '3.44.4'
+      android:
+        type: boolean
+        default: true
+      ios:
+        type: boolean
+        default: false
+      android_api:
+        type: number
+        default: 34
+        description: "エミュレータの API レベル"
+      working_directory:
+        type: string
+        default: '.'
+      shared_core_ref:
+        type: string
+        default: 'main'
+        description: "判定スクリプトを取得する shared_core の ref"
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Android emulator (10観点)
+    if: inputs.android
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+      - name: Checkout ship-cycle scripts
+        uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+        with:
+          repository: zka32101/shared_core
+          ref: ${{ inputs.shared_core_ref }}
+          path: .ship-cycle-src
+          sparse-checkout: .claude/skills/ship-cycle
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@7814e4f6c70abd7a5641333f613efa098fe34381 # v2.14.0
+        with:
+          flutter-version: ${{ inputs.flutter_version }}
+          channel: stable
+          cache: true
+      - name: pub get
+        working-directory: ${{ inputs.working_directory }}
+        run: flutter pub get
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Run 10-perspective test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ inputs.android_api }}
+          target: google_apis
+          arch: x86_64
+          working-directory: ${{ inputs.working_directory }}
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: OUT=$PWD/device-test-results bash $GITHUB_WORKSPACE/.ship-cycle-src/.claude/skills/ship-cycle/device-10check.sh android .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: device-test-android
+          path: ${{ inputs.working_directory }}/device-test-results/
+          if-no-files-found: ignore
+
+  ios:
+    name: iOS simulator (10観点)
+    if: inputs.ios
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+      - name: Checkout ship-cycle scripts
+        uses: actions/checkout@1e31de5234b9f8995739874a8ce0492dc87873e2 # v4.0.0
+        with:
+          repository: zka32101/shared_core
+          ref: ${{ inputs.shared_core_ref }}
+          path: .ship-cycle-src
+          sparse-checkout: .claude/skills/ship-cycle
+      - uses: subosito/flutter-action@7814e4f6c70abd7a5641333f613efa098fe34381 # v2.14.0
+        with:
+          flutter-version: ${{ inputs.flutter_version }}
+          channel: stable
+          cache: true
+      - name: pub get
+        working-directory: ${{ inputs.working_directory }}
+        run: flutter pub get
+      - name: Run 10-perspective test
+        working-directory: ${{ inputs.working_directory }}
+        run: OUT=$PWD/device-test-results bash $GITHUB_WORKSPACE/.ship-cycle-src/.claude/skills/ship-cycle/device-10check.sh ios .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: device-test-ios
+          path: ${{ inputs.working_directory }}/device-test-results/
+          if-no-files-found: ignore
