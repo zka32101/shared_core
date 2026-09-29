@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _userIdKey = 'firebase_uid';
 
 class FirebaseService {
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static FirebaseAuth get _auth => FirebaseAuth.instance;
+  static FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   static Future<String?> signInAnonymously() async {
     try {

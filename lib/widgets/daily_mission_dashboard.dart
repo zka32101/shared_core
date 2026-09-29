@@ -31,19 +31,22 @@ class DailyMissionDashboard extends ConsumerStatefulWidget {
 }
 
 class _DailyMissionDashboardState extends ConsumerState<DailyMissionDashboard> {
-  late String _userId;
+  String? _userId;
   late String _appId;
 
   @override
   void initState() {
     super.initState();
-    _userId = FirebaseAuth.instance.currentUser?.uid ?? 'current_user';
+    _userId = FirebaseAuth.instance.currentUser?.uid;
     _appId = 'app'; // TODO: アプリIDを設定
+    final userId = _userId;
+    // 未ログイン時は共有ダミーIDに書き込まないよう読み込みをスキップ
+    if (userId == null) return;
 
     // ダッシュボード初期化時にミッションを読み込み
     Future.microtask(() {
       ref.read(dailyMissionProvider.notifier)
-          .initializeDailyMissions(_userId, _appId);
+          .initializeDailyMissions(userId, _appId);
     });
   }
 

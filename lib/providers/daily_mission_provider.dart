@@ -56,7 +56,7 @@ class DailyMissionNotifier extends StateNotifier<DailyMissionState> {
   static const String CACHE_KEY_PREFIX = 'daily_missions_cache_';
   static const String RESET_DATE_KEY_PREFIX = 'daily_missions_reset_date_';
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
   late SharedPreferences _prefs;
   late String _userId;
   late String _appId;

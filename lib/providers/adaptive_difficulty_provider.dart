@@ -5,8 +5,8 @@ import '../models/adaptive_difficulty_model.dart';
 
 class AdaptiveDifficultyNotifier
     extends StateNotifier<UserAdaptiveDifficulty?> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  FirebaseRemoteConfig get _remoteConfig => FirebaseRemoteConfig.instance;
 
   AdaptiveDifficultyNotifier() : super(null);
 
