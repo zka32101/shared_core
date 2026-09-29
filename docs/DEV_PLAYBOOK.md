@@ -28,6 +28,7 @@
 ### shared_core を安全に変える（全アプリに波及するため）
 
 - **メジャー更新は自動PRにしない**（dependabot は minor/patch のみ）。Firebase など共有の依存をメジャー更新するときは、shared_core と全アプリの制約を同時に手動で上げる（P16 が警告する）。
+- **Firebase のメジャー更新は各アプリの最低 OS を押し上げる**（Firebase 12 / firebase_core 4 系は **iOS 15 以上**、Android は minSdk 23 以上）。更新するときは、全アプリで ①analyze・テスト ②**iOS ビルドと Android ビルド**（未署名でよい）を確認し、最低 OS の引き上げ（古い端末を切り捨てる判断）を事前に決める。依存を上げる PR は解析だけで終わらせない。
 - **タグで版管理**: 一括検証が緑の main で `Tag Release` ワークフロー（`v0.2.0` 形式）を実行する。アプリは `ref: main` でなく `ref: v0.2.0` で参照すると、shared_core の変更がアプリごとに好きなタイミングで取り込める。
 - **一括検証**（`verify-all-apps.yml`）は PR と main への反映で全アプリを検証する。`release-readiness-check.yml` は既存の `dependency_overrides:` に統合する（重複キーで pubspec が壊れる不具合を修正済み）。
 - **Firestore ルール**は `tests/firestore_rules/`（エミュレータ、22 ケース）で検証される。ランキングと統計はクライアントから書けず、Cloud Functions だけが書く。
@@ -195,7 +196,7 @@
 | Android で課金商品が出ない | Play 経由でインストールしたか、ライセンステスターか、内部テストに一度上げたか |
 | 広告が出ない | 新しい広告ユニット（数時間かかる）、app-ads.txt、No fill（コード 3）、UMP の同意 |
 | 通知が届かない | iOS: APNs キーと Capability。Android 13 以降: 通知権限。どちらも実機で確認する |
-| iOS のビルドが失敗 | `pod repo update && pod install`、Deployment Target、DerivedData を削除 |
+| iOS のビルドが失敗 | `pod repo update && pod install`、Deployment Target（Firebase 12 は iOS 15 以上が必要）、Podfile の `platform :ios`、DerivedData を削除 |
 | Android のビルドが失敗 | Gradle / AGP / Kotlin / Java の組み合わせ、`./gradlew --stacktrace` |
 | CI でだけ失敗 | 古い lock ファイル・キャッシュ、Flutter のバージョン差、生成物のコミット漏れ（P1・P13・P14） |
 | 依存関係が解決できない | 共有パッケージのメジャー更新（P16）→ 両側の制約をそろえる |
