@@ -16,6 +16,13 @@ on:
     paths:
       - 'lib/**'
       - 'pubspec.yaml'
+  # main への反映後にも実行する（tag-release.yml が「main の最新の一括検証が緑」を確認するため）
+  push:
+    branches: [main]
+    paths:
+      - 'lib/**'
+      - 'pubspec.yaml'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -44,5 +51,5 @@ jobs:
     uses: ./.github/workflows/release-readiness-check.yml
     with:
       target_repo: zka32101/${{ matrix.app.repo }}
-      shared_core_ref: ${{ github.event.pull_request.head.sha }}
+      shared_core_ref: ${{ github.event.pull_request.head.sha || github.sha }}
       flutter_version: ${{ matrix.app.flutter_version }}

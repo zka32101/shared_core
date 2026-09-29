@@ -25,6 +25,13 @@
   - クラウド: shared_core をクローンしてあるセッションなら `bash ../shared_core/.claude/skills/ship-cycle/ship.sh .`
   - Windows ローカル: `git clone https://github.com/zka32101/shared_core %USERPROFILE%\.claude\shared_core` を一度実行し、`mklink /J %USERPROFILE%\.claude\skills\ship-cycle %USERPROFILE%\.claude\shared_core\.claude\skills\ship-cycle` で全プロジェクト共通のスキルにする。更新は `git pull` だけ。
 
+### shared_core を安全に変える（全アプリに波及するため）
+
+- **メジャー更新は自動PRにしない**（dependabot は minor/patch のみ）。Firebase など共有の依存をメジャー更新するときは、shared_core と全アプリの制約を同時に手動で上げる（P16 が警告する）。
+- **タグで版管理**: 一括検証が緑の main で `Tag Release` ワークフロー（`v0.2.0` 形式）を実行する。アプリは `ref: main` でなく `ref: v0.2.0` で参照すると、shared_core の変更がアプリごとに好きなタイミングで取り込める。
+- **一括検証**（`verify-all-apps.yml`）は PR と main への反映で全アプリを検証する。`release-readiness-check.yml` は既存の `dependency_overrides:` に統合する（重複キーで pubspec が壊れる不具合を修正済み）。
+- **Firestore ルール**は `tests/firestore_rules/`（エミュレータ、22 ケース）で検証される。ランキングと統計はクライアントから書けず、Cloud Functions だけが書く。
+
 ## 2. 役割分担（Windows ローカル / クラウド Code）
 
 **原則: コードはクラウドで書いて PR にし、ローカルはクラウドでできない作業だけにする。**
@@ -59,7 +66,10 @@
 | 9 | ライフサイクル・権限 | 背面→復帰、強制終了→再起動で落ちない。権限の例外 |
 | 10 | 性能 | 起動時間（仮想端末 8 秒 / 実機 3 秒）、PSS 400MB、フレーム落ち |
 
+- 全画面は 3 つの条件で表示する: 通常 / **小型スマホ（360×640）+ 文字 2 倍**（`_stress`）/ ダークモード（`_dark`）。**通常の崩れは失敗、他の条件での崩れは警告**（子ども向けで最も崩れやすいのは大きい文字なので、警告は順に直す）。
+- 前回の結果（Drive の同じアプリの最新 zip）と画面を比べ、**変化した・消えた画面だけ**をレポートに出す（`shot-diff.sh`。ImageMagick があれば 5% 以内の色差は無視）。画面が消えていたら観点 3 は警告になる。
 - ❌ が 1 つでもあれば失敗、⚠️ は目で確認する。結果は 10 行の表（`report.md`）で出る。
+- 毎週の実行後、全アプリの結果を 1 枚の表にして Drive の `test-results/_summary/latest.md`（と日付付き）に保存する。要対応のアプリが上に並ぶ。
 - 巡回できない画面（引数が必要な画面や go_router）は自動でスキップして警告を出す。巡回に加えたい場合だけ、アプリの `integration_test/screen_catalog.dart` に書く（任意。書けば差し込みより優先される）。
 
 ## 4. 手動で確認する観点（リリース前・ストア配信版で）

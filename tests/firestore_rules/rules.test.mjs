@@ -1,0 +1,34 @@
+import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing';
+import { readFileSync } from 'fs';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+const env = await initializeTestEnvironment({ projectId: 'demo-rules', firestore: { rules: readFileSync(new URL('./firestore.rules', import.meta.url),'utf8'), host:'127.0.0.1', port:8080 }});
+const alice = env.authenticatedContext('alice').firestore();
+const anon = env.unauthenticatedContext().firestore();
+let pass=0, fail=0;
+const t = async (name, p) => { try { await p; pass++; console.log('ok  ', name);} catch(e){ fail++; console.log('FAIL', name, String(e.message).slice(0,80)); } };
+// ランキング: 読取は誰でも、書き込みは誰も不可
+await t('ranking read (anon)', assertSucceeds(getDoc(doc(anon,'global_rankings/alice'))));
+await t('ranking write denied (owner)', assertFails(setDoc(doc(alice,'global_rankings/alice'),{userId:'alice',totalScore:999999})));
+await t('subject ranking write denied', assertFails(setDoc(doc(alice,'subject_rankings/math/users/alice'),{score:1})));
+await t('user_ranking_stats write denied', assertFails(setDoc(doc(alice,'user_ranking_stats/alice'),{x:1})));
+await t('user_ranking_stats read own', assertSucceeds(getDoc(doc(alice,'user_ranking_stats/alice'))));
+await t('user_ranking_stats read other denied', assertFails(getDoc(doc(alice,'user_ranking_stats/bob'))));
+// ミッション進捗: 新規作成できる（旧ルールでは不可だった）
+await t('mission create own', assertSucceeds(setDoc(doc(alice,'user_mission_progress/alice_m1'),{userId:'alice',missionId:'m1',progress:0})));
+await t('mission create as other denied', assertFails(setDoc(doc(alice,'user_mission_progress/bob_m1'),{userId:'bob'})));
+await t('mission create wrong docId denied', assertFails(setDoc(doc(alice,'user_mission_progress/zzz_m1'),{userId:'alice'})));
+await t('mission update own', assertSucceeds(updateDoc(doc(alice,'user_mission_progress/alice_m1'),{progress:1})));
+await t('mission change owner denied', assertFails(updateDoc(doc(alice,'user_mission_progress/alice_m1'),{userId:'bob'})));
+await t('mission read own', assertSucceeds(getDoc(doc(alice,'user_mission_progress/alice_m1'))));
+await t('mission anon denied', assertFails(getDoc(doc(anon,'user_mission_progress/alice_m1'))));
+await t('user_missions own', assertSucceeds(setDoc(doc(alice,'user_missions/alice'),{initialized:true})));
+await t('user_missions other denied', assertFails(setDoc(doc(alice,'user_missions/bob'),{initialized:true})));
+await t('daily progress own', assertSucceeds(setDoc(doc(alice,'analytics/daily_missions/users/alice/progress/2026-09-29'),{a:1})));
+await t('daily progress other denied', assertFails(setDoc(doc(alice,'analytics/daily_missions/users/bob/progress/2026-09-29'),{a:1})));
+await t('mission_master write denied', assertFails(setDoc(doc(alice,'mission_master/x'),{a:1})));
+await t('unknown collection denied', assertFails(setDoc(doc(alice,'whatever/x'),{a:1})));
+await t('screen_time read own', assertSucceeds(getDoc(doc(alice,'screen_time_logs/alice/daily/2026-09-29'))));
+await t('screen_time write denied', assertFails(setDoc(doc(alice,'screen_time_logs/alice/daily/2026-09-29'),{m:1})));
+await t('screen_time anon denied', assertFails(getDoc(doc(anon,'screen_time_logs/alice/daily/2026-09-29'))));
+await env.cleanup();
+console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail?1:0);

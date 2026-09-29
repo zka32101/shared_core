@@ -1,0 +1,14 @@
+{
+  "name": "shared-core-firestore-rules-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pretest": "node -e \"require('fs').copyFileSync('../../firestore.rules','firestore.rules')\"",
+    "test": "firebase emulators:exec --only firestore --project demo-rules \"node rules.test.mjs\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.0.0"
+  }
+}

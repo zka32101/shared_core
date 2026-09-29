@@ -226,6 +226,25 @@ set_r 10 "$P10" "${M10:-計測値なし（実機で DevTools）}"
 [ "$PLAT" = android ] && [ "${DEMO:-1}" = 1 ] && bash "$HERE/device-10check.sh" demo off >/dev/null 2>&1
 OUT="$OUT/screenshots" bash "$HERE/device-10check.sh" sheet "$OUT/screenshots" >/dev/null 2>&1
 
+# 保存先: Google ドライブ「memory」フォルダ（ID 1BLPPbnOWzzdR1G4oJQZ6r3PRcHkUw7o1）/test-results/<アプリ>/
+if [ -z "${DRIVE_DIR:-}" ]; then
+  for d in "${USERPROFILE:-$HOME}/マイドライブ/memory" "${USERPROFILE:-$HOME}/My Drive/memory" /g/マイドライブ/memory "/g/My Drive/memory"; do
+    [ -d "$d" ] && { DRIVE_DIR="$d/test-results"; break; }
+  done
+fi
+APPNAME=$(grep -m1 "^name:" pubspec.yaml | awk '{print $2}')
+
+# ---------- 前回との差分（前回 zip があれば。CI は PREV_ZIP、ローカルは Drive の同じアプリの最新 zip） ----------
+PREV_ZIP="${PREV_ZIP:-}"
+[ -z "$PREV_ZIP" ] && [ -n "${DRIVE_DIR:-}" ] && PREV_ZIP=$(ls -t "$DRIVE_DIR/$APPNAME"/*_${PLAT}_*.zip 2>/dev/null | head -1)
+SHOTDIFF=""
+if [ -n "$PREV_ZIP" ] && [ -f "$PREV_ZIP" ]; then
+  PD="$OUT/.prev"; rm -rf "$PD"; mkdir -p "$PD"
+  ( cd "$PD" && { command -v unzip >/dev/null && unzip -qo "$PREV_ZIP" || python3 -c "import zipfile,sys;zipfile.ZipFile(sys.argv[1]).extractall('.')" "$PREV_ZIP"; } ) 2>/dev/null
+  SHOTDIFF=$(bash "$HERE/shot-diff.sh" "$PD/screenshots" "$OUT/screenshots"); [ $? = 3 ] && [ "${RES[3]}" = "✅" ] && { RES[3]="⚠️"; DETAIL[3]="${DETAIL[3]} / 前回あった画面が消えた"; }
+  rm -rf "$PD"
+fi
+
 # ---------- レポート ----------
 REPORT="$OUT/report.md"
 {
@@ -233,13 +252,13 @@ REPORT="$OUT/report.md"
   echo; echo "| # | 観点 | 結果 | 詳細 |"; echo "|---|---|---|---|"
   n=(x 起動 クラッシュ/ANR 全画面表示 通信 認証 課金 広告・同意 子ども向け ライフサイクル・権限 性能)
   for i in $(seq 1 10); do echo "| $i | ${n[$i]} | ${RES[$i]} | ${DETAIL[$i]//|/／} |"; done
+  [ -n "$SHOTDIFF" ] && { echo; echo "$SHOTDIFF"; }
   echo; echo "成果物: \`${OUT##*/}/\`（screenshots/, device.log, drive.log）。目視項目は shared_core docs/DEV_PLAYBOOK.md §4。"
 } > "$REPORT"
 [ -n "${GITHUB_STEP_SUMMARY:-}" ] && cat "$REPORT" >> "$GITHUB_STEP_SUMMARY"
 echo "📝 $REPORT"
 
 # ---------- 1 ファイルにまとめる（スクショ・ログ・レポートを分散させない） ----------
-APPNAME=$(grep -m1 "^name:" pubspec.yaml | awk '{print $2}')
 VER=$(grep -m1 "^version:" pubspec.yaml | awk '{print $2}' | tr '+' '_')
 ZIP="${APPNAME}_${VER:-na}_${PLAT}_$(date +%Y%m%d-%H%M).zip"
 ( cd "$OUT" && rm -f ./*.zip
@@ -249,12 +268,6 @@ ZIP="${APPNAME}_${VER:-na}_${PLAT}_$(date +%Y%m%d-%H%M).zip"
 echo "📦 $OUT/$ZIP"
 echo "$OUT/$ZIP" > "$OUT/.zip_path"
 # ローカル（Windows の Google ドライブ同期フォルダ）: 決まった場所へコピー。CI はワークフロー側で rclone アップロード
-# 保存先: Google ドライブ「memory」フォルダ（ID 1BLPPbnOWzzdR1G4oJQZ6r3PRcHkUw7o1）/test-results/<アプリ>/
-if [ -z "${DRIVE_DIR:-}" ]; then
-  for d in "${USERPROFILE:-$HOME}/マイドライブ/memory" "${USERPROFILE:-$HOME}/My Drive/memory" /g/マイドライブ/memory "/g/My Drive/memory"; do
-    [ -d "$d" ] && { DRIVE_DIR="$d/test-results"; break; }
-  done
-fi
 if [ -z "${CI:-}" ] && [ -n "${DRIVE_DIR:-}" ]; then
   mkdir -p "$DRIVE_DIR/$APPNAME" && cp "$OUT/$ZIP" "$DRIVE_DIR/$APPNAME/" && echo "☁️  $DRIVE_DIR/$APPNAME/$ZIP"
 fi

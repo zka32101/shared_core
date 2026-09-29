@@ -17,7 +17,7 @@ bash $S/device-10check.sh shot|record|demo|sheet ...   # 撮影
 ```
 
 - CI の 10観点テスト: shared_core `device-test.yml` が全公開アプリを自動検出（週 1・更新分のみ）。手動実行は `apps=all` か任意のリポジトリ名。
-- 結果: 1 回 = zip 1 つ → Google ドライブ「memory」/test-results/<アプリ>/。
+- 結果: 1 回 = zip 1 つ → Google ドライブ「memory」/test-results/<アプリ>/。前回との画面差分（`shot-diff.sh`）と、週次の全アプリ一覧（`_summary/latest.md`）も自動。
 - 環境変数: `ALL=1`（全パッケージ）/ `BASE=<ref>` / `SKIP_TEST=1` / `CLEAN=1` / `APK=` / `DRIVE_DIR=`。
 
 ## Claude の手順

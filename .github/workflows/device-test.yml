@@ -110,6 +110,18 @@ jobs:
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: 前回の結果を Drive から取得（画面の差分比較用）
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+        run: |
+          [ -n "$SA" ] || { echo "Drive 未設定 → 差分比較なし"; exit 0; }
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          plat=$([ "$RUNNER_OS" = macOS ] && echo ios || echo android)
+          R=":drive,scope=drive,service_account_file=$RUNNER_TEMP/sa.json,root_folder_id=$DRIVE_FOLDER_ID:test-results/${{ matrix.app }}"
+          last=$(rclone lsf "$R" --include "*_${plat}_*.zip" 2>/dev/null | sort | tail -1)
+          [ -n "$last" ] && rclone copyto "$R/$last" "$RUNNER_TEMP/prev.zip" && echo "PREV_ZIP=$RUNNER_TEMP/prev.zip" >> "$GITHUB_ENV" && echo "前回: $last"
+          true
       - name: 10観点テスト（Android エミュレータ）
         if: runner.os == 'Linux'
         uses: reactivecircus/android-emulator-runner@v2
@@ -134,14 +146,63 @@ jobs:
           [ -n "$SA" ] || { echo "GOOGLE_DRIVE_SERVICE_ACCOUNT 未登録 → Drive 保存をスキップ（artifact のみ）"; exit 0; }
           command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
           printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
-          rclone copy "$Z" "gdrive:test-results/${{ matrix.app }}/" --config /dev/null \
-            --drive-service-account-file "$RUNNER_TEMP/sa.json" --drive-root-folder-id "$DRIVE_FOLDER_ID" --drive-scope drive
+          R=":drive,scope=drive,service_account_file=$RUNNER_TEMP/sa.json,root_folder_id=$DRIVE_FOLDER_ID:test-results/${{ matrix.app }}/"
+          rclone copy "$Z" "$R"
           rm -f "$RUNNER_TEMP/sa.json"
           echo "☁️ memory/test-results/${{ matrix.app }}/$(basename "$Z")" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: device-test-${{ matrix.app }}-${{ runner.os }}
-          path: results/*.zip
+          path: |
+            results/*.zip
+            results/report.md
           if-no-files-found: ignore
 
+  # 全アプリの結果を 1 枚にまとめる（誰が要対応かを一目で）
+  summary:
+    needs: [discover, test]
+    if: always() && needs.discover.outputs.apps != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: device-test-*
+          path: artifacts
+        continue-on-error: true
+      - name: 週次サマリを作成
+        run: |
+          python3 - <<'PYEOF'
+          import glob, os, re, datetime
+          rows = []
+          for rep in sorted(glob.glob("artifacts/*/report.md")):
+              name = re.sub(r"-(Linux|macOS)$", "", os.path.basename(os.path.dirname(rep))[len("device-test-"):])
+              txt = open(rep, encoding="utf-8").read()
+              cells = re.findall(r"^\| (\d+) \| ([^|]+) \| (✅|⚠️|❌|➖) \| ([^|]*) \|", txt, re.M)
+              ng = [f"{c[1].strip()}" for c in cells if c[2] == "❌"]
+              warn = [f"{c[1].strip()}" for c in cells if c[2] == "⚠️"]
+              diff = re.search(r"前回との差分: 変化 (\d+) / 同じ (\d+) / 新規 (\d+) / 消失 (\d+)", txt)
+              rows.append((name, ng, warn, diff.groups() if diff else None))
+          apps = set(os.path.basename(d)[len("device-test-"):] for d in glob.glob("artifacts/*"))
+          out = [f"# 10観点テスト 週次サマリ {datetime.date.today()}", "",
+                 "| アプリ | 結果 | ❌ | ⚠️ | 画面の変化 |", "|---|---|---|---|---|"]
+          for name, ng, warn, diff in sorted(rows, key=lambda r: (not r[1], r[0])):
+              status = "❌ 要対応" if ng else ("⚠️ 確認" if warn else "✅")
+              d = f"変化{diff[0]}/消失{diff[3]}" if diff else "初回"
+              out.append(f"| {name} | {status} | {', '.join(ng) or '-'} | {', '.join(warn) or '-'} | {d} |")
+          if not rows:
+              out.append("| （結果なし: 全アプリで実行に失敗した可能性。Actions のログを確認） | | | | |")
+          open("summary.md", "w", encoding="utf-8").write("\n".join(out) + "\n")
+          PYEOF
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Google ドライブへ（test-results/_summary/）
+        env:
+          SA: ${{ secrets.GOOGLE_DRIVE_SERVICE_ACCOUNT }}
+        run: |
+          [ -n "$SA" ] || { echo "Drive 未設定 → スキップ"; exit 0; }
+          command -v rclone >/dev/null || curl -fsSL https://rclone.org/install.sh | sudo bash >/dev/null
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          R=":drive,scope=drive,service_account_file=$RUNNER_TEMP/sa.json,root_folder_id=$DRIVE_FOLDER_ID:test-results/_summary"
+          d=$(date +%F)
+          rclone copyto summary.md "$R/$d.md" && rclone copyto summary.md "$R/latest.md"
+          rm -f "$RUNNER_TEMP/sa.json"
