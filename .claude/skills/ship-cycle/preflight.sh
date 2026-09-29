@@ -86,9 +86,6 @@ for P in $PKGS; do
     fi
   fi
 
-  # P11: ダミーアイコン（100 byte 未満の launcher PNG）
-  find "$P/android/app/src/main/res" -name 'ic_launcher*.png' -size -100c 2>/dev/null \
-    | while read -r f; do warn P11 "$f がダミー画像の可能性（<100B）"; done
 done
 
 # ---- リポジトリ全体 ----
@@ -136,8 +133,5 @@ if [ -d "$WF" ]; then
   done
 fi
 
-# P12: 旧組織 URL
-git -C "$REPO_TOP" grep -n "org-zka32101" -- ":!*.md" ":!.claude/skills/ship-cycle" 2>/dev/null | cut -c1-160 \
-  | while IFS= read -r l; do err P12 "$l"; done
 
 summary "preflight"

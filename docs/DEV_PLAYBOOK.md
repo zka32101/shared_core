@@ -1,126 +1,209 @@
-# 開発プレイブック（Windows ローカル / クラウド Code 共通）
+# 開発プレイブック（全アプリ共通・唯一の正本）
 
-小学コレシリーズ全アプリ・yourwish の**全セッションが読む単一の正本**。
-shared_core は全アプリのセッションがクローンするためここに置く。変更はここだけで行い、他リポジトリからはリンクで参照する。
+小学コレシリーズ・その他の自作アプリ全体に適用する、開発・テスト・リリースの方針。
+**正本はこのファイルだけ**。他のリポジトリには置かず、リンクで参照する。
 
-- 自動チェックの実体: `.claude/skills/ship-cycle/`（shared_core と yourwish の両方に同じ内容で配置）
-- ストア要件の値と出典: `.claude/skills/ship-cycle/store-rules.env`
+- 自動化の実体: `shared_core/.claude/skills/ship-cycle/`（本体はここ 1 か所）
+- 全アプリの 10観点テスト: `shared_core/.github/workflows/device-test.yml`（アプリを自動検出。アプリ側には何も置かない）
+- ストア要件の値と出典: `ship-cycle/store-rules.env`
+- 結果の保存先: Google ドライブ「memory」/test-results/<アプリ>/（1 回 = zip 1 つ）
 - 最終確認: 2026-09-29
 
 ---
 
-## 1. 役割分担
+## 1. 仕組みの全体像（メンテナンスは 1 か所）
 
-**原則: コードはクラウドで書いて PR にし、ローカルはクラウドでできない作業（実機・署名・ストア提出）だけに使う。**
-
-| 作業 | クラウド Code | Windows ローカル Code |
+| やること | どこで | アプリ側の準備 |
 |---|---|---|
-| 改修・リファクタ・PR作成 | ◎ 主担当 | △ 急ぎのときだけ |
-| 静的チェック（`preflight` / `store-check`） | ◎ 毎回 | ◎ pull 後に毎回 |
-| analyze / test | CI に任せる（SDK を新規インストールしない） | ◎ SDK があるので `verify.sh` |
-| エミュレータテスト | ◎ GitHub Actions | ○ 必要な時のみ（重い） |
-| **実機テスト**（課金・広告・通知・カメラ） | ✕ | ◎ 主担当（`device-check.sh`） |
-| **release 署名ビルド**（AAB/IPA） | CI（Secrets 注入）で行う | ○ 鍵がローカルにある場合 |
-| ストア提出・Console での申告 | ✕ | ◎ ユーザー本人 |
-| Secrets・署名鍵・API キーの管理 | ✕ チャットに貼らない | ◎ 本人が GitHub Secrets へ登録 |
+| 静的チェック・ストア要件・リリース準備 | `ship.sh`（preflight → verify → store-check） | 不要 |
+| 10観点デバイステスト（CI） | `device-test.yml`: 週 1 回、直近 8 日に更新されたアプリを自動実行。手動なら `all` や任意のアプリ | 不要（公開リポジトリで、`lib/main.dart` と `android/` があれば自動で対象） |
+| 10観点デバイステスト（実機） | `device-check.sh <app> [release.apk]` | 不要（テストは実行時に差し込み、終了時に元へ戻す） |
 
-受け渡し:
-1. クラウドで PR を作る → CI green → マージ
-2. ローカルで `git pull` → `bash .claude/skills/ship-cycle/ship.sh` → `device-check.sh`
-3. 実機での結果は PR か Issue にコメントで残す（次のクラウドセッションが読めるように）。`RELEASE_REPORT.md` は gitignore 対象なので貼り付ける
+- 新しいアプリは何もしなくても翌週から対象になる。除外は `device-test.yml` の `EXCLUDE` に 1 語足すだけ。
+- 非公開リポジトリは CI の自動検出の対象外（ローカル実機で実行する）。
+- スキルを使うには:
+  - クラウド: shared_core をクローンしてあるセッションなら `bash ../shared_core/.claude/skills/ship-cycle/ship.sh .`
+  - Windows ローカル: `git clone https://github.com/zka32101/shared_core %USERPROFILE%\.claude\shared_core` を一度実行し、`mklink /J %USERPROFILE%\.claude\skills\ship-cycle %USERPROFILE%\.claude\shared_core\.claude\skills\ship-cycle` で全プロジェクト共通のスキルにする。更新は `git pull` だけ。
 
-## 2. Windows ローカルのベストプラクティス
+## 2. 役割分担（Windows ローカル / クラウド Code）
 
-- **フォルダ構成**は shared_core `CLAUDE.md` の「Windows ローカルビルド環境の統一」（`C:\BuildWork\...`）に従う。TEMP/TMP は `setx` で永続変更しない。
-- Claude Code on Windows は **Git Bash** でシェルを実行するため、ship-cycle の `.sh` はそのまま動く（`bash .claude/skills/ship-cycle/ship.sh`）。
-- **改行コード事故を防ぐ**（Windows で編集した `.sh` が CRLF になり、クラウドや CI で `bad interpreter` になる）:
-  ```
-  git config --global core.autocrlf input
-  git config --global core.longpaths true   # Flutter の深いパス対策
-  ```
-  各リポジトリの `.gitattributes` に `*.sh text eol=lf` を書く（preflight の SEC3 が検出する）。
-- 低メモリ（RAM 3GB 等）: `android/gradle.properties` で `org.gradle.jvmargs=-Xmx1G`、`org.gradle.daemon=false`。エミュレータは使わず、実機を USB 接続する。
-- 署名鍵（`.jks` / `key.properties`）は `C:\BuildWork` の外、リポジトリの外に置く。コミットされると P10 がエラーを出す。
-- 成果物は `C:\BuildWork\artifacts` → `マイドライブ\apk\` に置く（全アプリ共通ルール）。
-- 1 アプリ = 1 ローカルセッション。複数アプリを同時に開かない（メモリ節約）。
+**原則: コードはクラウドで書いて PR にし、ローカルはクラウドでできない作業だけにする。**
 
-## 3. クラウド Code のベストプラクティス
-
-- Flutter SDK がない環境では **インストールせず**、`preflight` と `store-check` で直せるものを直して PR にし、analyze・test は CI（`release-readiness-check.yml` / `verify-all-apps.yml`）で確認する。
-- shared_core を変更するときは `verify-all-apps.yml` で全アプリへの影響（デグレ）を確認してからマージする。
-- `pubspec.lock` や生成物（`.freezed.dart` / `.g.dart`）はツールで再生成し、手で編集しない。
-- PR を作ったら監視し、CI が red のまま終わらせない。
-- ユーザー確認が必要なのは orchestrator の「唯一のリスト」（ストアでの公開、本番データの破壊、Secrets 登録、課金が発生する操作など）だけ。それ以外は確認なしで進める。
-
-## 4. マネタイズ・広告
-
-### 4.1 前提: 小学コレは「子ども向けアプリ」
-- **Google Play ファミリー ポリシー**: 子ども向けアプリには、Families 自己認証済みの広告 SDK だけを使う。パーソナライズ広告・インタレスト広告・リマーケティングは禁止。
-  - [Families Policies](https://support.google.com/googleplay/android-developer/answer/9893335) / [AdMob での準拠方法](https://support.google.com/admob/answer/6223431)
-- **AdMob**: 全リクエストに子ども向けタグを付ける。`RequestConfiguration(tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes, maxAdContentRating: MaxAdContentRating.g)` を `MobileAds.instance.updateRequestConfiguration` で**初回の広告読み込み前に**設定する。TFCD は TFAT（Tag for age treatment）へ移行中なので、SDK 更新時に確認する。
-  - [Targeting](https://developers.google.com/admob/android/targeting)
-- **Apple Kids カテゴリ**: 第三者の広告・分析は原則として禁止（例外は条件付き）。Kids カテゴリで出すなら AdMob・Firebase Analytics は外す。一般カテゴリで出す場合もガイドライン 1.3 / 5.1.4 に従う。
-  - [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
-
-### 4.2 収益設計（推奨）
-| 手段 | 方針 |
-|---|---|
-| サブスク（RevenueCat, 月額¥120） | 主力。購入導線は必ず**保護者ゲート**（`ParentalGate`）の後ろに置く。 |
-| バナー広告 | 学習画面の外（メニュー・結果画面）だけ。問題の回答中には出さない。 |
-| インタースティシャル | 子ども向けでは**使わない**か、ステージ区切りだけにし頻度を制限する（誤タップ・審査リスク）。 |
-| リワード広告 | 「ヒント」「コイン」との交換に限る。視聴しなくても学習が進められること。 |
-| プレミアム会員 | 広告を完全に非表示にする（`isSubscribed` で広告の初期化自体を行わない）。 |
-
-### 4.3 実装ルール（store-check が検出）
-- 広告ユニット ID は `--dart-define` で渡し、debug ではテスト ID を使う（M3）。リリース時にテスト ID が残っていないか確認する（P15）。
-- 子ども向けアプリで `google_mobile_ads` を使うのに、子ども向けタグ・最大コンテンツレーティングの設定がない → エラー（M1）。
-- EEA/UK 向けに UMP（`ConsentInformation`）の同意フローを入れる（M2）。
-- Android: AdMob の APPLICATION_ID（S7）、Play Console の広告ID申告（S8）、データセーフティを実装と一致させる。
-- RevenueCat: entitlement ID をダッシュボードと一致させる（shared_core #58 の事例）。購入の復元ボタンを必ず置く（審査要件）。
-
-## 5. セキュリティ
-
-自動（ship-cycle）:
-| # | 内容 |
-|---|---|
-| P10 | 秘密鍵・API キー・署名鍵がコミットされていないか |
-| SEC1 | `firestore.rules` に `write: if true` がないか（エラー）、`read: if true` のコレクションに個人情報がないか（警告） |
-| SEC2 | `usesCleartextTraffic="true"` / `debuggable="true"` がないか |
-| SEC3 | `.sh` の CRLF 混入（Windows 由来の実行不能） |
-| SEC4 | release ビルドに `--obfuscate --split-debug-info` が付いているか |
-| P8 | GitHub Actions のサードパーティ Action が SHA で固定されているか |
-
-手動（リリース前に1回。詳細は `app-privacy-security` スキル = OWASP MASVS）:
-- Firestore ルールの書き込みは本人（`request.auth.uid`）に限定する。ランキングのスコアのような**改ざんで得をする値**は Cloud Functions で検証して書き込む。
-- Firebase App Check を有効にする（不正なクライアントからのアクセスを防ぐ）。
-- 子どもの個人情報は最小限にする（名前・学年のみ。COPPA）。公開ランキングにはニックネームだけを出す。
-- ログに uid・購入情報・トークンを `print` しない。
-- 公開リポジトリにする場合は、本人が特定されないよう `app-privacy-security` スキルの匿名化（OPSEC）チェックを行う。
-
-## 6. 実機テストの観点
-
-> **詳細な方針（レベル分け・全画面網羅・連携マトリクス・異常系・端末・合否基準・記録）は [`DEVICE_TEST_POLICY.md`](DEVICE_TEST_POLICY.md) を正本とする。** 以下はその要約。
-
-エミュレータや CI では確認できず、**Windows ローカルの実機でしか確認できない**項目を優先する。`device-check.sh` が logcat から自動で判定できるものに ◎ を付けた。
-
-| 観点 | 確認内容 | 自動 |
+| 作業 | クラウド | Windows ローカル |
 |---|---|---|
-| 10観点（自動） | 起動・クラッシュ・全画面・通信・認証・課金・広告・子ども向け・ライフサイクル・性能を Android / iOS 共通で判定（初回導入も自動） | ◎ |
-| 起動 | release ビルドでクラッシュしない（FATAL EXCEPTION がない） | ◎ |
-| Firebase | 初期化エラーがない。Google サインインで `DEVELOPER_ERROR`（SHA-1 未登録）が出ない | ◎ |
-| 広告 | テストデバイス登録済みでテスト広告が出る。エラーコード 3（No fill）以外のエラーがない。子ども向けタグが効いている | ◎（ログ） |
-| 課金 | ライセンステスターで購入・復元・解約後の状態。`BillingResponse` のエラーがない | ◎（ログ）+ 目視 |
-| 保護者ゲート | 購入・外部リンク・設定の前に必ず表示される | 目視 |
-| オフライン | 機内モードで起動し、学習できる。復帰後に同期される | 目視 |
-| 画面 | 小さい画面・タブレット・文字サイズ最大でレイアウトが崩れない | 目視 |
-| 通知 | Android 13 以降の通知権限ダイアログ、リマインダーの到達 | 目視 |
-| 性能 | 低メモリ端末でのコールドスタートが 3 秒以内。スクロールがカクつかない | 目視 |
-| 16KB ページ | Android 15 以降の 16KB エミュレータイメージで起動する（CI で可） | CI |
+| 改修・PR 作成・静的チェック | ◎ | △（急ぎのとき） |
+| analyze / test | CI に任せる（SDK を新規インストールしない） | ◎ `ship.sh` |
+| 10観点テスト | CI（エミュレータ / シミュレータ） | ◎ 実機（`device-check.sh`） |
+| 課金・広告・通知・カメラの実機確認、release 署名ビルド | ✕ | ◎ |
+| ストア提出・申告・Secrets・署名鍵 | ✕ | ◎ ユーザー本人 |
 
-クラウドでは GitHub Actions のエミュレータ（`emulator-test-template.yml`）で起動と画面遷移まで確認する。上の目視項目は PR に「実機確認待ち」チェックリストとして残し、ローカルセッションが消化する。
+- 受け渡し: クラウドで PR → CI 通過 → ローカルで pull → 実機テスト → 結果の zip 名と表を PR か Issue にコメント。
+- Windows の注意:
+  - `git config --global core.autocrlf input` と `core.longpaths true` を設定する。`.sh` は LF 固定（`.gitattributes`）。
+  - ビルド用フォルダは shared_core の CLAUDE.md の `C:\BuildWork` 構成に従う。TEMP/TMP を setx で変えない。
+  - 低メモリ環境では Gradle を `-Xmx1G` / daemon なしにし、エミュレータではなく実機を使う。
+  - 署名鍵はリポジトリの外に置く。
 
-## 7. 更新ルール
+## 3. 10観点テスト
 
-- 新しい失敗や審査リジェクトが起きたら、①ship-cycle にチェックを追加し、②この文書の該当節に 1 行追記する。
-- ストア要件は `store-rules.env` の `RULES_CHECKED` が 90 日を過ぎたら、公式ページで再確認する（自動・確認不要）。
-- この文書を変更したら、yourwish の ship-cycle と差分がないことを確認する。
+| # | 観点 | 自動判定 |
+|---|---|---|
+| 1 | 起動 | 起動後もプロセスが生存し、integration_test が起動画面に到達する |
+| 2 | クラッシュ/ANR | Android: FATAL / ANR / シグナル。iOS: 未捕捉例外 / .ips |
+| 3 | 全画面表示 | `MaterialApp.routes` を自動検出して全画面を巡回し、表示崩れ・例外を検出。全画面のスクリーンショットを保存 |
+| 4 | 通信 | SocketException / DNS / TLS / NSURLErrorDomain（CI 回線起因は警告） |
+| 5 | 認証 | FirebaseAuthException / DEVELOPER_ERROR / キーチェーン |
+| 6 | 課金 | Billing / StoreKit / RevenueCat の設定エラー（仮想端末では「課金不可」が正常なので警告） |
+| 7 | 広告・同意 | AdMob アプリ ID 未設定、No fill 以外の読み込みエラー |
+| 8 | 子ども向け | 子ども向けタグ・外部リンクの保護者ゲート・ATT（静的チェック） |
+| 9 | ライフサイクル・権限 | 背面→復帰、強制終了→再起動で落ちない。権限の例外 |
+| 10 | 性能 | 起動時間（仮想端末 8 秒 / 実機 3 秒）、PSS 400MB、フレーム落ち |
+
+- ❌ が 1 つでもあれば失敗、⚠️ は目で確認する。結果は 10 行の表（`report.md`）で出る。
+- 巡回できない画面（引数が必要な画面や go_router）は自動でスキップして警告を出す。巡回に加えたい場合だけ、アプリの `integration_test/screen_catalog.dart` に書く（任意。書けば差し込みより優先される）。
+
+## 4. 手動で確認する観点（リリース前・ストア配信版で）
+
+最終確認は、Play の内部テスト / TestFlight から入れた**ストア配信版**の **release ビルド**で行う（署名・課金・Google ログインは、ここでしか本番と同じ動作にならない）。
+
+**スモーク（10分）**
+1. 新規インストール → 初回導線を完了できる
+2. メイン機能を 1 周できる
+3. 再起動しても進捗・コインが残る
+4. 保護者ゲート → ショップが表示される
+5. 広告が 1 回表示される
+6. 背面に回して 5 分後に復帰できる
+
+**連携（正常・失敗・復帰の 3 点）**
+- Auth: 再インストール後の復元。
+- Firestore: オフラインで操作 → 同期される。ルールで拒否されたら画面に表示される。
+- Remote Config: 取得できなくても既定値で動く。
+- 通知: 前面 / 背面 / 終了状態で受信する。
+- 課金: 購入・キャンセル・保留・復元・期限切れ・別端末。
+- 広告: プレミアム会員には表示しない。Ad Inspector で子ども向けタグを確認する。
+- アップデート: 旧ストア版から上書きしてデータが残る。
+
+**異常系**
+- 処理の途中で通信が切れる（二重付与・データ消失がない）。
+- 購入・報酬のボタンを連打しても 1 回分だけ処理される。
+- 「アクティビティを保持しない」設定でも状態が戻る。
+- **端末の時刻を変更**しても、デイリーボーナスや連続日数を稼げない（05:00 のリセットは 1 回だけ）。
+- 権限を拒否した後、設定アプリへ案内する。
+- 容量不足・回転・文字倍率最大でも崩れない。
+
+**iOS 固有**
+- 画面:
+  - セーフエリア（ノッチ / Dynamic Island）に重ならない。
+  - iPad は 4 方向と Split View に対応する（ITMS-90474）。
+  - Dynamic Type 最大でも崩れない。
+- 権限:
+  - 説明文は子どもにも分かる言葉にする。
+  - 通知の許可は必要になった時に求める。
+- ATT: 子ども向けアプリでは使わない。一般アプリでは ATT → UMP → 広告の順にする。
+- ログイン:
+  - 外部ログインがあるなら Sign in with Apple を用意する（4.8）。
+  - アカウントを作れるならアプリ内で削除できるようにする（5.1.1(v)）。
+- 課金:
+  - 復元ボタンを置く。
+  - サブスク購入画面に価格・期間・自動更新・規約リンクを表示する（3.1.2）。
+  - 子どもの端末では「承認と購入」で保留になる。保留 → 承認で二重付与も欠落もないこと。
+- ネットワーク: IPv6 のみの環境で動く。ATS（http を使わない）。
+- 審査メモ: 保護者ゲートの解除方法とテスト手順を書く。
+- シミュレータで確認できないもの: 課金（Sandbox）、プッシュ（APNs）、カメラ、性能。
+
+**端末**
+- 低スペック Android（実機）、最新 Android（16KB ページ）、タブレット、小型 iPhone、最新 iPhone / iPad。
+- 無料の自動実機テストを先に使う:
+  - Play の起動前レポート（内部テストに上げると実機 12 機種を自動巡回）
+  - Firebase Test Lab（無料枠: 1 日に仮想端末 10 回・実機 5 回）
+
+**合否基準**
+- テスト中のクラッシュ・ANR は 0 件。
+- 本番のユーザー体感クラッシュ率は 1.09% 未満、ANR 率は 0.47% 未満（Play の不良基準）。
+- 公開は段階的に行い（10% → 50% → 100%）、72 時間は Android vitals と Crashlytics を監視して、超えたら停止する。
+
+## 5. マネタイズ・広告（子ども向けが前提）
+
+- Google Play ファミリー ポリシー: Families 自己認証済みの広告 SDK だけを使う。パーソナライズ広告・リマーケティングは禁止。
+- AdMob: 最初の広告読み込みの前に、`RequestConfiguration(tagForChildDirectedTreatment: yes, maxAdContentRating: G)` を設定する（TFCD は TFAT へ移行中）。EEA / UK 向けには UMP の同意フローを入れる。
+- Apple の Kids カテゴリ: 第三者の広告・分析は原則として不可。
+- 収益設計:
+  - サブスク（RevenueCat、月額 ¥120）が主力。購入導線は保護者ゲートの後ろに置く。
+  - バナーは学習画面の外だけ。全画面広告は使わないか、ステージの区切りだけにする。
+  - リワード広告は「ヒント」との交換だけにし、見なくても学習できるようにする。
+  - プレミアム会員には広告を初期化しない。
+- 外部リンク（クロスプロモ含む）の前には保護者ゲートを入れる（`CrossPromoSection(beforeOpenStore: requireParentalGate)`）。
+
+## 6. セキュリティ
+
+- 自動（ship-cycle）: 秘密情報のコミット、`firestore.rules` の `write: if true` / 公開読み取り、cleartext / debuggable、`.sh` の CRLF、Action が SHA で固定されているか、release の難読化。
+- 手動:
+  - 書き込みは本人（`request.auth.uid`）だけに限る。スコアなど改ざんで得をする値は Cloud Functions で検証する。
+  - App Check を有効にする。
+  - 子どもの個人情報は最小限（名前・学年）にし、公開ランキングにはニックネームだけを出す。
+  - ログに uid やトークンを出さない。
+  - 公開リポジトリでは `app-privacy-security` スキルで匿名化（OPSEC）を確認する。
+
+## 7. スクリーンショット・録画
+
+- 全画面のスクリーンショットは 10観点テストが自動で撮る。iOS 実機はコマンドで撮れないため、テスト内の撮影に統一している。
+- 単発の撮影: `device-10check.sh shot <名前>`（Android は `adb exec-out`。Windows で `adb shell screencap` を使うと PNG が壊れる）。直前のログも同名で保存する。
+- 再現用の録画: `device-10check.sh record <秒> <名前>`（最大 180 秒）。
+- ステータスバーの固定（9:41・電池 100%）は自動。
+- **保存**: 1 回のテスト = `<アプリ>_<版>_<OS>_<日時>.zip` 1 つ（スクショ・一覧画像・ログ・表）。
+  - ローカル: Google ドライブ「memory」/test-results/<アプリ>/ に自動コピー。
+  - CI: 同じ場所へ自動アップロード（シークレット `GOOGLE_DRIVE_SERVICE_ACCOUNT` が必要）。
+  - PR には zip 名と表だけを貼る。
+
+## 8. トラブルシューティング
+
+**進め方**
+1. 再現: 2 回再現させ、`record` で録画する。
+2. 切り分け: debug / release、仮想端末 / 実機、ローカル / ストア版、Android / iOS、新版 / 旧版 のどちらで起きるか。
+3. 収集: zip を残す。
+4. 原因を特定する。
+5. 再発防止: 検出できるチェックを ship-cycle か 10観点に追加する。
+
+**ログ**
+
+| 対象 | 方法 |
+|---|---|
+| Android | `adb logcat --pid=$(adb shell pidof <pkg>)`、丸ごとなら `adb bugreport`（ANR・tombstone を含む）、`dumpsys meminfo/package` |
+| iOS | シミュレータ: `xcrun simctl spawn booted log stream`。実機: Xcode の Devices → Open Console（.ips）、TestFlight のクラッシュ |
+| Flutter | `flutter logs`、DevTools、`flutter run --profile` |
+| 難読化されたエラー表示 | `flutter symbolize -i trace.txt -d build/symbols/<arch>.symbols`。Crashlytics には symbols と dSYM をアップロードしておく |
+
+**症状 → 最初に見る場所**
+
+| 症状 | 確認すること |
+|---|---|
+| release でだけ落ちる | R8 がクラスを削除 → `build/app/outputs/mapping/release/missing_rules.txt` を `proguard-rules.pro` に追加 |
+| release で灰色の画面 | ビルド時の例外（debug では赤い画面）→ profile で起動してログを見る |
+| 起動直後に落ちる | AdMob アプリ ID、Firebase 設定ファイルの不一致、minSdk（10観点 1・2・7 / store-check S2・S7） |
+| ストア版でだけ Google ログインが失敗 | Play アプリ署名鍵の SHA-1 を Firebase に登録する |
+| iOS で課金商品が出ない | 有料 App 契約（銀行・税務）が有効か、商品が「提出準備完了」か、ID が一致しているか。TestFlight 版で確認する |
+| Android で課金商品が出ない | Play 経由でインストールしたか、ライセンステスターか、内部テストに一度上げたか |
+| 広告が出ない | 新しい広告ユニット（数時間かかる）、app-ads.txt、No fill（コード 3）、UMP の同意 |
+| 通知が届かない | iOS: APNs キーと Capability。Android 13 以降: 通知権限。どちらも実機で確認する |
+| iOS のビルドが失敗 | `pod repo update && pod install`、Deployment Target、DerivedData を削除 |
+| Android のビルドが失敗 | Gradle / AGP / Kotlin / Java の組み合わせ、`./gradlew --stacktrace` |
+| CI でだけ失敗 | 古い lock ファイル・キャッシュ、Flutter のバージョン差、生成物のコミット漏れ（P1・P13・P14） |
+| 依存関係が解決できない | 共有パッケージのメジャー更新（P16）→ 両側の制約をそろえる |
+| データが消える / 二重になる | オフライン中の書き込み、連打、アップデート時の移行（§4 異常系） |
+
+## 9. 更新ルール
+
+- 新しい失敗・リジェクト・障害が起きたら、チェックで検出できるなら ship-cycle に追加し、この文書には 1 行だけ追記する。**文書は増やさない**。
+- ストア要件の値（`store-rules.env`）は 90 日ごとに公式ページで再確認する（Claude が自動で行う）。
+
+参考:
+- [Play ターゲット API](https://developer.android.com/google/play/requirements/target-sdk)
+- [16KB ページ](https://android-developers.googleblog.com/2025/05/prepare-play-apps-for-devices-with-16kb-page-size.html)
+- [Apple SDK 要件](https://developer.apple.com/news/upcoming-requirements/)
+- [Families ポリシー](https://support.google.com/googleplay/android-developer/answer/9893335)
+- [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
+- [起動前レポート](https://support.google.com/googleplay/android-developer/answer/9842757)
+- [Test Lab 無料枠](https://firebase.google.com/docs/test-lab/usage-quotas-pricing)
+- [Android vitals](https://support.google.com/googleplay/android-developer/answer/9844486)
+- [Crashlytics 難読化解除](https://firebase.google.com/docs/crashlytics/flutter/get-deobfuscated-reports)
+- [Sandbox 課金](https://developer.apple.com/documentation/storekit/testing-in-app-purchases-with-sandbox)

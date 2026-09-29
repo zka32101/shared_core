@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # 10観点デバイステスト（Android エミュレータ/実機・iOS シミュレータ共通）＋撮影ユーティリティ
 #   bash device-10check.sh android|ios [app_dir]       # 10観点テスト → 結果を 1 つの zip にまとめて Google ドライブへ
+#     アプリへの事前導入は不要（全画面ツアーのテストは実行時だけ差し込み、終了時に元へ戻す）
 #   bash device-10check.sh shot <name> [out]           # スクリーンショット 1 枚（+ 直前ログ）
 #   bash device-10check.sh record <秒> <name> [out]    # 録画（再現用・最大 180 秒）
 #   bash device-10check.sh demo on|off                 # ステータスバー固定（9:41・電池100%・通知なし）
 #   bash device-10check.sh sheet [dir]                 # スクショ一覧画像（ImageMagick があれば）
 # 環境変数: APK=<path>（ローカル実機で release APK を検証）/ WAIT=20 / OUT=<成果物dir> / DEMO=1
-#           DRIVE_DIR=<保存先>（既定: マイドライブ/apk/test-results。無ければ保存しない）
+#           DRIVE_DIR=<保存先>（既定: マイドライブ/memory/test-results。見つからなければ保存しない）
 # 観点: 1起動 2クラッシュ 3全画面 4通信 5認証 6課金 7広告・同意 8子ども向け 9ライフサイクル・権限 10性能
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -64,7 +65,7 @@ if [[ "${1:-}" =~ ^(shot|record|demo|sheet)$ ]]; then
   exit 0
 fi
 PLAT="${1:?android|ios}"; APP="${2:-.}"; cd "$APP" || exit 1
-WAIT="${WAIT:-20}"; OUT="${OUT:-$PWD/device-test-results}"; mkdir -p "$OUT/screenshots"
+WAIT="${WAIT:-20}"; OUT="${OUT:-${TMPDIR:-/tmp}/device-test-results/$(basename "$PWD")}"; rm -rf "$OUT"; mkdir -p "$OUT/screenshots"
 LOG="$OUT/device.log"; DRIVE="$OUT/drive.log"; : > "$LOG"; : > "$DRIVE"
 RES=(); DETAIL=(); FAILED=0  # bash 3.2（macOS 標準）互換のため添字配列
 set_r() { RES[$1]="$2"; DETAIL[$1]="${3:-}"; [ "$2" = "❌" ] && FAILED=1; echo "$2 観点$1 ${3:-}"; }
@@ -72,10 +73,34 @@ dep() { grep -qE "^\s+$1:" pubspec.yaml; }
 has() { grep -qiE "$1" "$LOG" "$DRIVE" 2>/dev/null; }
 first() { grep -h -m1 -oiE "$1" "$LOG" "$DRIVE" 2>/dev/null | head -1; }
 
+# ---------- 全画面ツアーを実行時だけ差し込む（アプリにはコミットしない。終了時に元へ戻す） ----------
+INJECTED=(); HAD_SS=0; [ -d screenshots ] && HAD_SS=1
+inject() {
+  [ -n "${APK:-}" ] && return
+  local pkg; pkg=$(grep -m1 "^name:" pubspec.yaml | awk '{print $2}')
+  for f in integration_test/perspectives_test.dart integration_test/screen_catalog.dart test_driver/integration_test.dart; do
+    [ -e "$f" ] && continue
+    mkdir -p "$(dirname "$f")"; sed "s/__PKG__/$pkg/g" "$HERE/templates/${f#*/}" > "$f"; INJECTED+=("$f")
+  done
+  if ! grep -qE "^\s+integration_test:" pubspec.yaml; then
+    cp pubspec.yaml "$OUT/.pubspec.bak"
+    awk '{print} /^dev_dependencies:/ && !d {print "  integration_test:\n    sdk: flutter"; d=1}' "$OUT/.pubspec.bak" > pubspec.yaml
+    grep -q "^dev_dependencies:" pubspec.yaml || printf '\ndev_dependencies:\n  integration_test:\n    sdk: flutter\n' >> pubspec.yaml
+    flutter pub get >/dev/null 2>&1
+  fi
+}
+cleanup() {
+  for f in "${INJECTED[@]}"; do rm -f "$f"; done
+  rmdir integration_test test_driver 2>/dev/null
+  [ -f "$OUT/.pubspec.bak" ] && { mv "$OUT/.pubspec.bak" pubspec.yaml; [ -z "${CI:-}" ] && flutter pub get >/dev/null 2>&1; }
+  [ "$HAD_SS" = 0 ] && rm -rf screenshots
+}
+trap cleanup EXIT
+inject
+
 # ---------- 端末上パート（integration_test: 起動・全画面ツアー） ----------
 run_drive() {
   [ -n "${APK:-}" ] && return 0
-  [ -f integration_test/perspectives_test.dart ] || { echo "ℹ️  perspectives_test.dart なし（bootstrap-tests.sh で導入）"; return 0; }
   flutter drive --driver=test_driver/integration_test.dart \
     --target=integration_test/perspectives_test.dart -d "$1" > "$DRIVE" 2>&1
   DRIVE_RC=$?
@@ -152,9 +177,9 @@ if has "$CRASH_PAT"; then set_r 2 ❌ "$(first "$CRASH_PAT")"; else set_r 2 ✅ 
 if [ -f integration_test/perspectives_test.dart ] && [ -z "${APK_GIVEN:-}" ] && [ -s "$DRIVE" ]; then
   n=$(grep -m1 -oE "SHIP_CYCLE_ROUTES [0-9]+" "$DRIVE" | awk '{print $2}'); w=$(grep -c "SHIP_CYCLE_WARN" "$DRIVE")
   if grep -qE "観点3|overflowed" "$DRIVE" && [ "${DRIVE_RC:-0}" != 0 ]; then set_r 3 ❌ "表示崩れ/例外 → drive.log"
-  elif [ "$w" -gt 0 ]; then set_r 3 ⚠️ "${n:-0} 画面 / 要確認 $w 件（引数必須なら screen_catalog.dart の skipRoutes へ）"
+  elif [ "$w" -gt 0 ]; then set_r 3 ⚠️ "${n:-0} 画面 / 要確認 $w 件（引数が必要な画面は巡回対象外で問題なし。drive.log の SHIP_CYCLE_WARN）"
   else set_r 3 ✅ "${n:-0} 画面 + 起動画面を巡回、SS ${OUT##*/}/screenshots"; fi
-else set_r 3 ⚠️ "全画面ツアー未実施（bootstrap-tests.sh で導入）"; fi
+else set_r 3 ⚠️ "全画面ツアー未実施（release APK 指定時は起動のみ）"; fi
 # 4 通信
 NET="SocketException|Failed host lookup|UnknownHostException|NSURLErrorDomain|HandshakeException|Connection refused"
 if has "$NET"; then set_r 4 ⚠️ "$(first "$NET")（CI 回線起因の可能性。実機で再確認）"; else set_r 4 ✅ "通信エラーなし"; fi
@@ -179,7 +204,7 @@ if dep google_mobile_ads; then
   else set_r 7 ✅ "広告 SDK エラーなし（No fill は許容）"; fi
 else set_r 7 ➖ "広告なし"; fi
 # 8 子ども向け（静的: 保護者ゲート・子ども向けタグ・ATT）
-K=$(ALL=1 bash "$HERE/store-check.sh" . 2>/dev/null | grep -E "\[(M1|M6|M7|I11)\]" | head -3)
+K=$(ALL=1 REPORT=/dev/null bash "$HERE/store-check.sh" . 2>/dev/null | grep -E "\[(M1|M7|I11)\]" | head -3)
 if echo "$K" | grep -q "❌"; then set_r 8 ❌ "$(echo "$K" | head -1 | sed 's/^[^]]*] //')"
 elif [ -n "$K" ]; then set_r 8 ⚠️ "$(echo "$K" | head -1 | sed 's/^[^]]*] //')"
 else set_r 8 ✅ "子ども向けポリシーの静的チェック OK（保護者ゲートの操作は目視）"; fi
@@ -208,7 +233,7 @@ REPORT="$OUT/report.md"
   echo; echo "| # | 観点 | 結果 | 詳細 |"; echo "|---|---|---|---|"
   n=(x 起動 クラッシュ/ANR 全画面表示 通信 認証 課金 広告・同意 子ども向け ライフサイクル・権限 性能)
   for i in $(seq 1 10); do echo "| $i | ${n[$i]} | ${RES[$i]} | ${DETAIL[$i]//|/／} |"; done
-  echo; echo "成果物: \`${OUT##*/}/\`（screenshots/, device.log, drive.log）。目視項目は DEVICE_TEST_POLICY.md §3・§5・§6。"
+  echo; echo "成果物: \`${OUT##*/}/\`（screenshots/, device.log, drive.log）。目視項目は shared_core docs/DEV_PLAYBOOK.md §4。"
 } > "$REPORT"
 [ -n "${GITHUB_STEP_SUMMARY:-}" ] && cat "$REPORT" >> "$GITHUB_STEP_SUMMARY"
 echo "📝 $REPORT"
@@ -224,8 +249,13 @@ ZIP="${APPNAME}_${VER:-na}_${PLAT}_$(date +%Y%m%d-%H%M).zip"
 echo "📦 $OUT/$ZIP"
 echo "$OUT/$ZIP" > "$OUT/.zip_path"
 # ローカル（Windows の Google ドライブ同期フォルダ）: 決まった場所へコピー。CI はワークフロー側で rclone アップロード
-DRIVE_DIR="${DRIVE_DIR:-${USERPROFILE:-$HOME}/マイドライブ/apk/test-results}"
-if [ -z "${CI:-}" ] && [ -d "$(dirname "$DRIVE_DIR")" ]; then
+# 保存先: Google ドライブ「memory」フォルダ（ID 1BLPPbnOWzzdR1G4oJQZ6r3PRcHkUw7o1）/test-results/<アプリ>/
+if [ -z "${DRIVE_DIR:-}" ]; then
+  for d in "${USERPROFILE:-$HOME}/マイドライブ/memory" "${USERPROFILE:-$HOME}/My Drive/memory" /g/マイドライブ/memory "/g/My Drive/memory"; do
+    [ -d "$d" ] && { DRIVE_DIR="$d/test-results"; break; }
+  done
+fi
+if [ -z "${CI:-}" ] && [ -n "${DRIVE_DIR:-}" ]; then
   mkdir -p "$DRIVE_DIR/$APPNAME" && cp "$OUT/$ZIP" "$DRIVE_DIR/$APPNAME/" && echo "☁️  $DRIVE_DIR/$APPNAME/$ZIP"
 fi
 exit "$FAILED"

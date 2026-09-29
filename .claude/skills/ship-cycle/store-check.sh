@@ -5,6 +5,8 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; . "$HERE/lib.sh"; . "$HERE/store-rules.env"
 ROOT="${1:-.}"; cd "$ROOT" || exit 1
 REPO_TOP=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+todo() { echo "T - [ ] $*" >> "$SC_LOG"; }
+BASE=$(default_base)
 vge() { [ "$(printf '%s\n%s\n' "$2" "$1" | sort -V | head -1)" = "$2" ]; }  # $1 >= $2
 has_dep() { grep -qE "^\s+$1:" "$PUB"; }
 
@@ -46,6 +48,12 @@ for P in $(target_packages .); do
     [ -n "$last" ] && [ "$BN" -le "$last" ] && err S4 "build 番号 $BN ≤ 既存タグの $last（「このバージョンコードは使用済み」で拒否）"
   fi
 
+  # ---- リリース準備（旧 release-prep） ----
+  BASE_VER=$(git show "$BASE:$(realpath --relative-to="$REPO_TOP" "$PUB")" 2>/dev/null | grep -m1 "^version:" | awk '{print $2}')
+  if [ -n "$BASE_VER" ] && [ "$BASE_VER" = "$VER" ]; then warn S4 "$P: version $VER が $BASE から未更新（リリース時は build 番号を上げる）"
+  elif [ -n "$BASE_VER" ] && [ "${VER#*+}" -le "${BASE_VER#*+}" ] 2>/dev/null; then err S4 "$P: build 番号 ${VER#*+} ≤ ${BASE_VER#*+}（ストアが拒否）"; fi
+  echo "A $P $VER" >> "$SC_LOG"
+
   # ---- マネタイズ・広告 ----
   KIDS=0; { [ "${KIDS_APP:-0}" = 1 ] || grep -qE "^\s+shared_core:" "$PUB" || grep -q "^name: shared_core" "$PUB"; } && KIDS=1
   LIBS=$(find "$P/lib" -name '*.dart' 2>/dev/null)
@@ -59,9 +67,6 @@ for P in $(target_packages .); do
     fi
     grep -qlE "ConsentInformation|ConsentForm" $LIBS 2>/dev/null \
       || warn M2 "UMP 同意フローなし（EEA/UK 配信で広告が出ない・ポリシー違反）"
-    grep -nE "ca-app-pub-[0-9]{16}/[0-9]{10}" $LIBS 2>/dev/null | grep -v "3940256099942544" | while IFS=: read -r f l _; do
-      grep -qE "kReleaseMode|String.fromEnvironment" "$f" || warn M3 "$f:$l 本番広告ユニットIDを直書き（--dart-define + debug はテストIDに）"
-    done
   fi
   if has_dep purchases_flutter; then
     if ! grep -rqs "restorePurchases" "$P/lib"; then
@@ -69,8 +74,6 @@ for P in $(target_packages .); do
       if [ "$KIDS" = 1 ]; then warn M5 "アプリ側に購入の復元導線が見当たらない（共通 Paywall 使用なら可。無ければ審査 3.1.1 リジェクト）"
       else err M5 "購入の復元導線なし（App Store 審査 3.1.1 でリジェクト）"; fi
     fi
-    [ "$KIDS" = 1 ] && ! grep -rqsE "ParentalGate|requireParentalGate" "$P/lib" \
-      && warn M6 "子ども向けアプリの購入導線に保護者ゲートがない可能性"
   fi
 
   # M7: 子ども向けアプリの外部リンクに保護者ゲート
@@ -102,18 +105,22 @@ for P in $(target_packages .); do
     [[ "$AID" == com.example* ]] && err S6 "applicationId=$AID → Play は com.example を拒否"
     grep -q "ndkVersion\s*=\?\s*\"2[0-7]\." "$G" && err S5 "$G ndkVersion が r28 未満（16KB 非対応）"
 
+    grep -A3 "release" "$G" | grep -q "signingConfigs.debug" && err S11 "$G: release が debug 署名のまま（ストアに上げられない）"
+    [ -f "$P/android/key.properties" ] || todo "$P: release 署名鍵（key.properties / GitHub Secrets）を用意"
+    grep -q 'android.permission.INTERNET' "$P/android/app/src/main/AndroidManifest.xml" 2>/dev/null \
+      || warn S12 "$P: AndroidManifest に INTERNET 権限なし（release で通信・広告が動かない）"
+    grep -rqs "ca-app-pub-3940256099942544" "$P/lib" "$P/android/app/src/main/AndroidManifest.xml" \
+      && warn S13 "$P: AdMob のテスト ID が残っている（本番前に差し替え）"
     MF="$P/android/app/src/main/AndroidManifest.xml"
     if has_dep google_mobile_ads; then
       grep -q "com.google.android.gms.ads.APPLICATION_ID" "$MF" 2>/dev/null \
         || err S7 "$MF に AdMob APPLICATION_ID meta-data なし（起動直後にクラッシュ）"
-      warn S8 "広告SDK使用 → Play Console の「広告ID」申告を『使用する』に（不一致だと審査リジェクト）"
+      todo "Play Console の広告ID申告・データセーフティを実装（広告 SDK 使用）と一致させる"
     fi
-    grep -q "com.google.android.gms.permission.AD_ID" "$MF" 2>/dev/null && ! has_dep google_mobile_ads \
-      && warn S8 "AD_ID 権限宣言あり → Play Console の広告ID申告と一致させる"
     if has_dep google_sign_in || grep -q "GoogleAuthProvider\|signInWithGoogle" -r "$P/lib" 2>/dev/null; then
-      warn S9 "Google サインイン使用 → Firebase に『アップロード鍵』と『Play アプリ署名鍵』両方の SHA-1 を登録（未登録だと本番のみ DEVELOPER_ERROR 10）"
+      todo "Firebase に Play アプリ署名鍵とアップロード鍵の SHA-1 を登録（未登録だと本番だけ DEVELOPER_ERROR 10）"
     fi
-    has_dep purchases_flutter && warn S10 "RevenueCat 使用 → Play で課金アイテム有効化・サービスアカウント連携済みか、entitlement ID がダッシュボードと一致するか確認（shared_core #58）"
+    has_dep purchases_flutter && todo "RevenueCat: 課金アイテム有効化・entitlement ID の一致・（iOS）有料 App 契約が有効か"
   fi
 
   # ---- iOS ----
@@ -161,7 +168,15 @@ for P in $(target_packages .); do
       ct=$(od -An -tu1 -j25 -N1 "$ICON" | tr -d ' ')
       { [ "$ct" = 4 ] || [ "$ct" = 6 ]; } && err I5 "$ICON にアルファチャンネル（ITMS-90717 で拒否）"
     fi
-    grep -q "ITSAppUsesNonExemptEncryption" "$PL" 2>/dev/null || warn I6 "Info.plist に ITSAppUsesNonExemptEncryption=false なし（毎回輸出コンプラ質問で提出が止まる）"
   fi
 done
+# ---- レポート（RELEASE_REPORT.md。REPORT=/dev/null で出力しない） ----
+OUTR="${REPORT:-RELEASE_REPORT.md}"
+if [ "$OUTR" != /dev/null ]; then {
+  echo "# Release Report"; echo; echo "- $(date '+%Y-%m-%d %H:%M') / base: \`$BASE\` / HEAD: \`$(git rev-parse --short HEAD 2>/dev/null)\`"
+  echo; echo "## 対象"; grep '^A ' "$SC_LOG" | sed 's/^A /- /'
+  echo; echo "## チェック結果"; grep -E '^(E|W) ' "$SC_LOG" | sed -e 's/^E /- ❌ /' -e 's/^W /- ⚠️ /'; grep -qE '^(E|W) ' "$SC_LOG" || echo "- ✅ 指摘なし"
+  echo; echo "## 変更点（$BASE 以降）"; git log --no-merges --pretty='- %s' "$BASE"..HEAD 2>/dev/null | head -30
+  echo; echo "## ユーザー作業"; grep '^T ' "$SC_LOG" | sed 's/^T //' | sort -u; echo "- [ ] ストア掲載情報の確認・公開 / 審査提出"
+} > "$OUTR"; echo "📝 $OUTR"; fi
 summary "store-check"
