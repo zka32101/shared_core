@@ -20,7 +20,8 @@
 | 10観点デバイステスト（実機） | `device-check.sh <app> [release.apk]` | 不要（テストは実行時に差し込み、終了時に元へ戻す） |
 
 - 新しいアプリは何もしなくても翌週から対象になる。除外は `device-test.yml` の `EXCLUDE` に 1 語足すだけ。
-- 非公開リポジトリは CI の自動検出の対象外（ローカル実機で実行する）。
+- 非公開リポジトリは CI の自動検出の対象外（ローカル実機で実行する）。一括検証（`verify-all-apps.yml`）に非公開アプリを入れるには、シークレット `CROSS_REPO_READ_TOKEN`（そのリポジトリの contents:read を持つ fine-grained PAT）が必要。
+- アプリのリポジトリを旧版として改名するときは `old-` を付ける（CI の自動検出から除外される）。現行アプリへの切り替えは `verify-all-apps.yml` の対象と合わせて行う。
 - スキルを使うには:
   - クラウド: shared_core をクローンしてあるセッションなら `bash ../shared_core/.claude/skills/ship-cycle/ship.sh .`
   - Windows ローカル: `git clone https://github.com/zka32101/shared_core %USERPROFILE%\.claude\shared_core` を一度実行し、`mklink /J %USERPROFILE%\.claude\skills\ship-cycle %USERPROFILE%\.claude\shared_core\.claude\skills\ship-cycle` で全プロジェクト共通のスキルにする。更新は `git pull` だけ。
