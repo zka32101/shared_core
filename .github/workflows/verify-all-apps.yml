@@ -44,11 +44,16 @@ jobs:
             flutter_version: '3.x'
           - repo: social_quiz_app
             flutter_version: '3.x'
-          - repo: shinshin
+          # 旧 shinshin は old-shinshin に改名された。現行の道徳アプリは非公開の shougaku-kore-shinshin。
+          # 非公開リポジトリを読むため、シークレット CROSS_REPO_READ_TOKEN（対象の contents:read を持つ
+          # fine-grained PAT）が必要。未登録の間はこの 1 件だけ checkout で失敗する。
+          - repo: shougaku-kore-shinshin
             flutter_version: '3.x'
           - repo: shogaku-kore-programming
             flutter_version: '3.47.1'
     uses: ./.github/workflows/release-readiness-check.yml
+    secrets:
+      target_token: ${{ secrets.CROSS_REPO_READ_TOKEN }}
     with:
       target_repo: zka32101/${{ matrix.app.repo }}
       shared_core_ref: ${{ github.event.pull_request.head.sha || github.sha }}

@@ -31,8 +31,8 @@ permissions:
 
 env:
   OWNER: zka32101
-  # 対象外（SNS 配信ゲームは保留、バックアップ等）
-  EXCLUDE: 'yourwish|shared_core|cross_promo_kit|livestream-viewer-game|ios-certs-vault|_backup_|_broken_'
+  # 対象外（SNS 配信ゲームは保留、バックアップ、改名された旧リポジトリ old-*）
+  EXCLUDE: 'yourwish|shared_core|cross_promo_kit|livestream-viewer-game|ios-certs-vault|_backup_|_broken_|^old-'
   DRIVE_FOLDER_ID: 1BLPPbnOWzzdR1G4oJQZ6r3PRcHkUw7o1   # Google ドライブ「memory」
 
 jobs:

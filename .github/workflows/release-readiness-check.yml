@@ -35,6 +35,10 @@ name: Release Readiness Check (Reusable)
 
 on:
   workflow_call:
+    secrets:
+      target_token:
+        required: false
+        description: "非公開の target_repo を読むためのトークン（contents:read）。未指定なら github.token（同一リポジトリと公開リポジトリのみ読める）"
     inputs:
       flutter_version:
         required: false
@@ -80,6 +84,7 @@ jobs:
         with:
           repository: ${{ inputs.target_repo != '' && inputs.target_repo || github.repository }}
           ref: ${{ inputs.target_ref }}
+          token: ${{ secrets.target_token || github.token }}
 
       - name: Setup Flutter
         uses: subosito/flutter-action@7814e4f6c70abd7a5641333f613efa098fe34381 # v2.14.0
