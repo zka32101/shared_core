@@ -159,9 +159,13 @@ class _CharacterLevelUpTab extends ConsumerWidget {
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          // 高さは幅比例(childAspectRatio)ではなく内容基準で固定する。
+          // 固定部(余白+画像+ドット+ボタン)140dp + 文字部(名前2行+Lv表示)
+          // 75dp×文字倍率 + 余裕20dp。狭い幅・大きい文字でも溢れない。
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.82,
+            mainAxisExtent:
+                160 + 75 * MediaQuery.textScalerOf(context).scale(1),
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
@@ -256,6 +260,8 @@ class _LevelUpCard extends ConsumerWidget {
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
                     color: kTextDark),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center),
             const SizedBox(height: 4),
             Row(
@@ -317,15 +323,18 @@ class _LevelUpCard extends ConsumerWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('🪙', style: TextStyle(fontSize: 12)),
-                      const SizedBox(width: 4),
-                      Text(cost != null ? '$cost でLv.$nextLevel' : '',
-                          style: const TextStyle(fontSize: 11)),
-                    ],
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('🪙', style: TextStyle(fontSize: 12)),
+                        const SizedBox(width: 4),
+                        Text(cost != null ? '$cost でLv.$nextLevel' : '',
+                            style: const TextStyle(fontSize: 11)),
+                      ],
+                    ),
                   ),
                 ),
               ),
