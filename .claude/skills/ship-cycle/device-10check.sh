@@ -80,7 +80,7 @@ inject() {
   local pkg; pkg=$(grep -m1 "^name:" pubspec.yaml | awk '{print $2}')
   for f in integration_test/perspectives_test.dart integration_test/screen_catalog.dart test_driver/integration_test.dart; do
     [ -e "$f" ] && continue
-    mkdir -p "$(dirname "$f")"; sed "s/__PKG__/$pkg/g" "$HERE/templates/${f#*/}" > "$f"; INJECTED+=("$f")
+    mkdir -p "$(dirname "$f")"; sed "s/__PKG__/$pkg/g" "$HERE/templates/$( [ "${f%%/*}" = test_driver ] && echo test_driver/integration_test.dart || echo "${f#*/}")" > "$f"; INJECTED+=("$f")
   done
   if ! grep -qE "^\s+integration_test:" pubspec.yaml; then
     cp pubspec.yaml "$OUT/.pubspec.bak"
