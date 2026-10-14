@@ -96,7 +96,7 @@
 - アップデート: 旧ストア版から上書きしてデータが残る。
 
 **問題データを追加・新規作成したとき（うかラボ等の選択式の資格アプリ）**
-- 最も長い選択肢が正解に偏っていないことを `ukalab_core` の `tools/question_quality/choice_length_bias.py` で確認する（期待値+10pt 超または p<0.01 は見直す。しきい値は暫定）。新規アプリは初回バッチの時点で集計する。書き方・是正方針は [question_quality_viewpoints.md](https://github.com/zka32101/ukalab_core/blob/main/docs/question_quality_viewpoints.md) が正本。
+- 最も長い選択肢が正解に偏っていないことを `ukalab_core` の `tools/question_quality/choice_length_bias.py` で確認する（期待値+10pt 超または p<0.01 は見直す。しきい値は暫定）。新規アプリは初回バッチの時点で集計する。断定語（必ず・のみ 等）が誤答に偏っていないことも `assertive_word_bias.py` で確認する（差10pt以上かつ p<0.05 は見直す）。両方を `run_checks.py` で一括実行でき、CI には再利用可能ワークフロー `zka32101/ukalab_core/.github/workflows/question-quality.yml@main` を1ジョブ足すだけで警告として自動実行できる（導入手順は下記 viewpoints の「CI で警告として実行する」）。書き方・是正方針は [question_quality_viewpoints.md](https://github.com/zka32101/ukalab_core/blob/main/docs/question_quality_viewpoints.md) が正本。
 
 **異常系**
 - 処理の途中で通信が切れる（二重付与・データ消失がない）。
