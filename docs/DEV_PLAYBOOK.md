@@ -95,6 +95,9 @@
 - 広告: プレミアム会員には表示しない。Ad Inspector で子ども向けタグを確認する。
 - アップデート: 旧ストア版から上書きしてデータが残る。
 
+**問題データを追加・新規作成したとき（うかラボ等の選択式の資格アプリ）**
+- 最も長い選択肢が正解に偏っていないことを `ukalab_core` の `tools/question_quality/choice_length_bias.py` で確認する（期待値+10pt 超または p<0.01 は見直す。しきい値は暫定）。新規アプリは初回バッチの時点で集計する。書き方・是正方針は [question_quality_viewpoints.md](https://github.com/zka32101/ukalab_core/blob/main/docs/question_quality_viewpoints.md) が正本。
+
 **異常系**
 - 処理の途中で通信が切れる（二重付与・データ消失がない）。
 - 購入・報酬のボタンを連打しても 1 回分だけ処理される。
