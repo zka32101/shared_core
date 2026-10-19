@@ -98,39 +98,47 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
   Widget build(BuildContext context) {
     final primaryColor = widget.primaryColor ?? Theme.of(context).colorScheme.primary;
     final op = _isAddition ? '+' : '-';
+    // キーボード表示中は、アイコンと説明を省いて、ボタンが見える高さに収める。
+    final compact = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
-      child: Padding(
+      insetPadding: EdgeInsets.symmetric(horizontal: 28, vertical: compact ? 12 : 40),
+      // 小さい画面でキーボードが出ても、ボタンがキーボードの裏に隠れないよう
+      // スクロールできるようにする。
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: const BoxDecoration(
-                color: Color(0xFFF5F5F5),
-                shape: BoxShape.circle,
+            if (!compact) ...[
+              Container(
+                width: 72,
+                height: 72,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF5F5F5),
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Text('🔒', style: TextStyle(fontSize: 36)),
+                ),
               ),
-              child: const Center(
-                child: Text('🔒', style: TextStyle(fontSize: 36)),
-              ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
             Text(
               widget.title ?? ParentalGateDialog.defaultTitle,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10),
-            Text(
-              widget.description ?? ParentalGateDialog.defaultDescription,
-              style: const TextStyle(fontSize: 14, height: 1.6, color: kTextMuted),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
+            if (!compact) ...[
+              const SizedBox(height: 10),
+              Text(
+                widget.description ?? ParentalGateDialog.defaultDescription,
+                style: const TextStyle(fontSize: 14, height: 1.6, color: kTextMuted),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            SizedBox(height: compact ? 8 : 16),
             Text(
               '$_a $op $_b = ?',
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -142,6 +150,10 @@ class _ParentalGateDialogState extends State<ParentalGateDialog> {
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              textInputAction: TextInputAction.done,
+              // マウス・スタイラス操作でも、ボタンを押す前にキーボードが閉じて
+              // レイアウトが動かないようにする。
+              onTapOutside: (_) {},
               decoration: InputDecoration(
                 hintText: '答えを入力',
                 errorText: _showError ? '答えが違います' : null,
