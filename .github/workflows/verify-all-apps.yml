@@ -40,7 +40,7 @@ jobs:
       fail-fast: false
       matrix:
         app:
-          # shared_core の変更の影響を受けるアプリ(shared_core を Git の ref: main で参照)。
+          # shared_core の変更の影響を受けるアプリ(shared_core を Git の ref: main で参照)4つ。
           # 英語(programming2/eigo-kore)と算数(programming2/sansu-kore)は shared_core を
           # リポジトリ内に同梱しているため、この検証の対象外。
           # 古いコピー(zka32101/eigo, zka32101/newrepo, zka32101/sansu-kore)も対象外。
@@ -54,9 +54,9 @@ jobs:
             flutter_version: '3.x'
           - repo: shogaku-kore-programming
             flutter_version: '3.47.1'
-          # 理科は shared_core を PC のパス(path:)で参照している。ここでは Git の ref で上書きして検証する。
-          - repo: shokollen_science
-            flutter_version: '3.x'
+          # 理科(shokollen_science)は shared_core を PC のパス(path: H:\...)の古いコピーで参照し、
+          # intl ^0.19 に固定されているため、Git の最新の shared_core(intl ^0.20)とは解決できない。
+          # shared_core の Git の変更の影響を受けないので、この検証の対象外。
     uses: ./.github/workflows/release-readiness-check.yml
     secrets:
       target_token: ${{ secrets.CROSS_REPO_READ_TOKEN }}
