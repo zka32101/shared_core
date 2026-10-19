@@ -70,6 +70,16 @@ on:
         type: string
         default: ''
         description: "指定した場合、pubspec.yaml の shared_core git依存をこの ref (ブランチ/SHA) で上書きする。shared_core側の変更を各アプリでマージ前に検証するデグレ防止用"
+      baseline_shared_core_ref:
+        required: false
+        type: string
+        default: ''
+        description: "指定した場合は『比較モード』。shared_core_ref の版と、この ref(変更前の版)で flutter analyze の error 数を比べ、増えていれば失敗にする。アプリ側に元からある error では失敗させない"
+      run_tests:
+        required: false
+        type: boolean
+        default: true
+        description: "flutter test を実行するか。比較モードでは通常 false(各アプリ自身のCIがテストするため)"
 
 permissions:
   contents: read
@@ -92,18 +102,9 @@ jobs:
           flutter-version: ${{ inputs.flutter_version }}
           channel: 'stable'
 
-      - name: "shared_core git依存をshared_core_refで上書き（デグレ検証用）"
-        if: inputs.shared_core_ref != ''
-        env:
-          SC_REF: ${{ inputs.shared_core_ref }}
+      - name: "shared_core git依存を上書きするスクリプトを用意"
         run: |
-          if ! grep -q "shared_core" pubspec.yaml; then
-            echo "shared_core への依存が無いためスキップします"
-            exit 0
-          fi
-          # 既に dependency_overrides: がある場合に重複キーで pubspec が壊れないよう、
-          # 既存のセクションへ追加する（無ければ末尾に新規作成）。
-          python3 - <<'PY'
+          cat > "$RUNNER_TEMP/override_shared_core.py" <<'PY'
           import os, re
           ref = os.environ["SC_REF"]
           entry = ["  shared_core:", "    git:", "      url: https://github.com/zka32101/shared_core.git", f"      ref: {ref}"]
@@ -127,6 +128,19 @@ jobs:
               lines = lines[: idx + 1] + entry + out + lines[j:]
           open("pubspec.yaml", "w", encoding="utf-8").write("\n".join(lines))
           PY
+
+      - name: "shared_core git依存をshared_core_refで上書き（デグレ検証用）"
+        if: inputs.shared_core_ref != ''
+        env:
+          SC_REF: ${{ inputs.shared_core_ref }}
+        run: |
+          if ! grep -q "shared_core" pubspec.yaml; then
+            echo "shared_core への依存が無いためスキップします"
+            exit 0
+          fi
+          # 既に dependency_overrides: がある場合に重複キーで pubspec が壊れないよう、
+          # 既存のセクションへ追加する（無ければ末尾に新規作成）。
+          python3 "$RUNNER_TEMP/override_shared_core.py"
           python3 -c "import yaml;yaml.safe_load(open('pubspec.yaml'))" 2>/dev/null || true
           echo "✓ shared_core を ref=$SC_REF に固定しました"
 
@@ -147,9 +161,42 @@ jobs:
           fi
 
       - name: Analyze (error ゼロを必須とする厳格チェック)
+        if: inputs.baseline_shared_core_ref == ''
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+      - name: "Analyze（比較モード: shared_core の変更で error が増えていないか）"
+        if: inputs.baseline_shared_core_ref != ''
+        env:
+          BASE_REF: ${{ inputs.baseline_shared_core_ref }}
+        run: |
+          set +e
+          # error 行だけを取り出して、行番号などの揺れを除いて比べる
+          errors_of() { grep -E "^[[:space:]]+error [-•] " "$1" | sed -E 's/:[0-9]+:[0-9]+//' | sort; }
+
+          flutter analyze --no-fatal-infos --no-fatal-warnings > "$RUNNER_TEMP/analyze_candidate.txt" 2>&1
+          errors_of "$RUNNER_TEMP/analyze_candidate.txt" > "$RUNNER_TEMP/err_candidate.txt"
+          CAND=$(wc -l < "$RUNNER_TEMP/err_candidate.txt")
+
+          if grep -q "shared_core" pubspec.yaml; then
+            SC_REF="$BASE_REF" python3 "$RUNNER_TEMP/override_shared_core.py"
+            flutter pub get > /dev/null 2>&1
+          fi
+          flutter analyze --no-fatal-infos --no-fatal-warnings > "$RUNNER_TEMP/analyze_base.txt" 2>&1
+          errors_of "$RUNNER_TEMP/analyze_base.txt" > "$RUNNER_TEMP/err_base.txt"
+          BASE=$(wc -l < "$RUNNER_TEMP/err_base.txt")
+
+          echo "error 数: 変更後=$CAND / 変更前(${BASE_REF:0:7})=$BASE"
+          # 変更後にだけ現れる error
+          NEW=$(comm -13 "$RUNNER_TEMP/err_base.txt" "$RUNNER_TEMP/err_candidate.txt")
+          if [ -n "$NEW" ]; then
+            echo "::error::shared_core の変更で新しく出た error があります(変更前には無かったもの):"
+            echo "$NEW" | head -30
+            exit 1
+          fi
+          echo "✓ shared_core の変更で新しい error は増えていません(元からある error は対象外)"
+
       - name: Run tests
+        if: inputs.run_tests
         run: |
           if [ -d "test" ] && find test -name "*_test.dart" | grep -q .; then
             flutter test

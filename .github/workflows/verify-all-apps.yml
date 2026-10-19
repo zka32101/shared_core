@@ -8,6 +8,8 @@ name: Verify All Apps (shared_core change guard)
 # release-readiness-check.yml（flutter analyze / test / build_runner 等）を実行する。
 # 各アプリのリポジトリ本体には一切書き込まない（チェックのみ・使い捨てチェックアウト）。
 #
+# 『比較モード』: 各アプリで、変更前と変更後の flutter analyze の error を比べ、この変更で
+# 新しく出た error があるときだけ失敗にする(アプリ側に元からある error・テストは対象外)。
 # 1つのアプリでも失敗すれば、このワークフロー自体が失敗としてPRのステータスに出る。
 # =============================================================================
 
@@ -16,12 +18,16 @@ on:
     paths:
       - 'lib/**'
       - 'pubspec.yaml'
+      - '.github/workflows/verify-all-apps.yml'
+      - '.github/workflows/release-readiness-check.yml'
   # main への反映後にも実行する（tag-release.yml が「main の最新の一括検証が緑」を確認するため）
   push:
     branches: [main]
     paths:
       - 'lib/**'
       - 'pubspec.yaml'
+      - '.github/workflows/verify-all-apps.yml'
+      - '.github/workflows/release-readiness-check.yml'
   workflow_dispatch:
 
 permissions:
@@ -34,27 +40,31 @@ jobs:
       fail-fast: false
       matrix:
         app:
+          # shared_core の変更の影響を受けるアプリ(shared_core を Git の ref: main で参照)4つ。
+          # 英語(programming2/eigo-kore)と算数(programming2/sansu-kore)は shared_core を
+          # リポジトリ内に同梱しているため、この検証の対象外。
+          # 古いコピー(zka32101/eigo, zka32101/newrepo, zka32101/sansu-kore)も対象外。
           - repo: kokugo-kore
             flutter_version: '3.44.4'
-          - repo: sansu-kore
-            flutter_version: '3.44.0'
-          - repo: newrepo
-            flutter_version: '3.x'
-          - repo: eigo
-            flutter_version: '3.x'
           - repo: social_quiz_app
             flutter_version: '3.x'
-          # 旧 shinshin は old-shinshin に改名された。現行の道徳アプリは非公開の shougaku-kore-shinshin。
           # 非公開リポジトリを読むため、シークレット CROSS_REPO_READ_TOKEN（対象の contents:read を持つ
-          # fine-grained PAT）が必要。未登録の間はこの 1 件だけ checkout で失敗する。
+          # fine-grained PAT）が必要。
           - repo: shougaku-kore-shinshin
             flutter_version: '3.x'
           - repo: shogaku-kore-programming
             flutter_version: '3.47.1'
+          # 理科(shokollen_science)は shared_core を PC のパス(path: H:\...)の古いコピーで参照し、
+          # intl ^0.19 に固定されているため、Git の最新の shared_core(intl ^0.20)とは解決できない。
+          # shared_core の Git の変更の影響を受けないので、この検証の対象外。
     uses: ./.github/workflows/release-readiness-check.yml
     secrets:
       target_token: ${{ secrets.CROSS_REPO_READ_TOKEN }}
     with:
       target_repo: zka32101/${{ matrix.app.repo }}
       shared_core_ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      # 変更前の版と error 数を比べ、この変更で『増えた』error だけを失敗にする。
+      # アプリ側に元からある error では失敗させない。
+      baseline_shared_core_ref: ${{ github.event.pull_request.base.sha || github.event.before || 'main' }}
+      run_tests: false
       flutter_version: ${{ matrix.app.flutter_version }}
