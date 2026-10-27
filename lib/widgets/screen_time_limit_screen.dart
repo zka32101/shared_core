@@ -169,7 +169,16 @@ class ScreenTimeSettingsWidget extends ConsumerWidget {
             subtitle: const Text('1日の利用時間に上限を設定できます'),
             value: settings.enabled,
             activeColor: primaryColor,
-            onChanged: (value) => notifier.setEnabled(value),
+            onChanged: (value) async {
+              await notifier.setEnabled(value);
+              // スライダーは未設定のとき最小値を表示するので、ON にした時点で
+              // その値を保存する(空のままだと判定が「制限なし」になる)。
+              if (value &&
+                  ref.read(screenTimeProvider).settings.dailyLimitMinutes ==
+                      null) {
+                await notifier.setDailyLimit(minMinutes);
+              }
+            },
           ),
         ),
         if (settings.enabled) ...[
