@@ -4,6 +4,7 @@ import 'package:shared_core/shared_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  worldPortTests();
   group('SmartNotificationPlanner', () {
     test('履歴が少ないときは既定の17時', () {
       expect(SmartNotificationPlanner.recommendHour(List.filled(24, 0)), 17);
@@ -169,6 +170,69 @@ void main() {
         await n.recordActivity(DateTime(2026, 10, 29, 19));
       }
       expect(n.planFor(const NotificationContext()).hour, 19);
+    });
+  });
+}
+
+void worldPortTests() {
+  group('世界版コアからの移植', () {
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
+    test('連続正解ボーナス: 5問ごと、誤答でリセット', () async {
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
+      final n = c.read(answerStreakProvider.notifier);
+      var total = 0;
+      for (var i = 0; i < 5; i++) {
+        total += await n.recordAnswer(true);
+      }
+      expect(total, 10);
+      expect(c.read(coinProvider).totalCoins, 10);
+      await n.recordAnswer(false);
+      expect(c.read(answerStreakProvider), 0);
+    });
+
+    test('解説の詳しさ・自動ヒント・もうすぐ解除', () {
+      const sel = ExplanationDepthSelector();
+      expect(sel.selectDepth(0), ExplanationDepth.brief);
+      expect(sel.selectDepth(1), ExplanationDepth.standard);
+      expect(sel.selectDepth(2), ExplanationDepth.detailed);
+      const hint = AutoHintPolicy();
+      expect(hint.shouldShowHint(null), isTrue);
+      expect(hint.shouldShowHint(0.5), isTrue);
+      expect(hint.shouldShowHint(0.9), isFalse);
+      const p = AchievementProximityHint();
+      final all = [
+        const AchievementProgress('streak7', 5, 7),
+        const AchievementProgress('correct100', 90, 100),
+        const AchievementProgress('done', 3, 3),
+      ];
+      expect(p.remainingToUnlock(all), {'streak7': 2, 'correct100': 10});
+      expect(p.closest(all)!.id, 'streak7');
+    });
+
+    test('週次チャレンジ: 達成で一度だけ報酬、翌週リセット', () async {
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
+      final n = c.read(weeklyChallengeProvider.notifier)..target = 2;
+      final mon = DateTime(2026, 10, 26);
+      expect(await n.recordCorrectAnswer(now: mon), 0);
+      expect(await n.recordCorrectAnswer(now: mon), 100);
+      expect(await n.recordCorrectAnswer(now: mon), 0);
+      expect(c.read(coinProvider).totalCoins, 100);
+      await n.recordCorrectAnswer(now: DateTime(2026, 11, 2));
+      expect(c.read(weeklyChallengeProvider).completed, 1);
+    });
+
+    test('家族チャレンジ: 手番と勝敗', () {
+      final s = FamilyChallengeSession(questionsPerPlayer: 2);
+      expect(s.shouldRecordProgress, isTrue);
+      s..recordAnswer(true)..recordAnswer(true);
+      expect(s.turn, FamilyTurn.parent);
+      expect(s.shouldRecordProgress, isFalse);
+      s..recordAnswer(true)..recordAnswer(false);
+      expect(s.isFinished, isTrue);
+      expect(s.winner, FamilyTurn.child);
     });
   });
 }

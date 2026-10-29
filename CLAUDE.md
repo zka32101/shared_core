@@ -1603,6 +1603,9 @@ void dispose() {
 | 勉強時間帯 | `StudyWindow.evening/afterSchool/morning` | 保護者ゲート後に `setStudyWindow()`。通知時刻をその範囲内に限定 |
 | A/B・KPI | `retention_experiments.dart` / `retention_kpi.dart` | testId `retention_notification_tone` / `retention_onboarding_reward`。`RetentionKpi.dayNRetention()` で D1/D7/D30 |
 
+世界版コア(`shoukore_core_global`)・ブラジル算数から移植:
+`answer_streak_bonus.dart`（5問連続正解でコイン）/ `learning_support.dart`（解説の詳しさ切替・自動ヒント・バッジもうすぐ解除）/ `weekly_challenge.dart`（週次目標・月曜リセット）/ `family_challenge.dart`（親子交代チャレンジ、保護者の回答は学習記録しない）
+
 テスト: `flutter test test/retention`
 
 ## 開発プレイブック（全セッション必読）

@@ -66,6 +66,10 @@ export 'retention/collection.dart';                 // CollectionSet, collection
 export 'retention/parent_report.dart';              // ParentReportBuilder, ParentReportScheduler
 export 'retention/retention_kpi.dart';              // RetentionKpi, retentionTrackerProvider
 export 'retention/retention_experiments.dart';      // RetentionExperiments（A/B テストID）
+export 'retention/answer_streak_bonus.dart';        // AnswerStreakBonus, answerStreakProvider（連続正解ボーナス）
+export 'retention/learning_support.dart';           // ExplanationDepthSelector, AutoHintPolicy, AchievementProximityHint
+export 'retention/weekly_challenge.dart';           // weeklyChallengeProvider（週次チャレンジ）
+export 'retention/family_challenge.dart';           // FamilyChallengeSession（親子チャレンジ）
 export 'data/japan_regions.dart';                   // kPrefectureCollection（47都道府県×8地方）
 export 'widgets/review_today_card.dart';            // ReviewTodayCard
 export 'widgets/collection_progress_card.dart';     // CollectionProgressCard
