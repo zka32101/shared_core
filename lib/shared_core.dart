@@ -55,6 +55,25 @@ export 'providers/learning_metrics_provider.dart'; // todayMetricsProvider, week
 export 'providers/metrics_notifier.dart';         // MetricsNotifier, metricsNotifierProvider（Phase 4.10）
 export 'providers/adaptive_difficulty_provider.dart'; // AdaptiveDifficultyNotifier, adaptiveDifficultyNotifierProvider, adaptiveDifficultyConfigProvider（Phase 4.19）
 
+// Retention（定着率施策）
+export 'utils/date_key.dart';                       // dateKeyOf, parseDateKey, calendarDaysBetween
+export 'retention/smart_notification_planner.dart'; // SmartNotificationPlanner, StudyWindow, NotificationContext, PlannedNotification, NotificationTone
+export 'retention/notification_plan_provider.dart'; // notificationPlanProvider（学習時間帯の学習・通知計画）
+export 'retention/smart_reminder_scheduler.dart';   // SmartReminderScheduler
+export 'retention/onboarding_rewards.dart';         // onboardingProvider, kOnboardingRewards（初回7日間）
+export 'retention/spaced_review.dart';              // reviewQueueProvider, reviewDueCountProvider（間違い復習）
+export 'retention/collection.dart';                 // CollectionSet, collectionProvider（コレクション）
+export 'retention/parent_report.dart';              // ParentReportBuilder, ParentReportScheduler
+export 'retention/retention_kpi.dart';              // RetentionKpi, retentionTrackerProvider
+export 'retention/retention_experiments.dart';      // RetentionExperiments（A/B テストID）
+export 'retention/answer_streak_bonus.dart';        // AnswerStreakBonus, answerStreakProvider（連続正解ボーナス）
+export 'retention/learning_support.dart';           // ExplanationDepthSelector, AutoHintPolicy, AchievementProximityHint
+export 'retention/weekly_challenge.dart';           // weeklyChallengeProvider（週次チャレンジ）
+export 'retention/family_challenge.dart';           // FamilyChallengeSession（親子チャレンジ）
+export 'data/japan_regions.dart';                   // kPrefectureCollection（47都道府県×8地方）
+export 'widgets/review_today_card.dart';            // ReviewTodayCard
+export 'widgets/collection_progress_card.dart';     // CollectionProgressCard
+
 // Widgets
 export 'widgets/generic_quiz_widget.dart';
 export 'widgets/daily_bonus_dialog.dart';
