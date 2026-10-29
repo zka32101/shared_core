@@ -1589,6 +1589,22 @@ void dispose() {
 
 ---
 
+## Phase 4.23: 定着率アップ施策（Retention）✅
+
+`lib/retention/` に集約（SharedPreferences 保存・Freezed 不使用）。社会コレ起点だが全アプリ共通で使える。
+
+| 施策 | 実装 | 使い方 |
+|---|---|---|
+| 通知最適化 | `smart_notification_planner.dart` / `notification_plan_provider.dart` / `smart_reminder_scheduler.dart` | クイズ完了で `recordActivity()`、`planFor(NotificationContext)` → `SmartReminderScheduler.schedule()`。学習時間帯・夜間(21-7時)回避・状況別文面（久しぶり/復習/連続/通常） |
+| 初回7日間 | `onboarding_rewards.dart` | 起動時 `load()`、`claimable` を表示し `claim(day, multiplier:)`。Day3/Day7 を厚く。14日目まで遡って受取可 |
+| 間違い復習 | `spaced_review.dart` / `widgets/review_today_card.dart` | 回答ごとに `recordAnswer(id, correct)`。1/2/4/7/14/30日で再出題。`ReviewTodayCard` |
+| コレクション | `collection.dart` / `data/japan_regions.dart` / `widgets/collection_progress_card.dart` | `collect(kPrefectureCollection, prefectureId(13))`。地方・全国コンプリートでコイン、返り値のIDでバッジ付与 |
+| 保護者レポート | `parent_report.dart` | `ParentReportBuilder.build()` で文面、`ParentReportScheduler.sync()` で週次通知（`weeklyReportEnabled` 連動） |
+| 勉強時間帯 | `StudyWindow.evening/afterSchool/morning` | 保護者ゲート後に `setStudyWindow()`。通知時刻をその範囲内に限定 |
+| A/B・KPI | `retention_experiments.dart` / `retention_kpi.dart` | testId `retention_notification_tone` / `retention_onboarding_reward`。`RetentionKpi.dayNRetention()` で D1/D7/D30 |
+
+テスト: `flutter test test/retention`
+
 ## 開発プレイブック（全セッション必読）
 
 開発・テスト（10観点・実機・iOS）・リリース・マネタイズ・セキュリティ・トラブルシューティングの唯一の正本:
