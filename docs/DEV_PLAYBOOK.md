@@ -30,6 +30,7 @@
 
 - **メジャー更新は自動PRにしない**（dependabot は minor/patch のみ）。Firebase など共有の依存をメジャー更新するときは、shared_core と全アプリの制約を同時に手動で上げる（P16 が警告する）。
 - **Firebase のメジャー更新は各アプリの最低 OS を押し上げる**（Firebase 12 / firebase_core 4 系は **iOS 15 以上**、Android は minSdk 23 以上）。更新するときは、全アプリで ①analyze・テスト ②**iOS ビルドと Android ビルド**（未署名でよい）を確認し、最低 OS の引き上げ（古い端末を切り捨てる判断）を事前に決める。依存を上げる PR は解析だけで終わらせない。
+- **dependabot PR は中身を見てからマージ**: 設定前に作られた PR は「minor-and-patch」の名でも riverpod 3・freezed 4・purchases_flutter 11 などのメジャーを含み、全アプリの `pub get` が失敗する（shared_core #88、2026-10 にクローズ）。メジャーを含む PR は閉じて再作成させる。Actions の更新（checkout 等のメジャー）は CI が無いので、マージ後に全アプリの Release Readiness Check を回して確認する。
 - **タグで版管理**: 一括検証が緑の main で `Tag Release` ワークフロー（`v0.2.0` 形式）を実行する。アプリは `ref: main` でなく `ref: v0.2.0` で参照すると、shared_core の変更がアプリごとに好きなタイミングで取り込める。
 - **一括検証**（`verify-all-apps.yml`）は PR と main への反映で全アプリを検証する。`release-readiness-check.yml` は既存の `dependency_overrides:` に統合する（重複キーで pubspec が壊れる不具合を修正済み）。
 - **Firestore ルール**は `tests/firestore_rules/`（エミュレータ、22 ケース）で検証される。ランキングと統計はクライアントから書けず、Cloud Functions だけが書く。
